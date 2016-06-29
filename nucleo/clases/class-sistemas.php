@@ -75,8 +75,8 @@ class CLASSSISTEMAS{
   function update_htaccess(){
       $nombre_archivo = _RUTA_SERVER.".htaccess";
       $datos = $this->get_data($nombre_archivo);
-      if($this->fmt->archivos->existe_archivo($nombre_archivo)){
-        $this->fmt->archivos->permitir_escritura($nombre_archivo); }
+      //if($this->fmt->archivos->existe_archivo($nombre_archivo)){
+      //  $this->fmt->archivos->permitir_escritura($nombre_archivo); }
       if($archivo = fopen($nombre_archivo, "w+") or die(print_r(error_get_last(),true)))
       {
             //categorias
@@ -110,14 +110,15 @@ class CLASSSISTEMAS{
                            while ($s = $rs2->fetch_array()) {
                               $id_cat_prod= $s['mod_prod_cat_id'];
                               $ruta2 = $s['mod_prod_cat_ruta_amigable'];
-                              fwrite($archivo, "Rewriterule ^".$ruta1."/".$ruta2."$  index.php?cat=".$id_cat_prod_padre."&pla=1&cp=".$id_cat_prod.PHP_EOL);
-                              $sql3 = "SELECT mpr.mod_prod_id, mp.mod_prod_ruta_amigable FROM mod_productos mp, mod_productos_rel mpr WHERE mpr.mod_prod_cat_id=".$id_cat_prod." AND mpr.mod_prod_id=mp.mod_prod_id";
+                              fwrite($archivo, "Rewriterule ^".$ruta1."/".$ruta2."$  index.php?cat=".$id_cat."&pla=1&cp=".$id_cat_prod.PHP_EOL);
+                              $sql3 = "SELECT mpr.mod_prod_rel_prod_id, mp.mod_prod_ruta_amigable FROM mod_productos mp, mod_productos_rel mpr WHERE mpr.mod_prod_rel_cat_id=".$id_cat_prod." AND mpr.mod_prod_rel_prod_id=mp.mod_prod_id";
+                              $rs3 = $this->fmt->query->consulta($sql3);
                               $rs3=$this->fmt->query->consulta($sql3);
                               if($this->fmt->query->num_registros($rs3)>0){
                                 while ($p = $rs3->fetch_array()) {
                                   $prod_id = $p['mod_prod_id'];
                                   $ruta_producto = $p['mod_prod_ruta_amigable'];
-                                  fwrite($archivo, "Rewriterule ^".$ruta1."/".$ruta2."/".$ruta_producto."$  index.php?cat=".$id_cat_prod_padre."&pla=2&cp=".$id_cat_prod."&prod=".$prod_id.PHP_EOL);
+                                  fwrite($archivo, "Rewriterule ^".$ruta1."/".$ruta2."/".$ruta_producto."$  index.php?cat=".$id_cat."&pla=2&cp=".$id_cat_prod."&prod=".$prod_id.PHP_EOL);
                                 }
                               }
                            }
@@ -128,7 +129,7 @@ class CLASSSISTEMAS{
             }
             fclose($archivo);
         }
-        $this->fmt->archivos->quitar_escritura($nombre_archivo);
+        //$this->fmt->archivos->quitar_escritura($nombre_archivo);
     }
 }
 ?>

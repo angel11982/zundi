@@ -193,11 +193,11 @@ class ARCHIVOS{
   }
 
   function permitir_escritura($ruta_archivo){
-    chmod($ruta_archivo, 0777) or die(print_r(error_get_last(),true));
+    chmod($ruta_archivo, 0766) or die(print_r(error_get_last(),true));
   }
 
   function quitar_escritura($ruta_archivo){
-    chmod($ruta_archivo, 0777) or die(print_r(error_get_last(),true));
+    chmod($ruta_archivo, 0766) or die(print_r(error_get_last(),true));
   }
 
 }
