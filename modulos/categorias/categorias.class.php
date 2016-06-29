@@ -359,7 +359,6 @@ class CATEGORIAS{
             WHERE cat_id='".$_POST['inputId']."'";
       $this->fmt->query->consulta($sql);
     }
-		$this->update_htaccess();
     header("location: categorias.adm.php?id_mod=".$this->id_mod);
   }
 
@@ -395,7 +394,6 @@ class CATEGORIAS{
 		echo $sql="insert into categoria (".$ingresar.") values (".$valores.")";
 
 		$this->fmt->query->consulta($sql);
-		$this->update_htaccess();
 
 		header("location: categorias.adm.php?id_mod=".$this->id_mod);
   }
@@ -408,7 +406,6 @@ class CATEGORIAS{
       $sql="update categoria set
         cat_activar='".$estado."' where cat_id='".$_GET['id']."'";
     $this->fmt->query->consulta($sql);
-		$this->update_htaccess();
     header("location: categorias.adm.php?id_mod=".$this->id_mod);
   }
 
@@ -419,33 +416,8 @@ class CATEGORIAS{
 		$this->fmt->query->consulta($sql);
 		$up_sqr6 = "ALTER TABLE categoria AUTO_INCREMENT=1";
 		$this->fmt->query->consulta($up_sqr6);
-		$this->update_htaccess();
 		header("location: categorias.adm.php?id_mod=".$this->id_mod);
 	}
-
-	function update_htaccess($nombre_archivo){
-			if($this->fmt->archivos->existe_archivo()){
-				$this->fmt->archivos->permitir_escritura($nombre_archivo); }
-		 	if($archivo = fopen($nombre_archivo, "w+") or die(print_r(error_get_last(),true)))
-			{
-		    		fwrite($archivo, "# htaccess " . PHP_EOL);
-		        fwrite($archivo, "# Fecha de modificacion:". date("d m Y H:m:s").PHP_EOL);
-		        fwrite($archivo, "#".PHP_EOL);
-						fwrite($archivo, "RewriteEngine on".PHP_EOL);
-		        fwrite($archivo, "RewriteCond %{SCRIPT_FILENAME} !-d".PHP_EOL);
-		        fwrite($archivo, "RewriteCond %{SCRIPT_FILENAME} !-f".PHP_EOL);
-		        fwrite($archivo, "#".PHP_EOL);
-		        fwrite($archivo, "Rewriterule ^dashboard$  nucleo/dashboard.php".PHP_EOL);
-						$sql="SELECT cat_id, cat_ruta_amigable, cat_id_plantilla from categoria";
-						$rs=$this->fmt->query->consulta($sql);
-				    while ($R = $rs->fetch_array()) {
-		               $id=$R["cat_id"]; $cat=$R["cat_ruta_amigable"]; $pla=$R["cat_id_plantilla"];
-		               if(!empty($cat)){	fwrite($archivo, "Rewriterule ^".$cat."$  index.php?cat=".$id."&pla=".$pla.PHP_EOL); }
-		        }
-		        fclose($archivo);
-	    	}
-				$this->fmt->archivos->quitar_escritura($nombre_archivo);
-		}
 
 
 }

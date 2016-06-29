@@ -21,6 +21,7 @@ switch( $tarea ){
   case 'eliminar': $form->eliminar();break;
   default: $form->busqueda();break;
 }
+$fmt->class_sistema->update_htaccess();
 echo $fmt->footer->footer_modulo();
 
 ?>
