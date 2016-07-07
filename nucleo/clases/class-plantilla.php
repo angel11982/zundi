@@ -77,7 +77,7 @@ class PLANTILLA{
 		}
 
 		function dibujar_cabecera($cat,$pla){
-
+				
 				echo $this->fmt->header->header_html($cat);
 
 				echo "	<!-- inicio css plantilla contenedores  -->"."\n";
@@ -269,7 +269,7 @@ class PLANTILLA{
 		}
 
 		function obtener_padre($cat,$pla){
-	   	$consulta = "SELECT
+	   		$consulta = "SELECT
 						  cont_id,
 						  cont_nombre,
 						  cont_css,

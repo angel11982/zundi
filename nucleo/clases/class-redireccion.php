@@ -23,12 +23,16 @@ class REDIRECCION{
 
      case "2":
        //echo "diseñador web";
+     $this->fmt->get->validar_get ( $_GET['cat'] );
+     $this->fmt->get->validar_get ( $_GET['pla'] );
+      $cat =  $_GET['cat'];
+      $pla = $_GET['pla'];
        return $this->ruta_amigable($cat,$pla);
      break;
 
      case "3":
        //echo "funcionario";
-       return "intranet/dashboard";
+       return "intranet/portada";
      break;
 
      case "4":

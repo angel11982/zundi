@@ -20,11 +20,14 @@ class ARCHIVOS{
     //$this->listar_directorios_ruta($sitio,"1");
 
     ?>
-    <select class="form-control" id="inputRutaArchivos" name="inputRutaArchivos">
-      <?php
-      $this->listar_directorios_ruta($sitio,"1",$directorio_p);
-      ?>
-    </select>
+    <div class="box-upload-s">
+      <select class="form-control " id="inputRutaArchivos" name="inputRutaArchivos">
+        <?php
+        $this->listar_directorios_ruta($sitio,"1",$directorio_p);
+        ?>
+      </select>
+      <button class="btn-docs btn btn-default" name="button"><i class="icn-folder"></i></button>
+    </div>
     <?php
   }
 

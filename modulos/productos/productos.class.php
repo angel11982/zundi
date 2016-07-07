@@ -82,6 +82,14 @@ class PRODUCTOS{
 		}
 	}
 
+	function rel_id_cat($id_prod){
+		$consulta = "SELECT mod_prod_rel_cat_id FROM mod_productos_rel WHERE mod_prod_rel_prod_id='".$id_prod."'";
+		$rs = $this->fmt->query->consulta($consulta);
+		$fila=$this->fmt->query->obt_fila($rs);
+		return $fila["mod_prod_rel_cat_id"];
+	}
+
+
 	function form_editar(){
 		$this->fmt->get->validar_get ( $_GET['id'] );
 		$id = $_GET['id'];
@@ -90,6 +98,7 @@ class PRODUCTOS{
 		$fila=$this->fmt->query->obt_fila($rs);
 		$this->fmt->form->head_editar('Producto','productos',$this->id_mod,'','form_editar');
 		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Nombre archivo:","inputNombre","",$fila['mod_prod_nombre'],"input-lg","","");
+		$this->fmt->form->input_form("Nombre Amigable:","inputNombreAmigable","",$fila['mod_prod_ruta_amigable'],"","","","disabled");
 		$this->fmt->form->input_hidden_form("inputId",$id);
 		$this->fmt->form->input_form("Tags:","inputTags","",$fila['mod_prod_tags'],"","","");
 		?>
@@ -116,10 +125,33 @@ class PRODUCTOS{
 		$this->fmt->form->input_form("Precio:","inputPrecio","",$fila['mod_prod_precio'],"","","");
 		$this->fmt->form->input_form("Id Doc:","inputDoc","",$fila['mod_prod_id_doc'],"","","");
 		$this->fmt->form->input_form("Id Mul:","inputMul","",$fila['mod_prod_id_mul'],"","","");
+		$this->fmt->form->select_form("Categoría productos:","inputCat","mod_prod_cat_","mod_productos_cat",$this->rel_id_cat($fila['mod_prod_id'])); //$label,$id,$prefijo,$from,$id_s
 		$this->fmt->form->radio_activar_form($fila['mod_prod_activar']);
-		$this->fmt->form->botones_editar($fila['mod_prod_id'],$fila['mod_prod_nombre'],'Producto');//$fila_id,$fila_nombre,$nombre
+		$this->fmt->form->botones_editar($id,$fila['mod_prod_nombre'],'Producto');//$fila_id,$fila_nombre,$nombre
+		?>
+		<script>
+			$(document).ready(function () {
+					var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-ruta-amigable.php";
+					$("#inputNombre").keyup(function () {
+							var value = $(this).val();
+							//$("#inputNombreAmigable").val();
+							$.ajax({
+									url: ruta,
+									type: "POST",
+									data: { inputRuta:value },
+									success: function(datos){
+										$("#inputNombreAmigable").val(datos);
+									}
+							});
+					});
+
+			});
+		</script>
+		<?php
     $this->fmt->class_modulo->script_form("modulos/productos/productos.adm.php",$this->id_mod);
+
 		$this->fmt->form->footer_page();
+
 	}
 
 	function form_nuevo(){
@@ -135,8 +167,9 @@ class PRODUCTOS{
 				</div>
 				<div class="form-group">
 					<label>Nombre amigable:</label>
-					<input class="form-control"  id="inputNombreAmigable" name="inputNombreAmigable" placeholder=" " type="text" autofocus />
+					<input class="form-control"  id="inputNombreAmigable" name="inputNombreAmigable" placeholder=" " type="text" disabled/>
 				</div>
+
 				<div class="form-group">
 					<label>Tags:</label>
 					<input class="form-control" id="inputTags" name="inputTags" placeholder="" />
@@ -202,6 +235,24 @@ class PRODUCTOS{
 				</div>
 			</form>
 		</div>
+		<script>
+			$(document).ready(function () {
+					var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-ruta-amigable.php";
+					$("#inputNombre").keyup(function () {
+			        var value = $(this).val();
+			        //$("#inputNombreAmigable").val();
+							$.ajax({
+			            url: ruta,
+			            type: "POST",
+			            data: { inputRuta:value },
+									success: function(datos){
+										$("#inputNombreAmigable").val(datos);
+									}
+							});
+			    });
+
+			});
+		</script>
 		<?php
 	}
 
@@ -213,8 +264,9 @@ class PRODUCTOS{
 		if ($_POST["btn-accion"]=="guardar"){
 			$activar=0;
 		}
-		$ingresar ="mod_prod_nombre, mod_prod_tags, mod_prod_codigo, mod_prod_modelo,mod_prod_resumen, mod_prod_detalles, mod_prod_especificaciones, mod_prod_disponibilidad, mod_prod_imagen,mod_prod_precio, mod_prod_id_doc, mod_prod_id_mul, mod_prod_id_dominio, mod_prod_activar";
+		$ingresar ="mod_prod_nombre, mod_prod_ruta_amigable, mod_prod_tags, mod_prod_codigo, mod_prod_modelo,mod_prod_resumen, mod_prod_detalles, mod_prod_especificaciones, mod_prod_disponibilidad, mod_prod_imagen,mod_prod_precio, mod_prod_id_doc, mod_prod_id_mul, mod_prod_id_dominio, mod_prod_activar";
 		$valores  ="'".$_POST['inputNombre']."','".
+									 $_POST['inputNombreAmigable']."','".
 									 $_POST['inputTags']."','".
 									 $_POST['inputCodigo']."','".
 									 $_POST['inputModelo']."','".
@@ -229,7 +281,7 @@ class PRODUCTOS{
 									 $_POST['inputDominio']."','".
 									 $activar."'";
 
-		echo $sql="insert into mod_productos (".$ingresar.") values (".$valores.")";
+		$sql="insert into mod_productos (".$ingresar.") values (".$valores.")";
 		$this->fmt->query->consulta($sql);
 
 		$sql="select max(mod_prod_id) as id from mod_productos";
@@ -250,6 +302,7 @@ class PRODUCTOS{
 
 			$sql="UPDATE mod_productos SET
 						mod_prod_nombre='".$_POST['inputNombre']."',
+						mod_prod_ruta_amigable ='".$_POST['inputRutaAmigable']."',
 						mod_prod_tags ='".$_POST['inputTags']."',
 						mod_prod_codigo='".$_POST['inputCodigo']."',
 						mod_prod_modelo='".$_POST['inputModelo']."',
@@ -266,6 +319,11 @@ class PRODUCTOS{
 						WHERE mod_prod_id='".$_POST['inputId']."'";
 
 			$this->fmt->query->consulta($sql);
+			$sql1="UPDATE mod_productos_rel SET
+						mod_prod_rel_cat_id='".$_POST['inputCat']."'
+						WHERE mod_prod_rel_prod_id = '".$_POST['inputId']."'";
+			$this->fmt->query->consulta($sql1);
+
 		}
 			header("location: productos.adm.php?id_mod=".$this->id_mod);
 	}

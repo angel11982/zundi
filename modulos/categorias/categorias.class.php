@@ -418,8 +418,6 @@ class CATEGORIAS{
 		$this->fmt->query->consulta($up_sqr6);
 		header("location: categorias.adm.php?id_mod=".$this->id_mod);
 	}
-
-
 }
 
 ?>

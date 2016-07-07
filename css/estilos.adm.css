@@ -101,7 +101,7 @@ body {}
 }
 
 .table .td-user{
-	padding-top:15px;
+	padding-top: 7px;
 	display:block-inline;
 }
 .checkbox{
@@ -306,6 +306,7 @@ padding-left: 0px;
 .body-modulo{
 	margin-top: 0px;
 	min-height: 83vh;
+	padding: 20px;
 }
 
 .frame-mod{
@@ -572,11 +573,27 @@ input[type="file"] {
 	display:block;
 }
 .respuesta-form{
-	background-color: #f2eff7;
-	border-radius: 4px;
 	padding: 15px;
 	margin-top: 0px;
 }
 .progress{
 	margin-bottom: 7px;
+}
+
+.box-upload-s{
+	display: inline-block;
+	width: 100%;
+}
+
+.box-upload-s select{
+	width: 87%;
+	float: left;
+}
+.box-upload-s button{
+	width: 10%;
+	float: right;
+}
+
+.head-noticias{
+	width: 70% !important;;
 }

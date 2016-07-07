@@ -20,6 +20,7 @@ if($num > 0){
   $fmt->sesion->set_variable("usu_id",$usu_id);
   $fmt->sesion->set_variable("usu_nombre",$usu_nombre);
   $fmt->sesion->set_variable("usu_mail",$usu_email);
+
   //$fmt->sesion->get_nombre();
   //$fmt->sesion->imprimir();
   //$redireccion = new REDIRECCION();

@@ -9,21 +9,21 @@ class FORM{
     $this->fmt = $fmt;
   }
 
-  function head_editar($nom,$archivo,$id_mod,$botones,$id_form){
+  function head_editar($nom,$archivo,$id_mod,$botones,$id_form,$class){
     $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=busqueda&id_mod=$id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
-  	$this->fmt->class_pagina->crear_head_form("Editar ".$nom, $botones,"");
+  	$this->fmt->class_pagina->crear_head_form($nom, $botones,"");
     ?>
-    <div class="body-modulo col-xs-6 col-xs-offset-3">
-      <form class="form form-modulo" action="<?php echo $archivo; ?>.adm.php?tarea=modificar&id_mod=<? echo $id_mod; ?>"  method="POST" id="<?php echo $id_form; ?>">
+    <div class="body-modulo col-xs-6 col-xs-offset-3 <? echo $class; ?>">
+      <form class="form form-modulo" action="<?php echo $archivo; ?>.adm.php?tarea=modificar&id_mod=<? echo $id_mod; ?>"  enctype="multipart/form-data" method="POST" id="<?php echo $id_form; ?>">
         <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
     <?php
   }
-  function head_nuevo($nom,$archivo,$id_mod,$botones,$id_form){
+  function head_nuevo($nom,$archivo,$id_mod,$botones,$id_form,$class){
     $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=busqueda&id_mod=$id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
-  	$this->fmt->class_pagina->crear_head_form("Nuevo ".$nom, $botones,"");
+  	$this->fmt->class_pagina->crear_head_form($nom, $botones,"");
     ?>
-    <div class="body-modulo col-xs-6 col-xs-offset-3">
-      <form class="form form-modulo" action="<?php echo $archivo; ?>.adm.php?tarea=ingresar&id_mod=<? echo $id_mod; ?>"  method="POST" id="<?php echo $id_form; ?>">
+    <div class="body-modulo col-xs-6 col-xs-offset-3 <? echo $class; ?>">
+      <form class="form form-modulo" action="<?php echo $archivo; ?>.adm.php?tarea=ingresar&id_mod=<? echo $id_mod; ?>"  enctype="multipart/form-data"  method="POST" id="<?php echo $id_form; ?>">
         <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
     <?php
   }
@@ -98,7 +98,63 @@ class FORM{
     </script>
     <?php
   }
-
+	function file_form_doc($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p){
+		?>
+		<div class="form-group">
+			<label><? echo $nom; ?></label>
+			<div class="panel panel-default" >
+				<div class="panel-body">
+					<?php $this->fmt->archivos->select_archivos($ruta,$directorio_p); ?>
+					<input type="file" ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivos" name="inputArchivos"  />
+					<div id='prog'></div>
+		      <div id="respuesta"></div>
+					<script>
+					  $(function(){
+					    $(".<?php echo $class; ?>").on("change", function(){
+								var formData = new FormData($("#<?php echo $id_form; ?>")[0]);
+					      var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-upload-doc.php";
+								$("#prog").html();
+					      $.ajax({
+					          url: ruta,
+					          type: "POST",
+					          data: formData,
+					          contentType: false,
+					          processData: false,
+					          xhr: function() {
+					            var xhr = $.ajaxSettings.xhr();
+					            xhr.upload.onprogress = function(e) {
+					              var dat = Math.floor(e.loaded / e.total *100);
+					              //console.log(Math.floor(e.loaded / e.total *100) + '%');
+					              $("#prog").html('<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="'+ dat +'" aria-valuemin="0" aria-valuemax="100" style="width: '+ dat +'%;">'+ dat +'%</div></div>');
+					            };
+					            return xhr;
+					          },
+					          success: function(datos){
+                      var myarr = datos.split(",");
+                      var num = myarr.length;
+                      if (myarr[0]=="editar"){
+                        var i;
+                        var url = myarr[1];
+                        for (i = 2; i < num; i++) {
+                          var datx = myarr[i].split('^');
+                          var dx = datx[1];
+                          $("#"+datx[0]).val(datx[1]);
+                          $("#respuesta").html('<div> <i class="icn-checkmark-circle color-text-verde" /> Archivo subido satisfactoriamente.</div>');
+                        }
+                      }else{
+											 $("#respuesta").toggleClass('respuesta-form');
+					             $("#respuesta").html(datos);
+                      }
+					          }
+					        });
+							});
+						});
+					</script>
+				</div>
+			</div>
+		</div>
+		<?
+	}
   function file_form_editar($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p){
     ?>
     <div class="form-group <?php echo $class_div; ?>" id="<?php echo $id_div; ?>" >
@@ -117,7 +173,7 @@ class FORM{
 				$(".<?php echo $class; ?>").on("change", function(){
 					var formData = new FormData($("#<?php echo $id_form; ?>")[0]);
 	        var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-upload.php";
-					$("#respuesta").toggleClass('respuesta-form');
+					
 					$("#url-imagen").html('');
 					$.ajax({
 	            url: ruta,
@@ -136,6 +192,7 @@ class FORM{
 					    },
 	            success: function(datos){
 								//$("#respuesta").html(datos);
+                $("#respuesta").toggleClass('respuesta-form');
 								var myarr = datos.split(",");
 								var num = myarr.length;
 								if (myarr[0]=="editar"){
@@ -152,14 +209,6 @@ class FORM{
 								}
 							  var datosx='<img src="'+ dx + url +'" class="img-responsive">';
 								$("#respuesta").html(datosx);
-								/*	for (i = 2; i < num; i++) {
-										var dat = myarr[i].split('^');
-										var dx = dat[1];
-										//datosx += dat[0]+'-'+dat[1]+"<br/>";
-										$("#"+dat[0]).val(dat[1]); //cambia los valores por los nuevos
-									}
-									var datosx='<img src="'+ dx + url +'" class="img-responsive">';*/
-
 
 							}
 						});
@@ -170,16 +219,16 @@ class FORM{
   }
 
   function head_busqueda_simple($nom,$archivo,$id_mod,$botones){
-    $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=form_nuevo&id_mod=$id_mod","btn btn-primary","icn-plus","Nuevo ".$nom);
+    $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=form_nuevo&id_mod=$id_mod","btn btn-primary","icn-plus",$nom);
     $this->fmt->class_pagina->crear_head( $id_mod, $botones); // bd, id modulo, botones
     ?>
     <div class="body-modulo">
     <?php
   }
 
-  function head_table(){
+  function head_table($id_tabla){
     ?><div class="table-responsive">
-        <table class="table table-hover">
+        <table class="table table-hover display" id="<?php echo $id_tabla; ?>">
     <?php
   }
 
@@ -222,11 +271,11 @@ class FORM{
     	<input type="hidden" id="<? echo $id; ?>" name="<? echo $id; ?>" value="<?php echo $valor; ?>" />
     <?php
   }
-  function input_form($label,$id,$placeholder,$valor,$class,$class_div,$mensaje){
+  function input_form($label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar){
     ?>
     <div class="form-group <?php echo $class_div; ?>">
       <label><?php echo $label; ?></label>
-      <input class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>"  placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" />
+      <input class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>" validar="<?php echo $validar; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" <?php echo $disabled; ?>/>
 			<?php if (!empty($mensaje)){ ?>
 			<p class="help-block"><?php echo $mensaje; ?></p>
 			<? } ?>
@@ -337,6 +386,24 @@ class FORM{
       </form>
     </div>
     <?php
+  }
+  
+  function botones_acciones($id,$class,$href,$title,$icono,$tarea,$nom,$ide){
+	  if (!empty($href)){ $auxr="href='".$href."'"; }else{$auxr="";}
+	  ?>
+		<a  id="<?php echo $id; ?>" type="button" class="<?php echo $class; ?>" <?php echo $auxr; ?> title="<?php echo $title; ?>" alt="<?php echo $title; ?>" tarea="<?php echo $tarea; ?>" nombre="<?php echo $nom; ?>" ide="<?php echo $ide; ?>" ><i class="<?php echo $icono; ?>" ></i></a>
+	<?php
+  }
+  
+  function form_head_form_editar($nom,$from,$prefijo,$id_mod,$class,$archivo){
+	$this->fmt->get->validar_get ( $_GET['id'] );
+	$id = $_GET['id'];
+	$consulta= "SELECT * FROM ".$from." WHERE ".$prefijo."id='".$id."'";
+	$rs =$this->fmt->query->consulta($consulta);
+	$fila=$this->fmt->query->obt_fila($rs);
+	//var_dump($fila);
+	$this->head_editar($nom,$archivo,$id_mod,'','form_editar',$class); //$nom,$archivo,$id_mod,$botones,$id_form,$class
+	return $fila;
   }
 
 

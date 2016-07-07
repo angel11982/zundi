@@ -140,16 +140,23 @@ class CATEGORIA{
     if($num>0){
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
-        for ($j=0;$j<$num_v;$j++){
-          if ($cat_valor[$j]==$fila_id){ $aux='checked'; }else{$aux='';}
-        }
-        echo "<label style='margin-left:".$espacio."px'><input name='".$id."[]' id='".$id."[]' type='checkbox' value='$fila_id' $aux> <span>".$fila_nombre."</span></label>";
-        if ($this->tiene_hijos_cat($cat)){
-          $this->hijos_cat_check($fila_id,$id,$nivel);
+        echo "<label style='margin-left:".$espacio."px'><input name='".$id."[]' type='checkbox' id='cat-$fila_id' value='$fila_id' $aux> <span>".$fila_nombre."</span></label>";
+        if ($this->tiene_hijos_cat($fila_id)){
+          $this->hijos_cat_check($id,$fila_id,$nivel);
         }
       }
     }
     echo "</div>";
+    ?>
+    	<script language="JavaScript">
+	    	$(document).ready( function () {
+		    	<?php for ($j=0;$j<$num_v;$j++){ ?>
+		    	var dato<?php echo $j; ?> = <?php echo $cat_valor[$j]; ?>;
+		    	$("#cat-<?php echo $cat_valor[$j]; ?>").prop("checked", true);
+		    	<?php } ?>
+		    });
+	    </script>
+    <?php
   }
 
   function tiene_hijos($cat,$from,$prefijo){
@@ -179,6 +186,7 @@ class CATEGORIA{
     $consulta = "SELECT cat_id,cat_nombre  FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_orden";
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
+    
     if ($num>0){
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
@@ -196,20 +204,19 @@ class CATEGORIA{
       }
     }
   }
-  function hijos_cat_check($cat,$id,$nivel){
+  function hijos_cat_check($id,$cat,$nivel){
     $consulta = "SELECT cat_id,cat_nombre  FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_orden";
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
     if ($num>0){
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
-        $espacio=  $nivel * 10;
-        $aux_nivel = $this->img_nodo("linea",$nivel);
-        if ($fila_id==$cat_valor[$i]){ $aux='checked'; }
-        echo $aux_nivel."<label style='margin-left:".$espacio."px'><input name='".$id."[]' id='".$id."[]' type='checkbox' value='$fila_id' $aux> <span>".$fila_nombre."</span></label>";
+        	$espacio=  $nivel * 10;
+			$aux_nivel = $this->img_nodo("linea",$nivel);
+        echo $aux_nivel."<label style='margin-left:".$espacio."px'><input name='".$id."[]' id='cat-$fila_id' type='checkbox' value='$fila_id' $aux> <span>".$fila_nombre."</span></label>";
         if ( $this->tiene_hijos_cat($fila_id) ){
           $nivel++;
-          $this->hijos_cat_check($fila_id, $nivel);
+          $this->hijos_cat_check($id,$fila_id,$nivel);
         }
       }
     }
@@ -304,6 +311,8 @@ class CATEGORIA{
       }
     }
   }
+
+
 
   function hijos_opciones_cat($cat,$nivel,$id_padre){
     $consulta = "SELECT cat_id,cat_nombre  FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_orden";

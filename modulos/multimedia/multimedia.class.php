@@ -118,7 +118,7 @@ class MULTIMEDIA{
 		$rs =$this->fmt->query->consulta($consulta);
 		$fila=$this->fmt->query->obt_fila($rs);
 
-		$this->fmt->form->head_editar('Archivo','multimedia',$this->id_mod,'','form_editar');
+		$this->fmt->form->head_editar('Editar archivo','multimedia',$this->id_mod,'','form_editar');
 		$this->fmt->form->input_hidden_form("inputId",$id);
 		?>
 		<div class="form-group">

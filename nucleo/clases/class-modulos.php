@@ -46,14 +46,70 @@ class CLASSMODULOS{
 		?>
 			<script language="JavaScript">
 				$(".btn-eliminar").click(function() {
-					id = $( this ).attr("idEliminar");
-					nombre = $( this ).attr("nombreEliminar");
+					tarea = $( this ).attr("tarea");
+					if ( tarea != "eliminar" ){
+						id = $( this ).attr("idEliminar");
+						nombre = $( this ).attr("nombreEliminar");
+					}else{
+						id = $( this ).attr("ide");
+						nombre = $( this ).attr("nombre");
+					}
+					
 				  url = "<? echo _RUTA_WEB.$ruta; ?>?tarea=eliminar&id_mod=<? echo $id_mod; ?>&id="+id;
-					if(confirm('¿Estas seguro de ELIMINAR: "'+ nombre +'" ?')){
+					if(confirm('¿Estas seguro de ELIMINAR: "'+ nombre +  '" ?')){
 					  //alert(url);
 					  document.location.href=url;
 					}
 				});
+
+			$(document).ready( function () {
+				$('#table_id').DataTable({
+					"language": {
+		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
+		            },
+		            "pageLength": 25,
+		            "order": [[ 0, 'desc' ]]
+				});
+				
+				var adicionarImagen = function (context) {
+				  var ui = $.summernote.ui;
+				  
+				  // create button
+				  var button = ui.button({
+				    contents: '<i class="icon-picture"/>',
+				    tooltip: 'imagen',
+				    click: function () {
+				      // invoke insertText method with 'hello' on editor module. 
+				       $( ".note-editable" ).append( "<p>hola</p>" );
+				    }
+				  });
+				
+				  return button.render();   // return button as jquery object 
+				}
+				
+				$('#summernote').summernote({
+						height: 300,                 // set editor height
+						minHeight: null,             // set minimum height of editor
+						maxHeight: null,             // set maximum height of editor
+						lang: 'es-ES',
+						focus: true, 
+						toolbar: [
+							['style', ['style','bold', 'italic', 'underline', 'clear','hr']],
+						    ['font', ['strikethrough', 'superscript', 'subscript']],
+						    ['fontsize', ['fontsize']],
+						    ['color', ['color']],
+						    ['para', ['ul', 'ol', 'paragraph']],
+						    ['height', ['height']],
+						    ['codeview',['codeview','fullscreen']],
+						    ['mybutton', ['imagen','link']],
+						    
+						  ],
+						  
+						  buttons: {
+						    imagen: adicionarImagen
+						  }
+					});
+			} );
 			</script>
 		<?php
 	}
@@ -165,7 +221,7 @@ class CLASSMODULOS{
 
   function cambiar_tumb($ruta){
     $arrayName = array(".jpg",".png");
-    $arrayVar = array("-tumb.jpg","-tumb.png");
+    $arrayVar = array("_thumb.jpg","_thumb.png");
     $ruta = str_replace($arrayName, $arrayVar, $ruta);
     return $ruta;
   }
@@ -177,6 +233,32 @@ class CLASSMODULOS{
 		return 0;
 		}
 
+	}
+
+	function eliminar_get_id($from,$prefijo){
+		$this->fmt->get->validar_get( $_GET['id'] );
+		$id= $_GET['id'];
+		$sql="DELETE FROM ".$from." WHERE ".$prefijo."id='".$id."'";
+		$this->fmt->query->consulta($sql);
+		$up_sqr6 = "ALTER TABLE ".$from." AUTO_INCREMENT=1";
+		$this->fmt->query->consulta($up_sqr6);
+		return;
+	}
+	
+	function eliminar_fila($valor,$from,$fila){
+		$sql="DELETE FROM ".$from." WHERE ".$fila."='".$valor."'";
+		$this->fmt->query->consulta($sql);
+		$up_sqr6 = "ALTER TABLE ".$from." AUTO_INCREMENT=1";
+		$this->fmt->query->consulta($up_sqr6);
+		return;
+	}
+
+	function activar_get_id($from,$prefijo){
+		$this->fmt->get->validar_get ( $_GET['estado'] );
+	    $this->fmt->get->validar_get ( $_GET['id'] );
+	    $sql="update ".$from." set
+	        ".$prefijo."activar='".$_GET['estado']."' where ".$prefijo."id='".$_GET['id']."'";
+	    $this->fmt->query->consulta($sql);
 	}
 
 }

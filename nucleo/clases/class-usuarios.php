@@ -39,10 +39,17 @@ class USUARIO{
   }
 
   function nombre_usuario($usuario){
-    $sql="select usu_nombre from usuarios where usu_id=$usuario";
+    $sql="select usu_nombre, usu_apellidos from usuarios where usu_id=$usuario";
     $rs = $this->fmt->query-> consulta($sql);
     $fila = $this->fmt->query->obt_fila($rs);
-    return $fila["usu_nombre"];
+    return $fila["usu_nombre"]." ".$fila["usu_apellidos"];
+  }  
+
+  function nombre_id_usuario($usuario_n,$usuario_a){
+    $sql="select usu_id from usuarios where usu_nombre='$usuario_n' and usu_apellidos='$usuario_a'";
+    $rs = $this->fmt->query-> consulta($sql);
+    $fila = $this->fmt->query->obt_fila($rs);
+    return $fila["usu_id"];
   }
 
   function apellidos_usuario($usuario){

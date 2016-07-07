@@ -39,7 +39,7 @@ class HEADER{
 	$cat_tipo =  $this->fmt->categoria->categoria_id_tipo($cat);
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
 	$cat_nombre= $this->fmt->categoria->nombre_categoria($cat);
-	
+
 	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
 		$nombre = $cat_nombre;
 	}else{
@@ -58,12 +58,12 @@ class HEADER{
   }
 
   function get_favicon($cat){
-    
-    
+
+
 	$cat_tipo = $this->fmt->categoria->categoria_id_tipo($cat);
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
-	
-	
+
+
 	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
 		$cat_favicon= $this->fmt->categoria->favicon_categoria($cat);
 		if (!empty($cat_favicon)){
@@ -110,15 +110,21 @@ class HEADER{
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/icon-font.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/lato-font.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/sf-ui-font.css" rel="stylesheet" type="text/css">'."\n";
+    $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/summernote.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/estilos.adm.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/theme.adm.css" rel="stylesheet" type="text/css">'."\n";
-
+	
     return $aux;
   }
 
   function js(){
     $aux  = '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.js"></script>'."\n";
     $aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/bootstrap.js"></script>'."\n";
+    $aux .= '<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.dataTables.min.js"></script>'."\n";
+	$aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/dataTables.bootstrap.js"></script>'."\n";
+	
+	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote.js"></script>'."\n";
+	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote-es-ES.min.js"></script>'."\n";
     return $aux;
   }
 

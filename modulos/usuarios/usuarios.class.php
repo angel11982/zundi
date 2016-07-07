@@ -123,7 +123,7 @@ class USUARIOS{
 						</div>
 						<div class="col-xs-6" >
 							<label>Grupo de Roles:  </label>
-							<?php echo $this->opciones_grupos();  ?>
+							<?php //echo $this->opciones_grupos();  ?>
 						</div>
 					</div>
 				</div>
@@ -134,6 +134,24 @@ class USUARIOS{
 			</form>
 		</div>
 		<?php
+	}
+
+	function opciones_roles(){
+		$sql="select rol_id, rol_nombre from roles ORDER BY rol_id asc";
+            $rs =$this->fmt->query-> consulta($sql);
+            $num=$this->fmt->query->num_registros($rs);
+            if($num>0){
+              for($i=0;$i<$num;$i++){
+                list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
+		?>
+		<div class="checkbox">
+          <label>
+            <input name="inputRol[]" id="inputRol[]" type="checkbox" value="<?php echo $fila_id; ?>"> <?php echo $fila_nombre; ?>
+          </label>
+        </div>
+		<?php
+				}
+			}
 	}
 
 	function ingresar(){
@@ -160,11 +178,11 @@ class USUARIOS{
 		$id = $fila ["id_usu"];
 
 		$rol = $_POST['inputRol'];
-		echo $cont_rol= count($rol);
-		$ingresar1 ="rol_rel_usu_id, rol_rel_rol_id";
+		$cont_rol= count($rol);
+		$ingresar1 ="usuarios_usu_id, roles_rol_id";
 		for($i=0; $i <= $cont_rol; $i++){
 			$valores1 = "'".$id."','".$rol[$i]."'";
-			echo $sql1="insert into roles_rel (".$ingresar1.") values (".$valores1.")";
+			$sql1="insert into usuarios_roles (".$ingresar1.") values (".$valores1.")";
 			$this->fmt->query->consulta($sql1);
 		}
 
