@@ -2,11 +2,11 @@
   require_once("../clases/class-constructor.php");
   $fmt = new CONSTRUCTOR();
 
-  $output_dir =  _RUTA_SERVER.$_POST["inputRutaArchivos"];
-  if(isset($_FILES["inputArchivos"])){
-    $error = $_FILES["inputArchivos"]["error"];
-    if(!is_array($_FILES["inputArchivos"]["name"])){ //un solo archivo
-      $file = $_FILES["inputArchivos"];
+  $output_dir =  _RUTA_SERVER.$_POST["inputRutaArchivosDocs"];
+  if(isset($_FILES["inputArchivosDocs"])){
+    $error = $_FILES["inputArchivosDocs"]["error"];
+    if(!is_array($_FILES["inputArchivosDocs"]["name"])){ //un solo archivo
+      $file = $_FILES["inputArchivosDocs"];
       $nombre = strtolower ( $file["name"]);
       $nombre_url= $fmt->get->convertir_url_amigable($nombre);
       $extension = $fmt->archivos->saber_extension_archivo($nombre);
@@ -24,14 +24,14 @@
       $docx_tipo="application/vnd.openxmlformats-officedocument.wordprocessingml.document";
       $pptx_tipo="application/vnd.openxmlformats-officedocument.presentationml.presentation";
       $xlsx_tipo ="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-      $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;
+      $inputUrl= $_POST["inputRutaArchivosDocs"]."/".$nombre_url;
 
       if ( ($tipo != $pdf_tipo) && ($tipo != $xlsx_tipo) && ($tipo != $zip_tipo) && ($tipo != $docx_tipo) && ($tipo !=   $doc_tipo) && ($tipo != $xls_tipo) && ($tipo != $doc_tipo) && ($tipo!=$xls_tipo) && ($tipo!=$pptx_tipo)){
         echo "Error, el archivo no es valido (pdf,zip,doc/x,pptx,xls/s)";
       }else if ($size > 1024*1024*8){
         echo "Error, el tamaño máximo permitido es un 8MB";
       }else{
-        move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
+        move_uploaded_file($_FILES["inputArchivosDocs"]["tmp_name"],$output_dir."/".$nombre_url);
         $ruta_v = explode ("/",$inputUrl);
         $inputDominio = _RUTA_WEB;
 

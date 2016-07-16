@@ -291,7 +291,10 @@ table.table{
 	color:red;
 }
 
-
+.disabled{
+	background-color: #eee;
+	cursor:no-drop;
+}
 
 .help-block{ color:#777; margin-left: 10px; font-size: 11px; }
 input, textarea, .input-lg, .input-group-addon, select {
@@ -698,4 +701,55 @@ font-weight: normal;
 	border:1px solid #ddd !important;
 }
 
+
+/* data table */
+
+td strong a{ 
+	font-family : "Lato-Regular",sans-serif !important;
+	color:#555;
+}
+.paginate_button{
+	background-color: #017AFF;
+	color:#fff;
+	text-decoration: none;
+}
+
+.paginate_button:hover{
+	background-color: #0b55a3;
+	color:#fff;
+	text-decoration: none;
+}
+
 /*   #summernote   */
+
+
+/* box-modal */
+.box-modal{
+	background-color: #f1f1f1;
+	border-radius: 5px; 
+}
+.head-m-modal h1{
+	font-size: 18px !important;
+}
+.box-modal .body-modulo{
+margin-left:10%;
+width: 80%;
+}
+
+.box-modal .title-form{
+	margin-left:10%;
+width: 80%;
+}
+
+.btn-nuevo-docs.on i,.btn-agregar-docs.on i{
+-webkit-transform:rotate(45deg);
+-moz-transform:rotate(45deg);
+-o-transform:rotate(45deg);
+    color:#FF2D55;
+    width: 16px;
+    height: 16px;
+}
+
+[class^="icn-"], [class*=" icn-"] {
+  line-height: 1em;
+}

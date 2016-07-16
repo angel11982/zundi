@@ -61,9 +61,9 @@ class CLASSPAGINAS{
 
 	/* ---------------- Funcion crear form ---------------------- */
 
-		function crear_head_form( $nombre,$botones_left, $botones_right){
+		function crear_head_form( $nombre,$botones_left, $botones_right, $class_modo){
 			?>
-			<div class="head-modulo row">
+			<div class="head-modulo row <?php echo $class_modo; ?>">
 			<div class="head-botones pull-left">
 				 	<?php echo $botones_left; ?>
 			</div>

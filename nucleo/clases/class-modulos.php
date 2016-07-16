@@ -45,22 +45,7 @@ class CLASSMODULOS{
 	function script_form($ruta,$id_mod){
 		?>
 			<script language="JavaScript">
-				$(".btn-eliminar").click(function() {
-					tarea = $( this ).attr("tarea");
-					if ( tarea != "eliminar" ){
-						id = $( this ).attr("idEliminar");
-						nombre = $( this ).attr("nombreEliminar");
-					}else{
-						id = $( this ).attr("ide");
-						nombre = $( this ).attr("nombre");
-					}
-					
-				  url = "<? echo _RUTA_WEB.$ruta; ?>?tarea=eliminar&id_mod=<? echo $id_mod; ?>&id="+id;
-					if(confirm('¿Estas seguro de ELIMINAR: "'+ nombre +  '" ?')){
-					  //alert(url);
-					  document.location.href=url;
-					}
-				});
+
 
 			$(document).ready( function () {
 				$('#table_id').DataTable({
@@ -70,29 +55,54 @@ class CLASSMODULOS{
 		            "pageLength": 25,
 		            "order": [[ 0, 'desc' ]]
 				});
-				
+				$('#table_id_modal').DataTable({
+					"language": {
+		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
+		            },
+		            "pageLength": 25,
+		            "order": [[ 0, 'desc' ]]
+				});
+
+				$(".btn-eliminar").click(function() {
+					tarea = $( this ).attr("tarea");
+					if ( tarea != "eliminar" ){
+						id = $( this ).attr("idEliminar");
+						nombre = $( this ).attr("nombreEliminar");
+					}else{
+						id = $( this ).attr("ide");
+						nombre = $( this ).attr("nombre");
+					}
+
+				  url = "<? echo _RUTA_WEB.$ruta; ?>?tarea=eliminar&id_mod=<? echo $id_mod; ?>&id="+id;
+					if(confirm('¿Estas seguro de ELIMINAR: "'+ nombre +  '" ?')){
+					  //alert(url);
+					  document.location.href=url;
+					}
+				});
+
+
 				var adicionarImagen = function (context) {
 				  var ui = $.summernote.ui;
-				  
+
 				  // create button
 				  var button = ui.button({
 				    contents: '<i class="icon-picture"/>',
 				    tooltip: 'imagen',
 				    click: function () {
-				      // invoke insertText method with 'hello' on editor module. 
+				      // invoke insertText method with 'hello' on editor module.
 				       $( ".note-editable" ).append( "<p>hola</p>" );
 				    }
 				  });
-				
-				  return button.render();   // return button as jquery object 
+
+				  return button.render();   // return button as jquery object
 				}
-				
+
 				$('#summernote').summernote({
 						height: 300,                 // set editor height
 						minHeight: null,             // set minimum height of editor
 						maxHeight: null,             // set maximum height of editor
 						lang: 'es-ES',
-						focus: true, 
+						focus: true,
 						toolbar: [
 							['style', ['style','bold', 'italic', 'underline', 'clear','hr']],
 						    ['font', ['strikethrough', 'superscript', 'subscript']],
@@ -102,9 +112,9 @@ class CLASSMODULOS{
 						    ['height', ['height']],
 						    ['codeview',['codeview','fullscreen']],
 						    ['mybutton', ['imagen','link']],
-						    
+
 						  ],
-						  
+
 						  buttons: {
 						    imagen: adicionarImagen
 						  }
@@ -244,7 +254,7 @@ class CLASSMODULOS{
 		$this->fmt->query->consulta($up_sqr6);
 		return;
 	}
-	
+
 	function eliminar_fila($valor,$from,$fila){
 		$sql="DELETE FROM ".$from." WHERE ".$fila."='".$valor."'";
 		$this->fmt->query->consulta($sql);

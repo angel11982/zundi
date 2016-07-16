@@ -32,15 +32,16 @@
       }else if($width < 60 || $height < 60){
         echo "Error la anchura y la altura mínima permitida es 60px";
       }else{
-        move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
-        $src = $_POST["inputRutaArchivos"]."/".$nombre;
-        $nombre_t=$fmt->archivos->convertir_nombre_thumb($nombre_url);
-        $fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
-        //$src, $dst, $width, $height, $crop=0
-
-        $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;
+	      
+	    $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;
         $ruta_v = explode ("/",$inputUrl);
         $inputDominio = _RUTA_WEB;
+        
+        move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
+     
+        $nombre_t=$fmt->archivos->convertir_nombre_thumb($nombre_url);
+        $fmt->archivos->crear_thumb(_RUTA_SERVER.$inputUrl,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
+        //$src, $dst, $width, $height, $crop=0
 
         if ( $ruta_v[1]=="sitios"){
           $c = strlen ($ruta_v[0] );

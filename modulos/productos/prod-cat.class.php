@@ -70,6 +70,18 @@ class PROD_CAT{
           <input class="form-control input-lg"  id="inputNombre" name="inputNombre" value="<? echo $fila["mod_prod_cat_nombre"]; ?>" placeholder=" " type="text" autofocus />
           <input type="hidden" id="inputId" name="inputId" value="<?php echo $fila["mod_prod_cat_id"]; ?>" />
         </div>
+        
+        <?php
+	        
+	    if (!empty($fila['mod_prod_cat_ruta_amigable'])){
+			$valor_ra = $fila['mod_prod_cat_ruta_amigable'];
+		}else{
+			$valor_ra = $this->fmt->get->convertir_url_amigable($fila['mod_prod_cat_nombre']);
+		}
+
+		$this->fmt->form->input_form("Nombre Amigable:","inputNombreAmigable","",$valor_ra,"disabled","","","");
+	        
+	    ?>
 
         <div class="form-group">
           <label>Descripción</label>
@@ -116,6 +128,24 @@ class PROD_CAT{
 
       </form>
     </div>
+    <script>
+			$(document).ready(function () {
+					var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-ruta-amigable.php";
+					$("#inputNombre").keyup(function () {
+							var value = $(this).val();
+							//$("#inputNombreAmigable").val();
+							$.ajax({
+									url: ruta,
+									type: "POST",
+									data: { inputRuta:value },
+									success: function(datos){
+										$("#inputNombreAmigable").val(datos);
+									}
+							});
+					});
+
+			});
+		</script>
     <?php
     $this->fmt->class_modulo->script_form($this->fmt->query,"modulos/categorias/categorias.adm.php",$this->id_mod);
   }
@@ -136,6 +166,12 @@ class PROD_CAT{
 					<label>Nombre Categoria</label>
 					<input class="form-control input-lg required"  id="inputNombre" name="inputNombre" value="" placeholder=" " type="text" autofocus />
 				</div>
+				
+		<?php
+
+		$this->fmt->form->input_form("Nombre Amigable:","inputNombreAmigable","","disabled","","","",""); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar
+	        
+	    ?>
 
         <div class="form-group">
           <label>Descripción</label>
@@ -170,6 +206,24 @@ class PROD_CAT{
 				</div>
 
       </form>
+      <script>
+			$(document).ready(function () {
+					var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-ruta-amigable.php";
+					$("#inputNombre").keyup(function () {
+							var value = $(this).val();
+							//$("#inputNombreAmigable").val();
+							$.ajax({
+									url: ruta,
+									type: "POST",
+									data: { inputRuta:value },
+									success: function(datos){
+										$("#inputNombreAmigable").val(datos);
+									}
+							});
+					});
+
+			});
+		</script>
     </div>
     <?php
     $this->fmt->class_modulo->script_form($this->fmt->query,"modulos/productos/prod-cat.adm.php",$this->id_mod);
@@ -195,8 +249,9 @@ class PROD_CAT{
     if ($_POST["btn-accion"]=="guardar"){
       $activar=0;
     }
-    $ingresar ="mod_prod_cat_nombre, mod_prod_cat_descripcion, mod_prod_cat_id_padre, mod_prod_cat_orden,mod_prod_cat_archivos, mod_prod_cat_idcat, mod_prod_cat_activar";
+    $ingresar ="mod_prod_cat_nombre, mod_prod_cat_ruta_amigable, mod_prod_cat_descripcion, mod_prod_cat_id_padre, mod_prod_cat_orden,mod_prod_cat_archivos, mod_prod_cat_idcat, mod_prod_cat_activar";
 		$valores  ="'".$_POST['inputNombre']."','".
+									  $_POST['inputNombreAmigable']."','".
 									 $_POST['inputDescripcion']."','".
 									 $_POST['inputPadre']."','".
 									 $_POST['inputArchivos']."','".
@@ -216,6 +271,7 @@ class PROD_CAT{
     if ($_POST["btn-accion"]=="actualizar"){
       echo $sql="UPDATE mod_productos_cat SET
             mod_prod_cat_nombre='".$_POST['inputNombre']."',
+            mod_prod_cat_ruta_amigable='".$_POST['inputNombreAmigable']."',
             mod_prod_cat_descripcion='".$_POST['inputDescripcion']."',
             mod_prod_cat_id_padre='".$_POST['inputPadre']."',
             mod_prod_cat_orden='".$_POST['inputOrden']."',

@@ -53,6 +53,7 @@ class GET{
 
   function convertir_url_amigable($cadena){
   	$cadena= utf8_decode($cadena);
+  	$cadena = strtolower($cadena);
     $cadena = str_replace(' ', '-', $cadena);
   	$cadena = str_replace('?', '', $cadena);
   	$cadena = str_replace('+', '', $cadena);

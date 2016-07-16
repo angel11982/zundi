@@ -113,7 +113,7 @@ class HEADER{
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/summernote.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/estilos.adm.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/theme.adm.css" rel="stylesheet" type="text/css">'."\n";
-	
+
     return $aux;
   }
 
@@ -121,10 +121,13 @@ class HEADER{
     $aux  = '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.js"></script>'."\n";
     $aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/bootstrap.js"></script>'."\n";
     $aux .= '<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.dataTables.min.js"></script>'."\n";
-	$aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/dataTables.bootstrap.js"></script>'."\n";
-	
+	//$aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/dataTables.bootstrap.js"></script>'."\n";
+
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote-es-ES.min.js"></script>'."\n";
+	
+		$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.print.js"></script>'."\n";
+	
     return $aux;
   }
 

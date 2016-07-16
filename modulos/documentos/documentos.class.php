@@ -50,8 +50,10 @@ class DOCUMENTOS{
 		$this->fmt->form->footer_page();
 	}
 
-	function form_nuevo(){
-		$this->fmt->form->head_nuevo('Nuevo archivo','documentos',$this->id_mod,'','form_nuevo'); //$nom,$archivo,$id_mod,$botones,$id_form
+	function form_nuevo($modo){
+		
+		$this->fmt->form->head_nuevo('Nuevo archivo','documentos',$this->id_mod,'','form_nuevo','',$modo); //$nom,$archivo,$id_mod,$botones,$id_form,$class,$modo
+		
 		$this->fmt->form->file_form_doc("<span class='obligatorio'>*</span> Cargar archivo (pdf, doc/x, pptx, xls/x, zip):","","form_nuevo","input-form-doc","","","docs"); //$nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0","","",""); //$label,$id,$cat_raiz,$cat_valor,$class,$class_div
 		$fecha=$this->fmt->class_modulo->fecha_hoy('America/La_Paz');
@@ -61,8 +63,8 @@ class DOCUMENTOS{
 		$this->fmt->form->input_form_sololectura('Usuario:','','',$usuario_n,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
 		$this->fmt->form->input_hidden_form("inputUsuario",$usuario);
 		$this->fmt->form->input_form('Orden:','inputOrden','','0','','','');
-		$this->fmt->form->botones_nuevo();
-		$this->fmt->form->footer_page();
+		$this->fmt->form->botones_nuevo($modo);
+		$this->fmt->form->footer_page($modo);
 	}
 
 	function form_editar(){
@@ -101,7 +103,7 @@ class DOCUMENTOS{
 		$this->fmt->form->footer_page();
 	}
 
-	function ingresar(){
+	function ingresar($modo){
 		if ($_POST["btn-accion"]=="activar"){
 			$activar=1;
 		}
@@ -150,8 +152,14 @@ class DOCUMENTOS{
 			$sql1="insert into documento_rel (".$ingresar1.") values (".$valores1.")";
 			$this->fmt->query->consulta($sql1);
 		}
-
-		header("location: documentos.adm.php?id_mod=".$this->id_mod);
+		if (empty($modo)){
+			header("location: documentos.adm.php?id_mod=".$this->id_mod);
+		}else{
+			if ($modo=="modal"){
+				echo $this->fmt->mensaje->documento_subido();
+				echo "<div class='otro-nuevo'><i class='icn-plus'></i> <a href='documentos.adm.php?tarea=form_nuevo' > Agregar otro nuevo documento. </a></div>";
+			}
+		}
 	}
 
 	function modificar(){
@@ -189,6 +197,34 @@ class DOCUMENTOS{
   		$this->fmt->class_modulo->eliminar_get_id("documento_rel","doc_rel_");
   		header("location: documentos.adm.php?id_mod=".$this->id_mod);
   	}
+  	
+  	function busqueda_seleccion($modo){
+  		$this->fmt->form->head_modal('Busqueda Documentos',$modo);  //$nom,$archivo,$id_mod,$botones,$id_form,$class,$modo)		
+  		/*$this->fmt->form->head_table('table_id_modal');
+		$this->fmt->form->thead_table('Archivo:Estado:Acciones');
+		$this->fmt->form->tbody_table_open();
+		
+		$sql="SELECT * FROM documento ORDER BY doc_id asc";
+		$rs =$this->fmt->query->consulta($sql);
+		$num=$this->fmt->query->num_registros($rs);
+		if($num>0){
+		  for($i=0;$i<$num;$i++){
+		    $fila=$this->fmt->query->obt_fila($rs);
+		    echo "<tr>";
+			echo '<td class="fila-url"><strong><a href="'.$aux.$fila["doc_url"].'" target="_blank">'.$fila["doc_nombre"].'</a></strong> ( '.$fila["doc_tipo_archivo"].' orden: '.$fila["doc_orden"].' )</td>';
+			echo '<td class="">';
+						$this->fmt->class_modulo->estado_publicacion($fila["doc_activar"],"modulos/documentos/documentos.adm.php", $this->id_mod,$aux,$fila["doc_id"] );
+			echo '</td>';
+			echo '<td>';
+			echo '</td>';
+			echo "</tr>";
+		    }
+		}
+		$this->fmt->form->tbody_table_close();
+		$this->fmt->form->footer_table();*/
+		$this->fmt->form->footer_page();
+	}
+
 
 }
 

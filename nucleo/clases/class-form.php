@@ -9,6 +9,15 @@ class FORM{
     $this->fmt = $fmt;
   }
 
+  function head_busqueda_simple($nom,$archivo,$id_mod,$botones){
+    $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=form_nuevo&id_mod=$id_mod","btn btn-primary","icn-plus",$nom);
+    $this->fmt->class_pagina->crear_head( $id_mod, $botones); // bd, id modulo, botones
+    ?>
+    <div class="body-modulo">
+    <?php
+  }
+  
+  
   function head_editar($nom,$archivo,$id_mod,$botones,$id_form,$class){
     $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=busqueda&id_mod=$id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
   	$this->fmt->class_pagina->crear_head_form($nom, $botones,"");
@@ -18,22 +27,63 @@ class FORM{
         <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
     <?php
   }
-  function head_nuevo($nom,$archivo,$id_mod,$botones,$id_form,$class){
-    $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=busqueda&id_mod=$id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
-  	$this->fmt->class_pagina->crear_head_form($nom, $botones,"");
+  function head_nuevo($nom,$archivo,$id_mod,$botones,$id_form,$class,$modo){
+	 //echo "m:".$modo;
+	if (empty($modo)){
+	    $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=busqueda&id_mod=$id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
+	  	$action = "action='".$archivo.".adm.php?tarea=ingresar&id_mod=".$id_mod."'";
+  		$mod="";
+  	}else{
+  		$mod="body-modal";
+  		if (isset($_GET['id'])){
+	  		$this->fmt->get->validar_get($_GET['id']);
+	  		$id = "&id=".$_GET['id'];
+  		}
+  		
+  		$from =$_GET['from'];
+  		
+  		$action = "action='".$archivo.".adm.php?tarea=ingresar&id_mod=".$id_mod."&modo=modal&from=".$from.$id."'";
+  	}
+  	
+  	$this->fmt->class_pagina->crear_head_form($nom, $botones,"","head-modal");
+  	//echo $url;
     ?>
-    <div class="body-modulo col-xs-6 col-xs-offset-3 <? echo $class; ?>">
-      <form class="form form-modulo" action="<?php echo $archivo; ?>.adm.php?tarea=ingresar&id_mod=<? echo $id_mod; ?>"  enctype="multipart/form-data"  method="POST" id="<?php echo $id_form; ?>">
+    <div class="body-modulo col-xs-6 col-xs-offset-3 <? echo $class; ?> <? echo $mod; ?>">
+      <form class="form form-modulo" <?php echo $action; ?>  enctype="multipart/form-data"  method="POST" id="<?php echo $id_form; ?>">
         <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
     <?php
   }
+  
+  function head_modal($nom,$modo){
+	 //echo "m:".$modo; 
+    ?>
+    <div class="head-modulo head-m-<?php echo $modo; ?>">
+		<h1 class="title-page pull-left"><i class=""></i> <? echo $nom; ?></h1>
+			<div class="head-botones pull-right">
+				<a class="btn btn-actualizar"><i class='icn-sync'></i> Actualizar</a>
+			</div>
+    </div>
+    <div class="body-modal">
+        <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
+        
+    <?php
+  }
 
-	function sizes_thumb(){
+
+	function sizes_thumb($sizes){
+		if (!empty($sizes)){ 
+			$st = explode(",",$sizes);
+			$c_st = count($st);
+		}
 		?>
 		<select id="inputThumb" name="inputThumb" class="form-control">
-			<option value="100x100">100 x 100 px (miniatura)</option>
-			<option value="300x325">300 x 325 px (productos)</option>
-			<option value="400x300">400 x 300 px (slides)</option>
+			<?php 
+				
+				for($i=0; $i < $c_st;$i++){
+					$xst = explode(":",$st[$i]);
+					echo "<option value='".$xst[0]."' >".$xst[1]."</option>";
+				}
+			?>
 		</select>
 		<?php
 	}
@@ -54,14 +104,14 @@ class FORM{
     </div>
     <?php
   }
-  function file_form_nuevo($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p){
+  function file_form_nuevo($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb){
   	//echo $ruta;
     ?>
     <div class="form-group <?php echo $class_div; ?>" id="<?php echo $id_div; ?>" >
       <label>Seleccionar ruta url para subir : </label>
       <?php $this->fmt->archivos->select_archivos($ruta,$directorio_p); ?>
 			<br/><label>Seleccionar tamaño thumb (ancho x alto):</label>
-			<?php $this->sizes_thumb(); ?>
+			<?php $this->sizes_thumb($sizethumb); ?>
       <br/>
 			<label><? echo $nom; ?> :</label>
       <input type="file" ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivos" name="inputArchivos"  />
@@ -104,10 +154,10 @@ class FORM{
 			<label><? echo $nom; ?></label>
 			<div class="panel panel-default" >
 				<div class="panel-body">
-					<?php $this->fmt->archivos->select_archivos($ruta,$directorio_p); ?>
-					<input type="file" ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivos" name="inputArchivos"  />
+					<?php $this->fmt->archivos->select_archivos($ruta,$directorio_p,"inputRutaArchivosDocs"); ?>
+					<input type="file" ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivosDocs" name="inputArchivosDocs"  />
 					<div id='prog'></div>
-		      <div id="respuesta"></div>
+		      <div id="respuesta-docs"></div>
 					<script>
 					  $(function(){
 					    $(".<?php echo $class; ?>").on("change", function(){
@@ -139,11 +189,11 @@ class FORM{
                           var datx = myarr[i].split('^');
                           var dx = datx[1];
                           $("#"+datx[0]).val(datx[1]);
-                          $("#respuesta").html('<div> <i class="icn-checkmark-circle color-text-verde" /> Archivo subido satisfactoriamente.</div>');
+                          $("#respuesta-docs").html('<div> <i class="icn-checkmark-circle color-text-verde" /> Archivo subido satisfactoriamente.</div>');
                         }
                       }else{
-											 $("#respuesta").toggleClass('respuesta-form');
-					             $("#respuesta").html(datos);
+								$("#respuesta-docs").toggleClass('respuesta-form');
+					            $("#respuesta-docs").html(datos);
                       }
 					          }
 					        });
@@ -155,13 +205,13 @@ class FORM{
 		</div>
 		<?
 	}
-  function file_form_editar($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p){
+  function file_form_editar($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb){
     ?>
     <div class="form-group <?php echo $class_div; ?>" id="<?php echo $id_div; ?>" >
       <label>Seleccionar ruta url para reemplazar archivo : </label>
       <?php $this->fmt->archivos->select_archivos($ruta,$directorio_p); ?>
 			<br/><label>Seleccionar tamaño thumb (ancho x alto):</label>
-			<?php $this->sizes_thumb(); ?>
+			<?php $this->sizes_thumb($sizethumb); ?>
       <br/>
 			<label><? echo $nom; ?> :</label>
       <input type="file" ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivos" name="inputArchivos"  />
@@ -191,19 +241,19 @@ class FORM{
 				        return xhr;
 					    },
 	            success: function(datos){
-								//$("#respuesta").html(datos);
-                $("#respuesta").toggleClass('respuesta-form');
+								 
+								$("#respuesta").toggleClass('respuesta-form');
 								var myarr = datos.split(",");
 								var num = myarr.length;
 								if (myarr[0]=="editar"){
-									//alert(num);
+									 
 									var i;
-									//var datosx='';
+									 
 									var url = myarr[1];
 									for (i = 2; i < num; i++) {
 										var datx = myarr[i].split('^');
 										var dx = datx[1];
-										//datosx += datx[0]+'-'+datx[1]+"<br/>";
+										 
 										$("#"+datx[0]).val(datx[1]); //cambia los valores por los nuevos
 									}
 								}
@@ -217,14 +267,63 @@ class FORM{
 		</script>
     <?php
   }
+  
+  
+  function agregar_documentos($label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item){
+	  ?>
+	<div class="form-group <?php echo $class_div; ?>">
+      <label><?php echo $label; ?></label>
+      <a class="btn btn-nuevo-docs pull-right"><i class="fa fa-plus"></i> Nuevo documento </a>
+      <a class="btn btn-agregar-docs pull-right"><i class="fa fa-plus"></i> Agregar documento </a>
+      <?php if (!empty($mensaje)){ ?>
+	  <p class="help-block"><?php echo $mensaje; ?></p>
+	  <? } ?>
+	  <div class="box-modal" id="box-modal-docs" style="display:none;">
+		  <div id="respuesta-modal">
+		  <?  
+			if (!empty($id_item)){ $xvalor="&id=".$id_item; }else{ $xvalor=""; }
+			$url_mod =  _RUTA_WEB."modulos/documentos/documentos.adm.php?tarea=form_nuevo&modo=modal&from=".$from.$xvalor;
+			echo "<iframe class='frame-modal' src='".$url_mod."'  name='frame_content_modal' scrolling=auto ></iframe>";
+		  ?>
+		  </div>
+	  </div>
+	  
+	  <div class="box-modal" id="box-modal-adocs" style="display:none;">
+		  <?php
+			  require_once(_RUTA_HOST."modulos/documentos/documentos.class.php");
+			  $form =new DOCUMENTOS($this->fmt);
+			  $form->busqueda_seleccion('modal');
+		   ?>
+	  </div>
+	  <script>
+		  	$(function(){
+			  	$(".btn-nuevo-docs").click( function(){
+				  $("#box-modal-docs").toggle();
+				  $(".btn-nuevo-docs").toggleClass("on");
+			  	});
+			  	$(".btn-agregar-docs").click( function(){
+				  $("#box-modal-adocs").toggle();
+				  $(".btn-agregar-docs").toggleClass("on");
+				  	var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-doc-modal.php";
+				  
+				  	/*
+$.ajax({
+					          url: ruta,
+					          type: "POST",
+					          data: { inputFecha:inputUsuario },
+							  success: function(datos){
+								  $("#respuesta-modal").html(datos);
+							  }
+					}); 
+*/ 
+			  	});
+			});
+       </script>
+    </div>
+	<?php
+   }
 
-  function head_busqueda_simple($nom,$archivo,$id_mod,$botones){
-    $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=form_nuevo&id_mod=$id_mod","btn btn-primary","icn-plus",$nom);
-    $this->fmt->class_pagina->crear_head( $id_mod, $botones); // bd, id modulo, botones
-    ?>
-    <div class="body-modulo">
-    <?php
-  }
+
 
   function head_table($id_tabla){
     ?><div class="table-responsive">
@@ -325,7 +424,7 @@ class FORM{
     <?php
   }
 
-  function select_form($label,$id,$prefijo,$from,$id_s){
+  function select_form($label,$id,$prefijo,$from,$id_s,$id_disabled){
     ?>
     <div class="form-group">
       <label><?php echo $label; ?></label>
@@ -338,7 +437,8 @@ class FORM{
     if($num>0){
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
-        if ($fila_id==$id_s){  $aux="selected";  $aux1="disabled"; }else{ $aux1=""; $aux=""; }
+        if ($fila_id==$id_s){  $aux="selected";  }else{  $aux=""; }
+        if ($fila_id==$id_disabled){  $aux1="disabled";  }else{  $aux1=""; }
         echo "<option class='' value='$fila_id' $aux $aux1 > ".$fila_nombre;
         echo "</option>";
       }
@@ -365,18 +465,20 @@ class FORM{
   function botones_editar($fila_id,$fila_nombre,$nombre){
     ?>
     <div class="form-group form-botones">
-       <button  type="button" class="btn btn-danger btn-eliminar color-bg-rojo-a" idEliminar="<? echo $fila_id; ?>" title="<? echo $fila_id; ?> : <? echo $fila_nombre; ?>" nombreEliminar="<? echo $fila_nombre; ?>" name="btn-accion" id="btn-eliminar" value="eliminar"><i class="icn-trash" ></i> Eliminar <? echo $nombre; ?></button>
+       <button  type="button" class="btn-accion-form btn btn-danger btn-eliminar color-bg-rojo-a"  idEliminar="<? echo $fila_id; ?>" title="<? echo $fila_id; ?> : <? echo $fila_nombre; ?>" nombreEliminar="<? echo $fila_nombre; ?>" name="btn-accion" id="btn-eliminar" value="eliminar"><i class="icn-trash" ></i> Eliminar <? echo $nombre; ?></button>
 
-       <button type="submit" class="btn btn-info  btn-actualizar hvr-fade btn-lg color-bg-celecte-c btn-lg" name="btn-accion" id="btn-activar" value="actualizar"><i class="icn-sync" ></i> Actualizar</button>
+       <button type="submit" class="btn-accion-form btn btn-info  btn-actualizar hvr-fade btn-lg color-bg-celecte-c btn-lg " name="btn-accion" id="btn-activar" value="actualizar"><i class="icn-sync" ></i> Actualizar</button>
     </div>
     <?php
   }
 
-  function botones_nuevo(){
+  function botones_nuevo($modo){
+
+	  $tipo='type="submit"';
     ?>
     <div class="form-group form-botones">
-       <button type="submit" class="btn btn-info  btn-guardar color-bg-celecte-b btn-lg" name="btn-accion" id="btn-guardar" value="guardar"><i class="icn-save" ></i> Guardar</button>
-       <button type="submit" class="btn btn-success color-bg-verde btn-activar btn-lg" name="btn-accion" id="btn-activar" value="activar"><i class="icn-eye-open" ></i> Activar</button>
+       <button <?php echo $tipo; ?> class="btn-accion-form btn btn-info  btn-guardar color-bg-celecte-b btn-lg" name="btn-accion" id="btn-guardar" value="guardar"><i class="icn-save" ></i> Guardar</button>
+       <button <?php echo $tipo; ?> class="btn-accion-form btn btn-success color-bg-verde btn-activar btn-lg" name="btn-accion" id="btn-activar" value="activar"><i class="icn-eye-open" ></i> Activar</button>
     </div>
     <?php
   }

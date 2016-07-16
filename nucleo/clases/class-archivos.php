@@ -12,16 +12,20 @@ class ARCHIVOS{
     $this->fmt = $fmt;
   }
 
-  function select_archivos($sitio,$directorio_p){
+  function select_archivos($sitio,$directorio_p,$id){
     //echo _RUTA_HOST.$sitio."</br>";
     //echo $directorio_p;
     echo $sitio;
     //echo _RUTA_SERVER;
     //$this->listar_directorios_ruta($sitio,"1");
-
+	if(empty($id)){
+		$aux_id ="inputRutaArchivos";
+	}else{
+		$aux_id = $id;
+	}
     ?>
     <div class="box-upload-s">
-      <select class="form-control " id="inputRutaArchivos" name="inputRutaArchivos">
+      <select class="form-control " id="<?php echo $aux_id; ?>" name="<?php echo $aux_id; ?>">
         <?php
         $this->listar_directorios_ruta($sitio,"1",$directorio_p);
         ?>
@@ -30,9 +34,12 @@ class ARCHIVOS{
     </div>
     <?php
   }
+  
+  
 
   function listar_directorios_ruta($ruta,$nivel,$directorio_p){
     $rutax = _RUTA_SERVER.$ruta;
+    
     $directorio = opendir($rutax);
     for ($i=0;$i<$nivel;$i++){
       $aux .= "-";
@@ -55,22 +62,28 @@ class ARCHIVOS{
     closedir($directorio);
   }
 
-  function option_directorio_hijo($ruta,$directorio){
+  function option_directorio_hijo($ruta,$directorio_p){
     $rx = explode ("/",$ruta);
     $con = count($rx);
     $ar = str_split($ruta);
+    
     if ($ar[0]=="/"){ $ruta = substr($ruta, 1); }
-    $ruta_v = explode ("/",$ruta);
+    
+    /*$ruta_v = explode ("/",$ruta);
     if ($ruta_v[0]==_RUTA_DEFAULT){
       $c = strlen ($ruta_v[0] );
       $ruta_valor = substr($ruta, $c +1 );
     } else {
       $ruta_valor = $ruta;
-    }
+    }*/
+  
 
-    for ($i=0; $i < $con ; $i++) {
 
-      if( $rx[$i] == $directorio ){
+    //for ($i=0; $i < $con ; $i++) {
+
+     // if( $rx[$i] == $directorio_p ){
+	     
+	 if( $this->existe_palabra($ruta,$directorio_p) ){ 
         echo "<option value='".$ruta."'>";
         echo $ruta;
         echo "</option>";
@@ -80,7 +93,7 @@ class ARCHIVOS{
       }else{
         return false;
       }*/
-    }
+    //}
   }
 
   function formato_size_archivo($bytes){
@@ -111,6 +124,15 @@ class ARCHIVOS{
 
      return  $bytes;
   }
+  
+ function existe_palabra($cadena,$palabra){
+	$palabra=preg_quote($palabra);
+	if(eregi($palabra,$cadena)) { 
+	    return true; 
+	} else { 
+	    return false;
+	} 
+ }
 
 
   function crear_thumb($src, $dst, $width, $height, $crop=0){

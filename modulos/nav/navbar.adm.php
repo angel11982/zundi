@@ -12,7 +12,7 @@
   $rol_nombre    = $this->fmt->usuario->nombre_rol($id_rol);
 
 
-  if ($id_rol==2){
+  if (($id_rol==1)||($id_rol==2)){
 
     $ref_inicio= _RUTA_WEB;
 

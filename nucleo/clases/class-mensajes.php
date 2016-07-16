@@ -22,7 +22,9 @@ class MENSAJE{
     return "<div  class='alert alert-warning col-xs-3 col-md-offset-4 col-xs- animated fadeIn color-text-negro-b' ><i class='icn-danger'></i> No existen categorias hijas...</div>";
   }
 
-
+  function documento_subido(){
+    return "<div  class='alert alert-success col-md-10 animated fadeIn color-text-negro-b' ><i class='icn-checkmark-circle color-text-verde'></i> Documento subido satisfactoriamente.</div>";
+  }
 
 }// fin class mensajes;
 

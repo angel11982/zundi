@@ -15,17 +15,18 @@ class PRODUCTOS{
 	function busqueda(){
     $botones = $this->fmt->class_pagina->crear_btn("productos.adm.php?tarea=form_nuevo&id_mod=$this->id_mod","btn btn-primary","icn-plus","Nuevo Producto");  // link, tarea, clase, icono, nombre
     $this->fmt->class_pagina->crear_head( $this->id_mod, $botones); // bd, id modulo, botones
+    $this->fmt->class_modulo->script_form("modulos/productos/productos.adm.php",$this->id_mod);
     ?>
     <div class="body-modulo">
     <div class="table-responsive">
-      <table class="table table-hover">
+      <table class="table table-hover" id="table_id">
         <thead>
           <tr>
-            <th>Imagen</th>
+            <th style="width:10%" >Imagen</th>
             <th>Nombre del producto</th>
             <th>Categoria/s</th>
-            <th>Publicación</th>
-            <th class="col-xl-offset-2">Acciones</th>
+            <th class="estado">Publicación</th>
+            <th class="col-xl-offset-2 acciones">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -38,24 +39,17 @@ class PRODUCTOS{
               list($fila_id,$fila_nombre,$fila_imagen,$fila_dominio,$fila_activar)=$this->fmt->query->obt_fila($rs);
 							if (empty($fila_dominio)){ $aux=_RUTA_WEB_temp; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila_dominio); }
 							$img=$this->fmt->archivos->convertir_url_thumb( $fila_imagen );
+							$url ="productos.adm.php?tarea=form_editar&id=".$fila_id."&id_mod=".$this->id_mod;
             ?>
             <tr>
-              <td class="" style="width:20%" ><?php //echo $aux.$img; ?><img class="img-responsive" width="60px" src="<?php echo $aux.$img; ?>" alt="" /></td>
-              <td class=""><?php echo $fila_nombre; ?></td>
-              <td class="">
-								<?php
-									$this->traer_rel_cat_nombres($fila_id); //$fila_id,$from,$prefijo_cat,$prefijo_rel
-								?>
-							</td>
-              <td class="estado">
-                <?php
-                  $this->fmt->class_modulo->estado_publicacion($fila_activar,"modulos/modulos/modulos.adm.php", $this->id_mod,$aux, $fila_id ); // query, id item, ruta, id modulo, aux disabled
-                ?>
-              </td>
-              <td class="col-xl-offset-2 acciones">
+              <td><img class="img-responsive" width="60px" src="<?php echo $aux.$img; ?>" alt="" /></td>
+              <td><strong><a href="<? echo $url; ?>" ><?php echo $fila_nombre; ?></a></strong></td>
+              <td><?php	$this->traer_rel_cat_nombres($fila_id); ?> </td>
+              <td><?php $this->fmt->class_modulo->estado_publicacion($fila_activar,"modulos/modulos/modulos.adm.php", $this->id_mod,$aux, $fila_id ); ?></td>
+              <td>
 
-                <a  id="btn-editar-modulo" class="btn btn-accion btn-editar <?php echo $aux; ?>" href="productos.adm.php?tarea=form_editar&id=<? echo $fila_id; ?>&id_mod=<? echo $this->id_mod; ?>" title="Editar <? echo $fila_id."-".$fila_url; ?>" ><i class="icn-pencil"></i></a>
-                <a  title="eliminar <? echo $fila_id; ?>" type="button" idEliminar="<? echo $fila_id; ?>" nombreEliminar="<? echo $fila_nombre; ?>" class="btn btn-eliminar btn-accion <?php echo $aux; ?>"><i class="icn-trash"></i></a>
+                <a  id="btn-editar-modulo" class="btn btn-accion btn-editar" href="<? echo $url; ?>" title="Editar <? echo $fila_id."-".$fila_url; ?>" ><i class="icn-pencil"></i></a>
+                <a  title="eliminar <? echo $fila_id; ?>" type="button" idEliminar="<? echo $fila_id; ?>" nombreEliminar="<? echo $fila_nombre; ?>" class="btn btn-eliminar btn-accion"><i class="icn-trash"></i></a>
               </td>
             </tr>
             <?php
@@ -65,9 +59,10 @@ class PRODUCTOS{
         	</tbody>
       	</table>
     	</div>
+
   	</div>
   	<?php
-      $this->fmt->class_modulo->script_form("modulos/productos/productos.adm.php",$this->id_mod);
+
   }
 
 	function traer_rel_cat_nombres($fila_id){
@@ -98,7 +93,14 @@ class PRODUCTOS{
 		$fila=$this->fmt->query->obt_fila($rs);
 		$this->fmt->form->head_editar('Producto','productos',$this->id_mod,'','form_editar');
 		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Nombre archivo:","inputNombre","",$fila['mod_prod_nombre'],"input-lg","","");
-		$this->fmt->form->input_form("Nombre Amigable:","inputNombreAmigable","",$fila['mod_prod_ruta_amigable'],"","","","disabled");
+
+		if (!empty($fila['mod_prod_ruta_amigable'])){
+			$valor_ra = $fila['mod_prod_ruta_amigable'];
+		}else{
+			$valor_ra = $this->fmt->get->convertir_url_amigable($fila['mod_prod_nombre']);
+		}
+
+		$this->fmt->form->input_form("Nombre Amigable:","inputNombreAmigable","",$valor_ra,"","","","");
 		$this->fmt->form->input_hidden_form("inputId",$id);
 		$this->fmt->form->input_form("Tags:","inputTags","",$fila['mod_prod_tags'],"","","");
 		?>
@@ -107,7 +109,7 @@ class PRODUCTOS{
 			<div class="panel panel-default" >
 				<div class="panel-body">
 					<?php
-					$this->fmt->form->file_form_editar('Cargar Archivo (max 8MB)','','form_editar','form-file','','box-file-form','productos');
+					$this->fmt->form->file_form_editar('Cargar Archivo (max 8MB)','','form_editar','form-file','','box-file-form','archivos/productos','300x325:300x235px - productos');
 					?>
 					<div class="url-imagen" id="url-imagen"><img src="<?php echo $this->fmt->categoria->traer_dominio_cat_id($fila['mod_prod_id_dominio']).$fila['mod_prod_imagen']; ?>" class="img-responsive"></div>
 				</div>
@@ -123,7 +125,7 @@ class PRODUCTOS{
 		$this->fmt->form->textarea_form("Especificaciones:","inputEspecificaciones","",$fila['mod_prod_especificaciones'],"","","5","");
 		$this->fmt->form->input_form("Disponibilidad:","inputDisponibilidad","Inmediata, a 30 días, a 15 días, definido por pedido",$fila['mod_prod_disponibilidad'],"","","");
 		$this->fmt->form->input_form("Precio:","inputPrecio","",$fila['mod_prod_precio'],"","","");
-		$this->fmt->form->input_form("Id Doc:","inputDoc","",$fila['mod_prod_id_doc'],"","","");
+		$this->fmt->form->agregar_documentos("Documentos:","inputDoc",$fila['mod_prod_id_doc'],"","","","mod_productos",$id); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
 		$this->fmt->form->input_form("Id Mul:","inputMul","",$fila['mod_prod_id_mul'],"","","");
 		$this->fmt->form->select_form("Categoría productos:","inputCat","mod_prod_cat_","mod_productos_cat",$this->rel_id_cat($fila['mod_prod_id'])); //$label,$id,$prefijo,$from,$id_s
 		$this->fmt->form->radio_activar_form($fila['mod_prod_activar']);
@@ -179,7 +181,7 @@ class PRODUCTOS{
 				<div class="panel panel-default" >
 					<div class="panel-body">
 				<?php
-				$this->fmt->form->file_form_nuevo('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','productos');
+				$this->fmt->form->file_form_nuevo('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','archivos/productos',"300x325:300x235px - productos");
 				?>
 					</div>
 				</div>
@@ -302,7 +304,7 @@ class PRODUCTOS{
 
 			$sql="UPDATE mod_productos SET
 						mod_prod_nombre='".$_POST['inputNombre']."',
-						mod_prod_ruta_amigable ='".$_POST['inputRutaAmigable']."',
+						mod_prod_ruta_amigable ='".$_POST['inputNombreAmigable']."',
 						mod_prod_tags ='".$_POST['inputTags']."',
 						mod_prod_codigo='".$_POST['inputCodigo']."',
 						mod_prod_modelo='".$_POST['inputModelo']."',
@@ -319,6 +321,7 @@ class PRODUCTOS{
 						WHERE mod_prod_id='".$_POST['inputId']."'";
 
 			$this->fmt->query->consulta($sql);
+
 			$sql1="UPDATE mod_productos_rel SET
 						mod_prod_rel_cat_id='".$_POST['inputCat']."'
 						WHERE mod_prod_rel_prod_id = '".$_POST['inputId']."'";

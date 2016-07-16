@@ -18,15 +18,18 @@ class FOOTER{
     return $aux;
   }
 
-  function footer_modulo(){
-    $aux  = '<div class="footer-pag" class="container-fluid">'."\n";
-    $aux .= '2016 <i class="icn-cc"></i> Wappcom &nbsp;| &nbsp;  power  <i class="icn-zundi-o"></i>'._VZ."\n";
-    $aux .= '</div>'."\n";
+  function footer_modulo($modo){
+	if ($modo!="modal") {
+	    $aux  = '<div class="footer-pag" class="container-fluid">'."\n";
+	    $aux .= '2016 <i class="icn-cc"></i> Wappcom &nbsp;| &nbsp;  power  <i class="icn-zundi-o"></i>'._VZ."\n";
+	    $aux .= '</div>'."\n";
+    }
     $aux .= $this->js();
     $aux .= '</body>'."\n";
     $aux .= '</html>'."\n";
-
     return $aux;
+
+    
   }
 
   function js(){
