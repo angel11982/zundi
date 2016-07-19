@@ -76,7 +76,7 @@ border-color: #f4f4f4;
 }
 
 .table>tbody>tr:hover  {
-  background-color: #f9f9f9 !important;
+  background-color: #fafafa !important;
 }
 
 .table .col-nombre{
@@ -725,7 +725,7 @@ td strong a{
 
 /* box-modal */
 .box-modal{
-	background-color: #f1f1f1;
+	background-color: #f6f6f6;
 	border-radius: 5px; 
 }
 .head-m-modal h1{
@@ -750,6 +750,27 @@ width: 80%;
     height: 16px;
 }
 
+.body-modal tbody{
+	background-color: #fff;
+	color:#444 !important;
+}
+
 [class^="icn-"], [class*=" icn-"] {
   line-height: 1em;
+}
+
+.box-doc-agregado{
+	background-color: #f4f8fc;
+	border-radius: 5px;
+	color:#444  !important;
+	border:1px solid #ddd;
+}
+
+.box-doc-agregado .quitar-doc{
+	color:#FF2D55;
+	cursor: pointer;
+}
+
+.agregado{
+	color:#444  !important;
 }

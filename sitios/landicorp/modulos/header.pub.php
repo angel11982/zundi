@@ -48,7 +48,7 @@ $fmt = new CONSTRUCTOR;
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="<? echo _RUTA_WEB; ?>landicorp">Portada</a></li>
+        <li class="active"><a href="<? echo _RUTA_WEB; ?>">Portada</a></li>
         <? echo $fmt->nav->traer_cat_hijos_menu("2"); ?>
       </ul>
       <!--<ul class="nav navbar-nav navbar-right">

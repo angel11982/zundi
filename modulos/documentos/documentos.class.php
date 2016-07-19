@@ -23,7 +23,7 @@ class DOCUMENTOS{
 		if($num>0){
 		  for($i=0;$i<$num;$i++){
 		    $fila=$this->fmt->query->obt_fila($rs);
-		    if (empty($fila["doc_id_dominio"])){ $aux=_RUTA_WEB_temp; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila["doc_id_dominio"]); }
+		    if (empty($fila["doc_id_dominio"])){ $aux=_RUTA_WEB; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila["doc_id_dominio"]); }
 		    echo "<tr>";
 			echo '<td class="fila-url"><strong><a href="'.$aux.$fila["doc_url"].'" target="_blank">'.$fila["doc_nombre"].'</a></strong> ( '.$fila["doc_tipo_archivo"].' orden: '.$fila["doc_orden"].' )</td>';
 			echo '<td class="">'.$this->fmt->usuario->nombre_usuario( $fila["doc_usuario"]).'</td>';
@@ -77,9 +77,10 @@ class DOCUMENTOS{
 		$this->fmt->form->input_hidden_form("inputId",$id);
 		$this->fmt->form->file_form_doc("<span class='obligatorio'>*</span> Cargar archivo para reemplazar (pdf, doc/x, pptx, xls/x, zip):","","form_editar","input-form-doc","","","docs"); //
 		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Nombre archivo actual:","inputNombre","",$fila['doc_nombre'],"","","");
+		$this->fmt->form->input_form('Nombre amigable:','inputNombreAmigable','',$fila['doc_ruta_amigable'],'disabled','','');
 		$this->fmt->form->input_form('Tags:','inputTags','',$fila['doc_tags'],'');
 		$this->fmt->form->textarea_form('Descripción:','inputDescripcion','',$fila['doc_descripcion'],'','3',''); //$label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
-        $this->fmt->form->input_form('Nombre amigable:','inputNombreAmigable','',$fila['doc_ruta_amigable'],'','','');
+        
 		$this->fmt->form->input_form('Url archivo:','inputUrl','',$fila['doc_url'],'');
 
 		$this->fmt->form->input_form('Tipo de Archivo:','inputTipo','',$fila['doc_tipo_archivo'],'');
@@ -99,7 +100,27 @@ class DOCUMENTOS{
 		$this->fmt->form->input_form('Orden:','inputOrden','',$fila['doc_orden'],'','','');
 		$this->fmt->form->radio_activar_form($fila['doc_activar']);
 		$this->fmt->form->botones_editar($fila['doc_id'],$fila['doc_nombre'],'Archivo');//$fila_id,$fila_nombre,$nombre
-    $this->fmt->class_modulo->script_form("modulos/multimedia/multimedia.adm.php",$this->id_mod);
+    $this->fmt->class_modulo->script_form("modulos/documentos/documentos.adm.php",$this->id_mod);
+    ?>
+    <script>
+			$(document).ready(function () {
+					var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-ruta-amigable.php";
+					$("#inputNombre").keyup(function () {
+							var value = $(this).val();
+							//$("#inputNombreAmigable").val();
+							$.ajax({
+									url: ruta,
+									type: "POST",
+									data: { inputRuta:value },
+									success: function(datos){
+										$("#inputNombreAmigable").val(datos);
+									}
+							});
+					});
+			});
+		</script>
+
+    <?php
 		$this->fmt->form->footer_page();
 	}
 
@@ -198,31 +219,48 @@ class DOCUMENTOS{
   		header("location: documentos.adm.php?id_mod=".$this->id_mod);
   	}
   	
-  	function busqueda_seleccion($modo){
+  	function busqueda_seleccion($modo,$valor){
+	  	//var_dump($valor);
   		$this->fmt->form->head_modal('Busqueda Documentos',$modo);  //$nom,$archivo,$id_mod,$botones,$id_form,$class,$modo)		
-  		/*$this->fmt->form->head_table('table_id_modal');
-		$this->fmt->form->thead_table('Archivo:Estado:Acciones');
+  		$this->fmt->form->head_table('table_id_modal');
+		$this->fmt->form->thead_table('Archivo:Acciones');
 		$this->fmt->form->tbody_table_open();
 		
-		$sql="SELECT * FROM documento ORDER BY doc_id asc";
+		$sql="SELECT doc_id,doc_url,doc_nombre,doc_tipo_archivo,doc_id_dominio  FROM documento ORDER BY doc_orden asc";
 		$rs =$this->fmt->query->consulta($sql);
 		$num=$this->fmt->query->num_registros($rs);
 		if($num>0){
 		  for($i=0;$i<$num;$i++){
-		    $fila=$this->fmt->query->obt_fila($rs);
-		    echo "<tr>";
-			echo '<td class="fila-url"><strong><a href="'.$aux.$fila["doc_url"].'" target="_blank">'.$fila["doc_nombre"].'</a></strong> ( '.$fila["doc_tipo_archivo"].' orden: '.$fila["doc_orden"].' )</td>';
-			echo '<td class="">';
-						$this->fmt->class_modulo->estado_publicacion($fila["doc_activar"],"modulos/documentos/documentos.adm.php", $this->id_mod,$aux,$fila["doc_id"] );
-			echo '</td>';
-			echo '<td>';
-			echo '</td>';
-			echo "</tr>";
+		    
+		    list($fila_id,$fila_url,$fila_nombre,$fila_tipo,$fila_dominio)=$this->fmt->query->obt_fila($rs);
+		    
+		    if (!empty($valor)){
+				$num_v = count($valor);
+				$class_a ='';
+				$class_do ='';
+
+				
+				for ($j=0; $j<$num_v;$j++){
+					if ( $fila_id ==$valor[$j]){
+						$class_a ="on";
+						$class_do ="on";
+					}
+				}
+			}
+			//echo $class_do;
+			
+		    if (empty($fila_dominio)){ $aux=_RUTA_WEB; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila_dominio); }
+		    //var_dump($fila);
+		    	echo "<tr>";
+				echo '<td class="fila-url"><strong><a href="'.$aux.$fila_url.'" target="_blank">'.$fila_nombre.' ('.$fila_tipo.')</strong></a></td>';
+				echo "<td class='acciones' id='d-".$fila_id."'><a class='btn btn-agregar ".$class_a."' value='".$fila_id."' id='b-".$fila_id."' nombre='".$fila_nombre." (".$fila_tipo.")' ><i class='icn-plus'></i> Agregar</a> <span class='agregado bt-".$fila_id." ".$class_do."'>Agregado</span></td>";
+				echo "</tr>";
 		    }
 		}
+
 		$this->fmt->form->tbody_table_close();
-		$this->fmt->form->footer_table();*/
-		$this->fmt->form->footer_page();
+		$this->fmt->form->footer_table();
+		$this->fmt->form->footer_page($modo);
 	}
 
 

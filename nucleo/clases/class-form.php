@@ -60,7 +60,7 @@ class FORM{
     <div class="head-modulo head-m-<?php echo $modo; ?>">
 		<h1 class="title-page pull-left"><i class=""></i> <? echo $nom; ?></h1>
 			<div class="head-botones pull-right">
-				<a class="btn btn-actualizar"><i class='icn-sync'></i> Actualizar</a>
+				<a class="btn btn-actualizar-modal"><i class='icn-sync'></i> Actualizar</a>
 			</div>
     </div>
     <div class="body-modal">
@@ -270,6 +270,7 @@ class FORM{
   
   
   function agregar_documentos($label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item){
+	  $idx=$id;
 	  ?>
 	<div class="form-group <?php echo $class_div; ?>">
       <label><?php echo $label; ?></label>
@@ -278,6 +279,27 @@ class FORM{
       <?php if (!empty($mensaje)){ ?>
 	  <p class="help-block"><?php echo $mensaje; ?></p>
 	  <? } ?>
+	  <div class="" id="box-adiciones">
+		  <?php 
+			 
+			if (!empty($valor)){ 
+				$sql="SELECT DISTINCT doc_id,doc_nombre,doc_tipo_archivo FROM mod_productos_rel, documento WHERE mod_prod_rel_doc_id=doc_id and mod_prod_rel_prod_id=$valor "; 
+				$rs=$this->fmt->query->consulta($sql);
+				$num =$this->fmt->query->num_registros($rs);
+				if ($num>0){
+					for($i=0;$i<$num;$i++){
+						$filax=$this->fmt->query->obt_fila($rs);
+						echo '<div class="box-doc-agregado box-doc-'.$filax["doc_id"].'">';
+						echo '<input type="hidden" name="'.$id.'[]" id="'.$id.'[]" value="'.$filax["doc_id"].'" />';
+						echo '<label>'.$filax["doc_nombre"].' ('.$filax["doc_tipo_archivo"].') </label>';
+						echo '<a class="btn quitardoc" value="'.$filax["doc_id"].'" id="e-'.$filax["doc_id"].'" nombre="'.$filax["doc_nombre"].' ('.$filax["doc_tipo_archivo"].')"><i class="icn-close"></i></a>';
+						echo '</div>';
+						$valor_ids[$i] = $filax["doc_id"];
+					}
+				}
+			}
+		  ?>
+	  </div>
 	  <div class="box-modal" id="box-modal-docs" style="display:none;">
 		  <div id="respuesta-modal">
 		  <?  
@@ -292,21 +314,31 @@ class FORM{
 		  <?php
 			  require_once(_RUTA_HOST."modulos/documentos/documentos.class.php");
 			  $form =new DOCUMENTOS($this->fmt);
-			  $form->busqueda_seleccion('modal');
+			  $form->busqueda_seleccion('modal',$valor_ids);
 		   ?>
 	  </div>
 	  <script>
-		  	$(function(){
+		  	$(document).ready( function (){
 			  	$(".btn-nuevo-docs").click( function(){
 				  $("#box-modal-docs").toggle();
 				  $(".btn-nuevo-docs").toggleClass("on");
 			  	});
+			  	
 			  	$(".btn-agregar-docs").click( function(){
 				  $("#box-modal-adocs").toggle();
 				  $(".btn-agregar-docs").toggleClass("on");
-				  	var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-doc-modal.php";
-				  
+				});
+				
+				$(".btn-agregar").on('click', function(){
+				  var idv = $( this ).attr("value");
+				  var nom = $( this ).attr("nombre");
+				  $('#b-' + idv).toggleClass("on");
+				  $('.bt-' + idv).toggleClass("on");
+				  $('#box-adiciones').append('<div class="box-doc-agregado box-doc-'+idv+'" "><input type="hidden" name="<?php echo $idx; ?>[]" id="<?php echo $idx; ?>[]" value="'+idv+'" /> <label>'+nom+'</label><a class="btn quitardoc" value="'+idv+'" id="e-'+idv+'" nombre="'+nom+'"><i class="icn-close"></i></a></div>');				  	  			  
 				  	/*
+					  	<div id="'.$id.'[]" value=""></div>
+					  	var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-doc-modal.php";
+
 $.ajax({
 					          url: ruta,
 					          type: "POST",
@@ -315,8 +347,22 @@ $.ajax({
 								  $("#respuesta-modal").html(datos);
 							  }
 					}); 
-*/ 
-			  	});
+					
+*/  				$(".quitardoc").off('click');
+    				$(".quitardoc").on('click', function() {
+	    				var ide = $( this ).attr("value");
+	    				var nom = $( this ).attr("nombre");
+	    				$('#b-' + ide).toggleClass("on");
+	    				$('.bt-' + ide).toggleClass("on");
+	    				$('.box-doc-' + ide ).remove();
+					});
+				});
+				$(".quitardoc").click(function() {
+	    				var ide = $( this ).attr("value");
+	    				$('#b-' + ide).toggleClass("on");
+	    				$('.bt-' + ide).toggleClass("on");
+	    				$('.box-doc-' + ide ).remove();
+				});
 			});
        </script>
     </div>
@@ -483,9 +529,10 @@ $.ajax({
     <?php
   }
 
-  function footer_page(){
-    ?>
+  function footer_page($modo){
+    if ($modo!="modal"){ ?>
       </form>
+    <?php } ?>
     </div>
     <?php
   }

@@ -47,20 +47,20 @@ class CLASSMODULOS{
 			<script language="JavaScript">
 
 
-			$(document).ready( function () {
+			$(document).ready(function() {
 				$('#table_id').DataTable({
 					"language": {
 		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
 		            },
 		            "pageLength": 25,
-		            "order": [[ 0, 'desc' ]]
+		            "order": [[ 0, 'asc' ]]
 				});
 				$('#table_id_modal').DataTable({
 					"language": {
 		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
 		            },
 		            "pageLength": 25,
-		            "order": [[ 0, 'desc' ]]
+		            "order": [[ 0, 'asc' ]]
 				});
 
 				$(".btn-eliminar").click(function() {
@@ -97,7 +97,7 @@ class CLASSMODULOS{
 				  return button.render();   // return button as jquery object
 				}
 
-				$('#summernote').summernote({
+				$('.summernote').summernote({
 						height: 300,                 // set editor height
 						minHeight: null,             // set minimum height of editor
 						maxHeight: null,             // set maximum height of editor
@@ -118,7 +118,7 @@ class CLASSMODULOS{
 						  buttons: {
 						    imagen: adicionarImagen
 						  }
-					});
+				});
 			} );
 			</script>
 		<?php

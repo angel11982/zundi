@@ -486,10 +486,11 @@ clear: both;
 	background-color: #fff;
 }
 
-.pag-producto .col-md-3{
+.pag-producto .panel-atributos{
 	width: 300px;
     padding-right: 0px;
     padding-left: 0px; 
+    position: relative;
 }
 .producto-nombre{
 	margin-bottom: 30px;
@@ -509,6 +510,7 @@ clear: both;
 	float: left;
 	cursor: pointer;
 	border-right: 1px solid #ccc;
+	position: relative;
 }
 
 .box-imprimir{
@@ -520,6 +522,7 @@ clear: both;
 	width: 150px;
 	float: right;
 	cursor: pointer;
+	
 }
 
 
@@ -553,7 +556,7 @@ clear: both;
 	width: 300px;
 	background-color: #333;
 	position: absolute;
-	bottom: -45px;
+	top: 80px;
 	left:0;
 	display: inline-block;
 }
@@ -667,7 +670,7 @@ filter: alpha(opacity=70); /* For IE8 and earlier */
 }
 
 .box-info{
-	border:1px solid #ccc;
+	border:1px solid #D2D2D2;
 	margin-bottom: 15px;
 }
 
@@ -675,7 +678,8 @@ filter: alpha(opacity=70); /* For IE8 and earlier */
 	color:#7AC143;
 	padding: 10px 15px;
 	width: 100%;
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #D2D2D2;
+	font-family: LLBrownProWeb-Regular,"Helvetica Neue",Helvetica,Arial,sans-serif !important;
 }
 .box-info span{
 	padding: 10px 15px;
@@ -721,6 +725,80 @@ filter: alpha(opacity=70); /* For IE8 and earlier */
 
 .box-paginacion .list-paginacion-nav .active{
 	text-decoration:none;
+}
+
+.box-descargas{
+	margin-top:15px;
+	display: inline-block;
+	width: 100%;
+}
+
+.box-descargas  label{
+	border-bottom: 0px;
+	margin-bottom: 0;
+}
+
+.box-descargas .doc-descarga{
+	display: inline-block;
+	width: 100%;
+	border-top: 1px solid #D2D2D2;	
+	padding: 5px 0px;
+}
+
+.box-descargas .doc-descarga:hover{
+	background-color: #f1f1f1;
+}
+
+.box-descargas:last-child .doc-descarga{
+	 
+}
+
+.box-descargas .doc-descarga label{
+	padding: 10px 12px;
+	display: inline-block;
+	width: 60%;
+	text-transform: uppercase;
+	text-decoration: none;
+	color:#444;
+	font-family: LLBrownProWeb-Regular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 24px;
+	border: 0;
+}
+
+.box-descargas .doc-descarga .doc-datos{
+	color:#938C8C;
+	font-family: LLBrownProWeb-Regular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-weight: 400;
+	font-size: 12px;
+	width: 25%;
+	line-height: 1;
+	float: right;
+	text-align: right;
+	padding-top: 4px;
+}
+.box-descargas .doc-descarga .doc-datos span{
+	padding-bottom: 0px;
+	padding-top: 3px;
+	color:#777;
+}
+
+
+.box-descargas .doc-descarga i{
+	display: inline-block;
+	float: right;
+	padding: 5px 5px 5px 5px;
+	margin: 8px 10px 7px 0px;
+	color:#938C8C;
+	font-size: 14px;
+	border:1px solid #938C8C;
+	border-radius: 35px;
+}
+
+.box-descargas .doc-descarga:hover i{
+	color: #fcaf2a;
+	border:1px solid #fcaf2a;
 }
 
 @media screen and (max-width: 570px) {

@@ -38,6 +38,8 @@ class FOOTER{
     //$aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.dataTables.min.js"></script>'."\n";
 	//$aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/dataTables.bootstrap.js"></script>'."\n";
     $aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/core.js"></script>'."\n";
+    
+    $aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jQuery.print.js"></script>'."\n";
 
     return $aux;
   }

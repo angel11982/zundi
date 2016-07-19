@@ -126,7 +126,7 @@ class HEADER{
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote-es-ES.min.js"></script>'."\n";
 	
-		$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.print.js"></script>'."\n";
+		
 	
     return $aux;
   }

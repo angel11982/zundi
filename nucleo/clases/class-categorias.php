@@ -147,6 +147,7 @@ class CATEGORIA{
       }
     }
     echo "</div>";
+    if (!empty($cat_valor)){
     ?>
     	<script language="JavaScript">
 	    	$(document).ready( function () {
@@ -157,6 +158,7 @@ class CATEGORIA{
 		    });
 	    </script>
     <?php
+	}
   }
 
   function tiene_hijos($cat,$from,$prefijo){

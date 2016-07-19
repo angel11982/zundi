@@ -57,7 +57,7 @@ class NOTICIAS{
 		Nueva Noticia','noticias',$this->id_mod,'','form_nuevo','col-xs-offset-2 head-noticias'); //$nom,$archivo,$id_mod,$botones,$id_form,$class
 		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Titulo:","inputTitulo","","","input-lg","","");
 		$this->fmt->form->textarea_form('Resumen:','inputResumen','','','','','3','','');
-		$this->fmt->form->textarea_form('Cuerpo:','summernote','','','','textarea-cuerpo','',''); //label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
+		$this->fmt->form->textarea_form('Cuerpo:','inputCuerpo','','','summernote','textarea-cuerpo','',''); //label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
 		$this->fmt->form->input_form('Tags:','inputTags','',"",'');
 		$this->fmt->form->input_form('Imagen:','inputImagen','',"",'');
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0","","",""); //$label,$id,$cat_raiz,$cat_valor,$class,$class_div
@@ -79,7 +79,7 @@ class NOTICIAS{
 		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Titulo:","inputTitulo","",$fila['not_titulo'],"input-lg","",""); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar
 		$this->fmt->form->input_hidden_form("inputId",$fila['not_id']);
 		$this->fmt->form->textarea_form('Resumen:','inputResumen','',$fila['not_resumen'],'','','3','','');
-		$this->fmt->form->textarea_form('Cuerpo:','summernote','',$fila['not_cuerpo'],'','textarea-cuerpo','',''); //label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
+		$this->fmt->form->textarea_form('Cuerpo:','inputCuerpo','',$fila['not_cuerpo'],'summernote','textarea-cuerpo','',''); //label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
 		$this->fmt->form->input_hidden_form("inputRutaamigable",$fila['not_ruta_amigable']);
 		$this->fmt->form->input_form('Tags:','inputTags','',$fila['not_tags'],'');
 		$this->fmt->form->input_form('Imagen:','inputImagen','',$fila['not_imagen'],'');
@@ -120,7 +120,7 @@ class NOTICIAS{
 		$valores  ="'".$_POST['inputTitulo']."','".
 					$this->fmt->get->convertir_url_amigable($_POST['inputTitulo'])."','".
 					$_POST['inputResumen']."','".
-					$_POST['summernote']."','".
+					$_POST['inputCuerpo']."','".
 					$_POST['inputImagen']."','".
 					$_POST['inputTags']."','".
 					$_POST['inputFecha']."','".
@@ -155,7 +155,7 @@ class NOTICIAS{
 						not_ruta_amigable ='".$_POST['inputRutaamigable']."',
 						not_tags ='".$_POST['inputTags']."',
 						not_resumen ='".$_POST['inputResumen']."',
-						not_cuerpo ='".$_POST['summernote']."',
+						not_cuerpo ='".$_POST['inputCuerpo']."',
 						not_imagen ='".$_POST['inputImagen']."',
 						not_fecha='".$_POST['inputFecha']."',
 						not_usuario='".$_POST['inputUsuario']."',

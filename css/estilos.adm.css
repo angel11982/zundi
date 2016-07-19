@@ -678,7 +678,43 @@ input[type="file"] {
 	display: inline-block;
 }
 
+.body-modal .table-responsive{
+	padding: 10px 20px 10px 20px;
+}
+
 .alert-success{
 	 display: inline-block;
 }
 
+
+.box-doc-agregado{
+	width: 100%;
+	padding: 10px 20px 7px 20px; 
+	margin:10px 0;
+	position:relative;
+}
+
+
+.box-doc-agregado label{
+	display: inline-block;
+	margin-top: 3px;
+}
+
+.agregado, .btn-agregar.on{
+	display: none;
+}
+
+.agregado.on, .btn-agregar{
+	display: block;
+}
+
+.acciones{
+	width: 10%;
+}
+
+.quitardoc{
+	 position: absolute;
+	 right: 0px;
+	 top: 7px;
+	 display: inline-block;
+}
