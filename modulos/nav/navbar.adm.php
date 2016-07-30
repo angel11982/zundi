@@ -11,12 +11,11 @@
   $usu_imagen    = _RUTA_WEB.$this->fmt->usuario->imagen_usuario($id_usu);
   $rol_nombre    = $this->fmt->usuario->nombre_rol($id_rol);
 
+  $menu_config .= $this->fmt->nav->construir_sistemas_rol( $id_rol, $id_usu);
 
   if (($id_rol==1)||($id_rol==2)){
 
     $ref_inicio= _RUTA_WEB;
-
-    $menu_config .= $this->fmt->nav->construir_sistemas_rol( $id_rol, $id_usu);
 
     $menu_config .= $this->fmt->nav->construir_title_menu("Administración");
 

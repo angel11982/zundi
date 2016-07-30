@@ -13,7 +13,9 @@ class ROLES{
 	}
 
   function busqueda(){
-    $botones .= $this->fmt->class_pagina->crear_btn("usuarios.adm.php?tarea=busqueda&id_mod=$this->id_mod","btn btn-link","icn-user","Usuarios");
+    $botones .= $this->fmt->class_pagina->crear_btn("usuarios.adm.php?tarea=busqueda&id_mod=$this->id_mod","btn btn-link","icn-users","Usuarios");
+
+    $botones .= $this->fmt->class_pagina->crear_btn("grupos.adm.php","btn btn-link","icn-list","Grupos de Usuarios");
 
     $botones .= $this->fmt->class_pagina->crear_btn("roles.adm.php?tarea=form_nuevo&id_mod=$this->id_mod","btn btn-primary","icn-plus","Nuevo Rol");
 
@@ -28,7 +30,6 @@ class ROLES{
               <th>Nombre Rol</th>
               <th>Funciones</th>
               <th>Padre</th>
-              <th>Permisos</th>
               <th>Estado</th>
               <th class="col-xl-offset-2">Acciones</th>
             </tr>
@@ -46,7 +47,6 @@ class ROLES{
                 <td class=""><?php echo $fila_nombre; ?></td>
                 <td class=""><?php echo $fila_funciones; ?></td>
                 <td class=""><?php echo $this->nombre_rol($fila_id_padre); ?></td>
-                <td class=""><?php echo $fila_permisos; ?></td>
                 <td class="">
                 <?php
                       $this->fmt->class_modulo->estado_publicacion($fila_activar,"modulos/usuarios/roles.adm.php", $this->id_mod,$aux,$fila_id );
@@ -70,8 +70,11 @@ class ROLES{
   }
 
   function form_nuevo(){
-    $botones = $this->fmt->class_pagina->crear_btn("roles.adm.php?tarea=busqueda","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
-  	$this->fmt->class_pagina->crear_head_form("Nuevo Rol", $botones,"");
+
+    $botones = $this->fmt->class_pagina->crear_btn("roles.adm.php?tarea=busqueda&id_mod=".$this->id_mod,"btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
+
+  	$this->fmt->class_pagina->crear_head_form("Nuevo Rol", $botones,"","",$this->id_mod);
+
     ?>
     <div class="body-modulo col-xs-6 col-xs-offset-3">
       <form class="form form-modulo" action="roles.adm.php?tarea=ingresar&id_mod=<? echo $this->id_mod; ?>"  method="POST" id="form-nuevo">
@@ -82,7 +85,7 @@ class ROLES{
         </div>
 
         <div class="form-group form-descripcion">
-          <label>Funciones:</label>
+          <label>Ref. Funciones:</label>
           <textarea class="form-control" rows="2" id="inputFunciones" name="inputFunciones" placeholder=""></textarea>
         </div>
 
@@ -94,11 +97,17 @@ class ROLES{
 				</div>
 
         <div class="form-group form-descripcion">
-          <label>Permisos:</label>
+          <label>Ref. Permisos:</label>
           <textarea class="form-control" rows="2" id="inputPermisos" name="inputPermisos" placeholder=""></textarea>
         </div>
+		<?php
+			$this->fmt->form->select_form("Redireccion","InputRedireccion","red_","redireccion");
+			$this->fmt->form->categoria_form('Accesos a categoría:','inputCat',"0","","","box-md-7 rol-cat"); //$label,$id,$cat_raiz,$cat_valor,$class,$class_div
+			$this->fmt->class_modulo->sistemas_modulos_select("Accesos a Sistemas y modulos","inputMod","box-md-10 rol-cat  box-sm"); //$label,$id,$class_div
+				//$this->fmt->class_modulo->grupos_select("Definición de grupos","inputGrupos",""); //$label,$id,$class_div
+				?>
 
-        <div class="form-group form-botones">
+        <div class="form-group form-botones clear-both">
 					 <button type="submit" class="btn btn-info  btn-guardar color-bg-celecte-b btn-lg" name="btn-accion" id="btn-guardar" value="guardar"><i class="icn-save" ></i> Guardar</button>
 					 <button type="submit" class="btn btn-success color-bg-verde btn-activar btn-lg" name="btn-accion" id="btn-activar" value="activar"><i class="icn-eye-open" ></i> Activar</button>
 				</div>
@@ -108,7 +117,7 @@ class ROLES{
   }
 
   function form_editar(){
-    $this->fmt->form->head_editar('Rol','roles','',''); //$nom,$archivo,$id_mod,$botones
+    $this->fmt->form->head_editar('Rol','roles',$this->id_mod,''); //$nom,$archivo,$id_mod,$botones
     $this->fmt->get->validar_get ( $_GET['id'] );
 		$id = $_GET['id'];
     $consulta ="SELECT * FROM roles WHERE rol_id='$id'";
@@ -116,11 +125,24 @@ class ROLES{
     $fila=  $this->fmt->query->obt_fila($rs);
     $this->fmt->form->input_form('Nombre','inputNombre','', $fila['rol_nombre'],'input-lg','',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
     $this->fmt->form->input_hidden_form('inputId',$fila['rol_id']);
-    $this->fmt->form->textarea_form('Funciones','inputFunciones','', $fila['rol_funciones'],'','','3',''); //$label,$id,$placeholder,$valor,$class,$rows,$mensaje
+    $this->fmt->form->textarea_form('Ref. Funciones','inputFunciones','', $fila['rol_funciones'],'','','3',''); //$label,$id,$placeholder,$valor,$class,$rows,$mensaje
     $this->fmt->form->select_form('Id padre','inputPadre','rol_','roles',$fila['rol_id_padre']);
-    $this->fmt->form->textarea_form('Permisos','inputPermisos','', $fila['rol_permisos'],'','','3',''); //$label,$id,$placeholder,$valor,$class,$rows,$mensaje
+    $this->fmt->form->textarea_form('Ref. Permisos','inputPermisos','', $fila['rol_permisos'],'','','3',''); //$label,$id,$placeholder,$valor,$class,$rows,$mensaje
+	$cats_id = $this->fmt->categoria->traer_rel_cat_id($id,'roles_rel','rol_rel_cat_id','rol_rel_rol_id'); //$fila_id,$from,$prefijo_cat,$prefijo_rel
+	$this->fmt->form->select_form("Redireccion","InputRedireccion","red_","redireccion",$fila["rol_redireccion"]);
+    $this->fmt->form->categoria_form('Accesos a categoría:','inputCat',"0", $cats_id,"","box-md-7 rol-cat"); //$label,$id,$cat_raiz,$cat_valor,$class,$class_div
+
+		$ids_sis = $this->fmt->class_modulo->traer_roles_rel_sis_id($id);
+		$ids_mod = $this->fmt->class_modulo->traer_roles_rel_mod_id($id);
+		$ids_per = $this->fmt->class_modulo->traer_roles_rel_mod_id_permisos($id);
+
+
+    $this->fmt->class_modulo->sistemas_modulos_select("Accesos a Sistemas y modulos","inputMod","box-md-10 rol-cat box-sm",$ids_sis,$ids_mod,$ids_per); //$label,$id,$class_div,$ids_sis,$isd_mod
+    //$this->fmt->class_modulo->grupos_select("Definición de grupos","inputGrupos",""); //$label,$id,$class_div
+
     $this->fmt->form->radio_activar_form($fila['rol_activar']);
     $this->fmt->form->botones_editar($fila['rol_id'],$fila['rol_nombre'],'Rol');//$fila_id,$fila_nombre,$nombre
+
     $this->fmt->class_modulo->script_form("modulos/usuarios/roles.adm.php",$this->id_mod);
     $this->fmt->form->footer_page();
   }
@@ -156,16 +178,58 @@ class ROLES{
 			$activar=0;
 		}
 
-		$ingresar ="rol_nombre,rol_funciones, rol_id_padre, rol_permisos, rol_activar";
+		$ingresar ="rol_nombre,rol_funciones, rol_id_padre, rol_permisos, rol_redireccion, rol_activar";
 		$valores  ="'".$_POST['inputNombre']."','".
 									 $_POST['inputFunciones']."','".
 									 $_POST['inputPadre']."','".
 									 $_POST['inputPermisos']."','".
+									 $_POST['InputRedireccion']."','".
 									 $activar."'";
 
 		$sql="insert into roles (".$ingresar.") values (".$valores.")";
 
 		$this->fmt->query->consulta($sql);
+
+		$sql="select max(rol_id) as id from roles";
+		$rs= $this->fmt->query->consulta($sql);
+		$fila = $this->fmt->query->obt_fila($rs);
+		$id = $fila ["id"];
+
+		//var_dump( $_POST['inputCat']);
+		$ingresar1 ="rol_rel_rol_id, rol_rel_cat_id";
+		$valor_cat= $_POST['inputCat'];
+		$num=count( $valor_cat );
+		for ($i=0; $i<$num;$i++){
+			$valores1 = "'".$id."','".$valor_cat[$i]."'";
+			$sql1="insert into roles_rel (".$ingresar1.") values (".$valores1.")";
+			$this->fmt->query->consulta($sql1);
+		}
+
+		$ingresar1 ="rol_rel_rol_id, rol_rel_sis_id";
+		$valor_sis= $_POST['inputSis'];
+		$num=count( $valor_sis );
+		for ($i=0; $i<$num;$i++){
+			$valores1 = "'".$id."','".$valor_sis[$i]."'";
+			$sql1="insert into roles_rel (".$ingresar1.") values (".$valores1.")";
+			$this->fmt->query->consulta($sql1);
+		}
+
+		$ingresar1 ="rol_rel_rol_id, rol_rel_mod_id, rol_rel_mod_p_ver, rol_rel_mod_p_activar,  rol_rel_mod_p_agregar, rol_rel_mod_p_editar, rol_rel_mod_p_eliminar";
+		$valor_mod= $_POST['inputMod'];
+
+
+		$num=count( $valor_mod );
+		for ($i=0; $i<$num;$i++){
+			$valor_v= $_POST['input_v'.$valor_mod[$i]];
+			$valor_p= $_POST['input_p'.$valor_mod[$i]];
+			$valor_a= $_POST['input_a'.$valor_mod[$i]];
+			$valor_e= $_POST['input_e'.$valor_mod[$i]];
+			$valor_t= $_POST['input_t'.$valor_mod[$i]];
+			$valores1 = "'".$id."','".$valor_mod[$i]."','".$valor_v."','".$valor_p."','".$valor_a."','".$valor_e."','".$valor_t."'";
+			$sql1="insert into roles_rel (".$ingresar1.") values (".$valores1.")";
+			$this->fmt->query->consulta($sql1);
+		}
+
 
 		header("location: roles.adm.php?id_mod=".$this->id_mod);
 	} // fin funcion ingresar
@@ -173,18 +237,60 @@ class ROLES{
 	function modificar(){
 		if ($_POST["btn-accion"]=="eliminar"){}
 		if ($_POST["btn-accion"]=="actualizar"){
-
+			$id=$_POST['inputId'];
 			$sql="UPDATE roles SET
 						rol_nombre='".$_POST['inputNombre']."',
 						rol_funciones='".$_POST['inputFunciones']."',
 						rol_id_padre ='".$_POST['inputPadre']."',
 						rol_permisos='".$_POST['inputPermisos']."',
+						rol_redireccion='".$_POST['InputRedireccion']."',
 						rol_activar='".$_POST['inputActivar']."'
-	          WHERE rol_id='".$_POST['inputId']."'";
+	          WHERE rol_id='".$id."'";
 
 			$this->fmt->query->consulta($sql);
+
+			$sql1="DELETE FROM roles_rel WHERE rol_rel_rol_id='".$id."'";
+			$this->fmt->query->consulta($sql1);
+
+			$up_sqr7 = "ALTER TABLE roles_rel AUTO_INCREMENT=1";
+			$this->fmt->query->consulta($up_sqr7);
+
+			$ingresar1 ="rol_rel_rol_id, rol_rel_cat_id";
+			$valor_cat= $_POST['inputCat'];
+			$num=count( $valor_cat );
+			for ($i=0; $i<$num;$i++){
+				$valores1 = "'".$id."','".$valor_cat[$i]."'";
+				$sql1="insert into roles_rel (".$ingresar1.") values (".$valores1.")";
+				$this->fmt->query->consulta($sql1);
+			}
+
+			$ingresar1 ="rol_rel_rol_id, rol_rel_sis_id";
+			$valor_sis= $_POST['inputSis'];
+			$num=count( $valor_sis );
+			for ($i=0; $i<$num;$i++){
+				$valores1 = "'".$id."','".$valor_sis[$i]."'";
+				$sql1="insert into roles_rel (".$ingresar1.") values (".$valores1.")";
+				$this->fmt->query->consulta($sql1);
+			}
+
+			$ingresar1 ="rol_rel_rol_id, rol_rel_mod_id, rol_rel_mod_p_ver, rol_rel_mod_p_activar,  rol_rel_mod_p_agregar, rol_rel_mod_p_editar, rol_rel_mod_p_eliminar";
+			$valor_mod= $_POST['inputMod'];
+
+
+			$num=count( $valor_mod );
+			for ($i=0; $i<$num;$i++){
+				$valor_v= $_POST['input_v'.$valor_mod[$i]];
+				$valor_p= $_POST['input_p'.$valor_mod[$i]];
+				$valor_a= $_POST['input_a'.$valor_mod[$i]];
+				$valor_e= $_POST['input_e'.$valor_mod[$i]];
+				$valor_t= $_POST['input_t'.$valor_mod[$i]];
+				$valores1 = "'".$id."','".$valor_mod[$i]."','".$valor_v."','".$valor_p."','".$valor_a."','".$valor_e."','".$valor_t."'";
+				$sql1="insert into roles_rel (".$ingresar1.") values (".$valores1.")";
+				$this->fmt->query->consulta($sql1);
+			}
+
 		}
-			header("location: roles.adm.php");
+			header("location: roles.adm.php?id_mod=".$this->id_mod);
 	}
 
 	function eliminar(){
@@ -194,6 +300,12 @@ class ROLES{
 		$this->fmt->query->consulta($sql);
 		$up_sqr6 = "ALTER TABLE roles AUTO_INCREMENT=1";
 		$this->fmt->query->consulta($up_sqr6);
+
+		$sql1="DELETE FROM roles_rel WHERE rol_rel_rol_id='".$id."'";
+		$this->fmt->query->consulta($sql1);
+		$up_sqr7 = "ALTER TABLE roles_rel AUTO_INCREMENT=1";
+		$this->fmt->query->consulta($up_sqr7);
+
 		header("location: roles.adm.php?id_mod=".$this->id_mod);
 	}
 

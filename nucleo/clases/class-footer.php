@@ -24,12 +24,17 @@ class FOOTER{
 	    $aux .= '2016 <i class="icn-cc"></i> Wappcom &nbsp;| &nbsp;  power  <i class="icn-zundi-o"></i>'._VZ."\n";
 	    $aux .= '</div>'."\n";
     }
-    $aux .= $this->js();
+
+    $aux .='<script src="'._RUTA_WEB.'js/bootstrap-datetimepicker.min.js"></script>'."\n";
+    $aux .='<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/bootstrap-datepicker.es.js" charset="UTF-8"></script>'."\n";
+    $aux .='<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/moment.js"></script>'."\n";
+
+$aux .= $this->js();
     $aux .= '</body>'."\n";
     $aux .= '</html>'."\n";
     return $aux;
 
-    
+
   }
 
   function js(){
@@ -38,7 +43,7 @@ class FOOTER{
     //$aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.dataTables.min.js"></script>'."\n";
 	//$aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/dataTables.bootstrap.js"></script>'."\n";
     $aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/core.js"></script>'."\n";
-    
+
     $aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jQuery.print.js"></script>'."\n";
 
     return $aux;

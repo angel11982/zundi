@@ -25,6 +25,8 @@ class CONSTRUCTOR{
   var $form;
 
   function __construct() {
+	  
+
 
     header('Content-Type: text/html; charset=utf8');
     error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_WARNING);
@@ -36,6 +38,9 @@ class CONSTRUCTOR{
 
     define('_RUTA_WEB_temp',"http://".str_replace("\\", "/", $_SERVER['SERVER_NAME'])."/");
 
+
+	array_walk($_POST, 'limpiar_cadena');
+	array_walk($_GET, 'limpiar_cadena');  
 
     if(isset($_GET["mod_id"])){
       if (!is_numeric($_GET["mod_id"])){
@@ -128,6 +133,29 @@ class CONSTRUCTOR{
 
 
   }
+  
+	function limpiar_cadena($valor){
+		$valor = str_ireplace("SELECT","",$valor);
+		$valor = str_ireplace("COPY","",$valor);
+		$valor = str_ireplace("DELETE","",$valor);
+		$valor = str_ireplace("DROP","",$valor);
+		$valor = str_ireplace("DUMP","",$valor);
+		$valor = str_ireplace(" OR ","",$valor);
+		$valor = str_ireplace("%","",$valor);
+		$valor = str_ireplace("LIKE","",$valor);
+		$valor = str_ireplace("--","",$valor);
+		$valor = str_ireplace("^","",$valor);
+		$valor = str_ireplace("[","",$valor);
+		$valor = str_ireplace("]","",$valor);
+		$valor = str_ireplace("\'","",$valor);
+		$valor = str_ireplace("!","",$valor);
+		$valor = str_ireplace("¡","",$valor);
+		$valor = str_ireplace("?","",$valor);
+		$valor = str_ireplace("=","",$valor);
+		$valor = str_ireplace("&","",$valor);
+		//$valor = addslashes($valor);
+		return $valor;
+	}
 
 
 }

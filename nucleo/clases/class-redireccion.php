@@ -11,40 +11,18 @@ class REDIRECCION{
 
   function login($cat,$pla,$usu_id){
     //return "cat:".$cat."pla:".$pla."usu_id:".$usu_id;
-    switch ( $this->fmt->usuario->id_rol_usuario($usu_id) ) {
-     case "0":
-       // "Sin rol";
-     break;
-
-     case "1":
-       //echo "administrador";
-       return "dasboard";
-     break;
-
-     case "2":
-       //echo "diseñador web";
-     $this->fmt->get->validar_get ( $_GET['cat'] );
-     $this->fmt->get->validar_get ( $_GET['pla'] );
-      $cat =  $_GET['cat'];
-      $pla = $_GET['pla'];
+    $id_rol=$this->fmt->usuario->id_rol_usuario($usu_id);
+    $ruta = $this->fmt->usuario->traer_ruta_rol($id_rol);
+    if($ruta==""){
+    	$this->fmt->get->validar_get ( $_GET['cat'] );
+		$this->fmt->get->validar_get ( $_GET['pla'] );
+		$cat =  $_GET['cat'];
+		$pla = $_GET['pla'];
        return $this->ruta_amigable($cat,$pla);
-     break;
+     }
+     else
+	 	return $ruta;
 
-     case "3":
-       //echo "funcionario";
-       return "intranet/portada";
-     break;
-
-     case "4":
-       //echo "editor";
-       return $this->ruta_amigable($cat,$pla);
-     break;
-
-     case "5":
-       //echo "redactor";
-       return $this->ruta_amigable($cat,$pla);
-     break;
-    }
   } // fin login
 
   function ruta_amigable($cat,$pla){
@@ -55,11 +33,9 @@ class REDIRECCION{
     $rs = $this->fmt->query-> consulta($sql);
     $fila = $this->fmt->query-> obt_fila($rs);
     $ruta_cat = $fila["cat_ruta_amigable"];
-    if ($pla!=1) {
-      return _RUTA_WEB.$ruta_cat."?p=".$pla;
-    } else {
-      return _RUTA_WEB.$ruta_cat;
-    }
+
+    return _RUTA_WEB.$ruta_cat;
+
   } // fin ruta amigable
 
 } // fin clase

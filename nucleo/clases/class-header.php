@@ -125,9 +125,11 @@ class HEADER{
 
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote-es-ES.min.js"></script>'."\n";
-	
-		
-	
+	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.mixitup.js"></script>'."\n";
+	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.mixitup-pagination.min.js"></script>'."\n";
+
+
+
     return $aux;
   }
 
@@ -151,7 +153,11 @@ class HEADER{
           <script src="js/respond.min.js"></script>
           <![endif]-->'."\n";
     $aux .= $this->css()." \n";
+
+    $aux .= '	<link rel="stylesheet" href="'._RUTA_WEB.'css/croppie.css">';
+    $aux .= '	<link rel="stylesheet" href="'._RUTA_WEB.'css/bootstrap-datetimepicker.min.css">';
     $aux .= $this->js()." \n";
+    $aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/croppie.js"></script>'."\n";
     $aux .= "</head>";
     $aux .= "<body class='body-page container-fluid animated fadeIn'>";
 

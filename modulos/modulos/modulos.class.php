@@ -100,6 +100,9 @@ class MODULOS{
 						<?php echo $this->opciones_tipo("");  ?>
 					</select>
 				</div>
+				<?php
+					$this->fmt->form->categoria_form('Categoria','inputCat',"0","","","");
+				?>
 				<div class="form-group form-botones">
 					 <button type="submit" class="btn btn-info  btn-guardar color-bg-celecte-b btn-lg" name="btn-accion" id="btn-guardar" value="guardar"><i class="icn-save" ></i> Guardar</button>
 					 <button type="submit" class="btn btn-success color-bg-verde btn-activar btn-lg" name="btn-accion" id="btn-activar" value="activar"><i class="icn-eye-open" ></i> Activar</button>
@@ -155,6 +158,11 @@ class MODULOS{
 						<?  echo $this->opciones_tipo($fila_tipo);  ?>
 					</select>
 				</div>
+				<?php
+					$cats_id = $this->fmt->categoria->traer_rel_cat_id($id,'modulos_categoria','categoria_cat_id','	modulos_mod_id'); //$fila_id,$from,$prefijo_cat,$prefijo_rel
+
+					$this->fmt->form->categoria_form('Categoria','inputCat',"0",$cats_id,"","");
+				?>
 				<div class="form-group">
 					<label class="radio-inline">
 						<input type="radio" name="inputActivar" id="inputActivar" value="0" <?php if ($fila_activar==0){ echo "checked"; } ?> > Desactivar
@@ -195,6 +203,19 @@ class MODULOS{
 
 		$this->fmt->query->consulta($sql);
 
+		$sql="select max(mod_id) as id from modulos";
+		$rs= $this->fmt->query->consulta($sql);
+		$fila = $this->fmt->query->obt_fila($rs);
+		$id = $fila ["id"];
+		$ingresar1 ="modulos_mod_id, categoria_cat_id";
+		$valor_cat= $_POST['inputCat'];
+		$num=count( $valor_cat );
+		for ($i=0; $i<$num;$i++){
+			$valores1 = "'".$id."','".$valor_cat[$i]."'";
+			$sql1="insert into modulos_categoria (".$ingresar1.") values (".$valores1.")";
+			$this->fmt->query->consulta($sql1);
+		}
+
 		header("location: modulos.adm.php?id_mod=".$this->id_mod);
 	} // fin funcion ingresar
 
@@ -212,6 +233,17 @@ class MODULOS{
 	          WHERE mod_id='".$_POST['inputId']."'";
 
 			$this->fmt->query->consulta($sql);
+
+			$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"modulos_categoria","modulos_mod_id");
+
+			$ingresar1 ="modulos_mod_id, categoria_cat_id";
+			$valor_cat= $_POST['inputCat'];
+			$num=count( $valor_cat );
+			for ($i=0; $i<$num;$i++){
+				$valores1 = "'".$id."','".$valor_cat[$i]."'";
+				$sql1="insert into modulos_categoria (".$ingresar1.") values (".$valores1.")";
+				$this->fmt->query->consulta($sql1);
+			}
 		}
 			header("location: modulos.adm.php?id_mod=".$this->id_mod);
 	}
@@ -219,6 +251,7 @@ class MODULOS{
 	function eliminar(){
 		$this->fmt->get->validar_get ( $_GET['id'] );
 		$id= $_GET['id'];
+		$this->fmt->class_modulo->eliminar_fila($id,"modulos_categoria","modulos_mod_id");
 		$sql="DELETE FROM modulos WHERE mod_id='".$id."'";
 		$this->fmt->query->consulta($sql);
 		$up_sqr6 = "ALTER TABLE modulos AUTO_INCREMENT=1";

@@ -6,6 +6,7 @@
   if(isset($_FILES["inputArchivos"])){
 
     $error = $_FILES["inputArchivos"]["error"];
+
     if(!is_array($_FILES["inputArchivos"]["name"])){ //un archivo
 
       $file = $_FILES["inputArchivos"];
@@ -23,7 +24,7 @@
       $width = $dimensiones[0];
       $height = $dimensiones[1];
       $dimension = $width." x ".$height;
-        $thumb_s= explode("x",$_POST["inputThumb"]);
+      $thumb_s= explode("x",$_POST["inputThumb"]);
       if ($tipo != 'image/jpg' && $tipo != 'image/jpeg' && $tipo != 'image/png' && $tipo != 'image/gif' && $tipo != 'audio/mp3' && $tipo != 'video/mp4' && $tipo != 'audio/quicktime'){
         echo "Error, el archivo no es valido (jpg,jpeg,png,gif)";
       }else if ($size > 1024*1024*8){
@@ -36,7 +37,7 @@
         move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
         $src = $_POST["inputRutaArchivos"]."/".$nombre_url;
         $nombre_t=$fmt->archivos->convertir_nombre_thumb($nombre_url);
-        $fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
+        $fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
         //$src, $dst, $width, $height, $crop=0
         $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;
         $ruta_v = explode ("/",$inputUrl);
@@ -48,9 +49,26 @@
           $inputDominio = $fmt->categoria->traer_dominio_cat_ruta($ruta_v[1]."/".$ruta_v[0]);
         }
 
-        if (!isset($_POST["inputId"])){
+       // if (!isset($_POST["inputId"])){
           echo "<img width='100%' src='".$inputDominio.$inputUrl."'></br></br>";
-          $fmt->form->input_form('<span class="obligatorio">*</span> Nombre archivo:','inputNombre','',$inputNombre,'','','En minúsculas');
+          ?>
+            <div class="demo"></div>
+            <script>
+            $(document).ready(function () {
+              $('.demo').croppie({
+                  url: '<?php echo $inputDominio.$inputUrl; ?>',
+                  enableExif: true,
+                  viewport: {
+                      width: <?php echo  $thumb_s[0] ?>,
+                      height: <?php echo  $thumb_s[1] ?>,
+                      type: 'square'
+                  },
+              });
+            });
+            </script>
+          <?php
+          echo "</div>";
+          $fmt->form->input_form('<span class="obligatorio">*</span> Nombre archivo:','inputNombreArchivo','',$inputNombre,'','','En minúsculas');
           $fmt->form->input_form('Url archivo:','inputUrl','',$inputUrl,'');
           $fmt->form->input_form('Tipo archivo:','inputTipo','',$inputTipo,'');
           $fmt->form->input_form('Leyenda:','inputLeyenda','','','','',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
@@ -61,7 +79,7 @@
           $fmt->form->input_form('Dominio:','','',$inputDominio,'','','');
           $fmt->form->input_hidden_form('inputDominio',$fmt->categoria->traer_id_cat_dominio($inputDominio));
 
-        } else {
+       /* } else {
 
           $url =$inputUrl;
           $rt .= "editar";
@@ -77,7 +95,7 @@
           $rt .= ',inputDominio^'.$inputDominio;
           echo $rt;
         }
-
+*/
       }
     }else{ // varios archivos
       $ret = array();

@@ -16,11 +16,11 @@ class FORM{
     <div class="body-modulo">
     <?php
   }
-  
-  
+
+
   function head_editar($nom,$archivo,$id_mod,$botones,$id_form,$class){
     $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=busqueda&id_mod=$id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
-  	$this->fmt->class_pagina->crear_head_form($nom, $botones,"");
+  	$this->fmt->class_pagina->crear_head_form($nom, $botones,"","",$id_mod);
     ?>
     <div class="body-modulo col-xs-6 col-xs-offset-3 <? echo $class; ?>">
       <form class="form form-modulo" action="<?php echo $archivo; ?>.adm.php?tarea=modificar&id_mod=<? echo $id_mod; ?>"  enctype="multipart/form-data" method="POST" id="<?php echo $id_form; ?>">
@@ -39,23 +39,24 @@ class FORM{
 	  		$this->fmt->get->validar_get($_GET['id']);
 	  		$id = "&id=".$_GET['id'];
   		}
-  		
+
   		$from =$_GET['from'];
-  		
+
   		$action = "action='".$archivo.".adm.php?tarea=ingresar&id_mod=".$id_mod."&modo=modal&from=".$from.$id."'";
   	}
-  	
-  	$this->fmt->class_pagina->crear_head_form($nom, $botones,"","head-modal");
+
+  	$this->fmt->class_pagina->crear_head_form($nom, $botones,"","head-modal",$id_mod);
   	//echo $url;
+		$nom_mod=  strtolower($this->fmt->class_modulo->mombre_modulo($id_mod));
     ?>
-    <div class="body-modulo col-xs-6 col-xs-offset-3 <? echo $class; ?> <? echo $mod; ?>">
+    <div class="body-modulo body-<? echo $nom_mod; ?> col-xs-6 col-xs-offset-3 <? echo $class; ?> <? echo $mod; ?>">
       <form class="form form-modulo" <?php echo $action; ?>  enctype="multipart/form-data"  method="POST" id="<?php echo $id_form; ?>">
         <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
     <?php
   }
-  
+
   function head_modal($nom,$modo){
-	 //echo "m:".$modo; 
+	 //echo "m:".$modo;
     ?>
     <div class="head-modulo head-m-<?php echo $modo; ?>">
 		<h1 class="title-page pull-left"><i class=""></i> <? echo $nom; ?></h1>
@@ -65,20 +66,20 @@ class FORM{
     </div>
     <div class="body-modal">
         <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
-        
+
     <?php
   }
 
 
 	function sizes_thumb($sizes){
-		if (!empty($sizes)){ 
+		if (!empty($sizes)){
 			$st = explode(",",$sizes);
 			$c_st = count($st);
 		}
 		?>
 		<select id="inputThumb" name="inputThumb" class="form-control">
-			<?php 
-				
+			<?php
+
 				for($i=0; $i < $c_st;$i++){
 					$xst = explode(":",$st[$i]);
 					echo "<option value='".$xst[0]."' >".$xst[1]."</option>";
@@ -87,14 +88,13 @@ class FORM{
 		</select>
 		<?php
 	}
-  function file_form_seleccion($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p){
+  function file_form_seleccion($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb){
 		if ($id_form == 'form_nuevo'){ $texto="para subir"; }else{ $texto="para reemplazar"; }
     ?>
     <div class="form-group <?php echo $class_div; ?>" id="<?php echo $id_div; ?>" >
       <label>Seleccionar ruta url <? echo $texto; ?> : </label>
       <?php $this->fmt->archivos->select_archivos($ruta,$directorio_p); ?>
-			<br/><label>Seleccionar tamaño thumb (ancho x alto):</label>
-			<?php $this->sizes_thumb(); ?>
+			<input type="hidden" value="<? echo $sizethumb; ?>" id="inputThumb" name="inputThumb">
 
       <br/>
 			<label><? echo $nom; ?> :</label>
@@ -223,7 +223,7 @@ class FORM{
 				$(".<?php echo $class; ?>").on("change", function(){
 					var formData = new FormData($("#<?php echo $id_form; ?>")[0]);
 	        var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-upload.php";
-					
+
 					$("#url-imagen").html('');
 					$.ajax({
 	            url: ruta,
@@ -241,19 +241,19 @@ class FORM{
 				        return xhr;
 					    },
 	            success: function(datos){
-								 
+
 								$("#respuesta").toggleClass('respuesta-form');
 								var myarr = datos.split(",");
 								var num = myarr.length;
 								if (myarr[0]=="editar"){
-									 
+
 									var i;
-									 
+
 									var url = myarr[1];
 									for (i = 2; i < num; i++) {
 										var datx = myarr[i].split('^');
 										var dx = datx[1];
-										 
+
 										$("#"+datx[0]).val(datx[1]); //cambia los valores por los nuevos
 									}
 								}
@@ -267,8 +267,8 @@ class FORM{
 		</script>
     <?php
   }
-  
-  
+
+
   function agregar_documentos($label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item){
 	  $idx=$id;
 	  ?>
@@ -280,10 +280,10 @@ class FORM{
 	  <p class="help-block"><?php echo $mensaje; ?></p>
 	  <? } ?>
 	  <div class="" id="box-adiciones">
-		  <?php 
-			 
-			if (!empty($valor)){ 
-				$sql="SELECT DISTINCT doc_id,doc_nombre,doc_tipo_archivo FROM mod_productos_rel, documento WHERE mod_prod_rel_doc_id=doc_id and mod_prod_rel_prod_id=$valor "; 
+		  <?php
+
+			if (!empty($valor)){
+				$sql="SELECT DISTINCT doc_id,doc_nombre,doc_tipo_archivo FROM mod_productos_rel, documento WHERE mod_prod_rel_doc_id=doc_id and mod_prod_rel_prod_id=$valor ";
 				$rs=$this->fmt->query->consulta($sql);
 				$num =$this->fmt->query->num_registros($rs);
 				if ($num>0){
@@ -302,14 +302,14 @@ class FORM{
 	  </div>
 	  <div class="box-modal" id="box-modal-docs" style="display:none;">
 		  <div id="respuesta-modal">
-		  <?  
+		  <?
 			if (!empty($id_item)){ $xvalor="&id=".$id_item; }else{ $xvalor=""; }
 			$url_mod =  _RUTA_WEB."modulos/documentos/documentos.adm.php?tarea=form_nuevo&modo=modal&from=".$from.$xvalor;
 			echo "<iframe class='frame-modal' src='".$url_mod."'  name='frame_content_modal' scrolling=auto ></iframe>";
 		  ?>
 		  </div>
 	  </div>
-	  
+
 	  <div class="box-modal" id="box-modal-adocs" style="display:none;">
 		  <?php
 			  require_once(_RUTA_HOST."modulos/documentos/documentos.class.php");
@@ -323,18 +323,18 @@ class FORM{
 				  $("#box-modal-docs").toggle();
 				  $(".btn-nuevo-docs").toggleClass("on");
 			  	});
-			  	
+
 			  	$(".btn-agregar-docs").click( function(){
 				  $("#box-modal-adocs").toggle();
 				  $(".btn-agregar-docs").toggleClass("on");
 				});
-				
+
 				$(".btn-agregar").on('click', function(){
 				  var idv = $( this ).attr("value");
 				  var nom = $( this ).attr("nombre");
 				  $('#b-' + idv).toggleClass("on");
 				  $('.bt-' + idv).toggleClass("on");
-				  $('#box-adiciones').append('<div class="box-doc-agregado box-doc-'+idv+'" "><input type="hidden" name="<?php echo $idx; ?>[]" id="<?php echo $idx; ?>[]" value="'+idv+'" /> <label>'+nom+'</label><a class="btn quitardoc" value="'+idv+'" id="e-'+idv+'" nombre="'+nom+'"><i class="icn-close"></i></a></div>');				  	  			  
+				  $('#box-adiciones').append('<div class="box-doc-agregado box-doc-'+idv+'" "><input type="hidden" name="<?php echo $idx; ?>[]" id="<?php echo $idx; ?>[]" value="'+idv+'" /> <label>'+nom+'</label><a class="btn quitardoc" value="'+idv+'" id="e-'+idv+'" nombre="'+nom+'"><i class="icn-close"></i></a></div>');
 				  	/*
 					  	<div id="'.$id.'[]" value=""></div>
 					  	var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-doc-modal.php";
@@ -346,8 +346,8 @@ $.ajax({
 							  success: function(datos){
 								  $("#respuesta-modal").html(datos);
 							  }
-					}); 
-					
+					});
+
 */  				$(".quitardoc").off('click');
     				$(".quitardoc").on('click', function() {
 	    				var ide = $( this ).attr("value");
@@ -420,7 +420,7 @@ $.ajax({
     ?>
     <div class="form-group <?php echo $class_div; ?>">
       <label><?php echo $label; ?></label>
-      <input class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>" validar="<?php echo $validar; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" <?php echo $disabled; ?>/>
+      <input class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>" validar="<?php echo $validar; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" <?php echo $disabled; ?> >
 			<?php if (!empty($mensaje)){ ?>
 			<p class="help-block"><?php echo $mensaje; ?></p>
 			<? } ?>
@@ -450,10 +450,34 @@ $.ajax({
     </div>
     <?php
   }
+
+	function input_date($label,$id,$placeholder,$valor,$class,$class_div,$mensaje){
+		date_default_timezone_set('America/La_Paz');
+		switch ($valor) {
+			case 'hoy':
+				$va=date("d/m/Y");
+			break;
+			case 'mañana':
+				$va= date('d',time()+84600)."/". date("m")."/".date("Y");
+			break;
+			default:
+				$va=$valor;
+			break;
+		}
+		?>
+			<div class="form-group <?php echo $class_div; ?>" >
+			<label><?php echo $label; ?></label>
+			<div class="datetimepicker <?php echo $class; ?>">
+				<input type="text" class="form-control add-on" id="<?php echo $id; ?>" name="<?php echo $id; ?>" value="<?php echo  $va; ?>"/>
+				<span class="input-icon"><i class="fa fa-calendar"></i></span>
+			</div>
+			</div>
+		<?php
+	}
   function categoria_form($label,$id,$cat_raiz,$cat_valor,$class,$class_div){
     ?>
     <div class="form-group <?php echo $class_div; ?>">
-      <label><?php echo $label; ?></label>
+      <label><?php echo $label.":"; ?></label>
       <?php $this->fmt->categoria->arbol($id,$cat_raiz,$cat_valor);  ?>
     </div>
     <?php
@@ -470,7 +494,7 @@ $.ajax({
     <?php
   }
 
-  function select_form($label,$id,$prefijo,$from,$id_s,$id_disabled){
+  function select_form($label,$id,$prefijo,$from,$id_select,$id_disabled){
     ?>
     <div class="form-group">
       <label><?php echo $label; ?></label>
@@ -483,7 +507,7 @@ $.ajax({
     if($num>0){
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
-        if ($fila_id==$id_s){  $aux="selected";  }else{  $aux=""; }
+        if ($fila_id==$id_select){  $aux="selected";  }else{  $aux=""; }
         if ($fila_id==$id_disabled){  $aux1="disabled";  }else{  $aux1=""; }
         echo "<option class='' value='$fila_id' $aux $aux1 > ".$fila_nombre;
         echo "</option>";
@@ -494,6 +518,25 @@ $.ajax({
     </div>
     <?php
   }
+
+	  function select_form_simple($label,$id,$options,$valores,$desabilitado,$defecto,$class_div){
+			?>
+			<div class="form-group <?php echo $class_div; ?>">
+				<label><?php echo $label; ?></label>
+				<select class="form-control" id="<?php echo $id; ?>" name="<?php echo $id; ?>">
+				<?php
+					$n = count($options);
+					for($i=0;$i<$n;$i++){
+						if ($valores[$i]==$defecto){  $aux="selected";  }else{  $aux=""; }
+		        if ($valores[$i]==$desabilitado){  $aux1="disabled";  }else{  $aux1=""; }
+		        echo "<option class='' value='".$valores[$i]."' $aux $aux1 > ".$options[$i];
+		        echo "</option>";
+					}
+				?>
+				</select>
+		</div>
+		<?php
+		}
 
   function radio_activar_form($valor){
     ?>
@@ -510,7 +553,7 @@ $.ajax({
 
   function botones_editar($fila_id,$fila_nombre,$nombre){
     ?>
-    <div class="form-group form-botones">
+    <div class="form-group form-botones clear-both">
        <button  type="button" class="btn-accion-form btn btn-danger btn-eliminar color-bg-rojo-a"  idEliminar="<? echo $fila_id; ?>" title="<? echo $fila_id; ?> : <? echo $fila_nombre; ?>" nombreEliminar="<? echo $fila_nombre; ?>" name="btn-accion" id="btn-eliminar" value="eliminar"><i class="icn-trash" ></i> Eliminar <? echo $nombre; ?></button>
 
        <button type="submit" class="btn-accion-form btn btn-info  btn-actualizar hvr-fade btn-lg color-bg-celecte-c btn-lg " name="btn-accion" id="btn-activar" value="actualizar"><i class="icn-sync" ></i> Actualizar</button>
@@ -536,14 +579,15 @@ $.ajax({
     </div>
     <?php
   }
-  
+
   function botones_acciones($id,$class,$href,$title,$icono,$tarea,$nom,$ide){
 	  if (!empty($href)){ $auxr="href='".$href."'"; }else{$auxr="";}
 	  ?>
-		<a  id="<?php echo $id; ?>" type="button" class="<?php echo $class; ?>" <?php echo $auxr; ?> title="<?php echo $title; ?>" alt="<?php echo $title; ?>" tarea="<?php echo $tarea; ?>" nombre="<?php echo $nom; ?>" ide="<?php echo $ide; ?>" ><i class="<?php echo $icono; ?>" ></i></a>
+		<a  id="<?php echo $id; ?>" type="button" class="<?php echo $class; ?>" <?php echo $auxr; ?> title="<?php echo $title; ?>" alt="<?php echo $title; ?>"
+			tarea="<?php echo $tarea; ?>" nombre="<?php echo $nom; ?>" ide="<?php echo $ide; ?>" ><i class="<?php echo $icono; ?>" ></i></a>
 	<?php
   }
-  
+
   function form_head_form_editar($nom,$from,$prefijo,$id_mod,$class,$archivo){
 	$this->fmt->get->validar_get ( $_GET['id'] );
 	$id = $_GET['id'];

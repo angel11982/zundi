@@ -17,7 +17,7 @@ $fmt = new CONSTRUCTOR();
         </div>
         <div class="input-group password controls">
         <span class="input-group-addon color-border-gris-a  color-text-gris"><i class="icn-lock"></i></span>
-        <input type="password" class="form-control input-lg color-border-gris-a  color-text-gris" id="inputPassword" name="inputPassword" placeholder="Password"  >
+        <input type="password" class="form-control input-lg color-border-gris-a  color-text-gris" id="password" name="password" placeholder="Password"  >
       </div>
       <p class="help-block"><a href="#" class="color-text-gris"><i class="icon-danger"></i>¿ Olvidaste tu contraseña ?</a></p>
     </div>
@@ -35,30 +35,35 @@ $fmt = new CONSTRUCTOR();
 	function action_form(){
 		//alert("entre a acción");
 		var ie = $("#inputEmail").val( );
-		var ip = $("#inputPassword").val( );
+		var ip = $("#password").val( );
 		$.ajax({
 			url:"<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-login.php",
 			type:"post",
-			data:{ inputEmail:ie , inputPassword:ip },
+			data:{ inputEmail:ie , password:ip },
 			success: function(msg){
         //alert(msg);
-        if ((msg!="false")&&(msg!="sin-rol")&&(msg!="rol-desactivado")) {
-          $("#mensaje-login").html("<?php echo $this->fmt->mensaje->login_ok(); ?>");
-          redireccionar_tiempo(msg,800); // core.js
-        }
-        if(msg=="sin-rol"){
-          $("#mensaje-login").html("<?php echo $this->fmt->error->error_rol(); ?>");
-          toggleIdCerrar("error_login", 6000);  // core.js
-        }
-        if(msg=="rol-desactivado"){
-          $("#mensaje-login").html("<?php echo $this->fmt->error->error_rol_desactivado(); ?>");
-          toggleIdCerrar("error_login", 6000);  // core.js
-        }
-        if (msg=="false") {
-          $("#mensaje-login").html("<?php echo $this->fmt->error->error_login(); ?>");
-          toggleIdCerrar("error_login", 3000); // core.js
-        }
-			}
+	        
+if ((msg!="false")&&(msg!="sin-rol")&&(msg!="rol-desactivado")) {
+	          $("#mensaje-login").html("<?php echo $this->fmt->mensaje->login_ok(); ?>");
+	          redireccionar_tiempo(msg,800); // core.js
+	        }
+	        
+	        if(msg=="sin-rol"){
+	          $("#mensaje-login").html("<?php echo $this->fmt->error->error_rol(); ?>");
+	          toggleIdCerrar("error_login", 6000);  // core.js
+	        }
+	        
+	        if(msg=="rol-desactivado"){
+	          $("#mensaje-login").html("<?php echo $this->fmt->error->error_rol_desactivado(); ?>");
+	          toggleIdCerrar("error_login", 6000);  // core.js
+	        }
+	        
+	        if (msg=="false") {
+	          $("#mensaje-login").html("<?php echo $this->fmt->error->error_login(); ?>");
+	          toggleIdCerrar("error_login", 3000); // core.js
+	        }
+			//$("#mensaje-login").html(msg);
+		  }
 		});
 		elemento = document.getElementById("btn-ingresar");
  		elemento.blur();

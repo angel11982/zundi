@@ -23,6 +23,13 @@ class USUARIO{
     return $fila["roles_rol_id"];
   }
 
+  function traer_ruta_rol($id_rol){
+    $sql ="SELECT red_url FROM redireccion, roles WHERE rol_id='$id_rol' and rol_redireccion=red_id";
+    $rs = $this->fmt->query-> consulta($sql);
+    $fila = $this->fmt->query->obt_fila($rs);
+    return $fila["red_url"];
+  }
+
   function rol_usuario($id_usu){
     $sql ="SELECT roles_rol_id FROM usuarios_roles WHERE usuarios_usu_id='$id_usu'";
     $rs = $this->fmt->query-> consulta($sql);
@@ -43,7 +50,7 @@ class USUARIO{
     $rs = $this->fmt->query-> consulta($sql);
     $fila = $this->fmt->query->obt_fila($rs);
     return $fila["usu_nombre"]." ".$fila["usu_apellidos"];
-  }  
+  }
 
   function nombre_id_usuario($usuario_n,$usuario_a){
     $sql="select usu_id from usuarios where usu_nombre='$usuario_n' and usu_apellidos='$usuario_a'";

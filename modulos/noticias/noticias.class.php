@@ -35,11 +35,11 @@ class NOTICIAS{
 				echo '<td class="">';
 					$this->fmt->class_modulo->estado_publicacion($fila["not_activar"],"modulos/noticias/noticias.adm.php", $this->id_mod,$aux,$fila["not_id"] );
 				echo '</td>';
-				
+
 				echo '<td class="td-user col-xl-offset-2 acciones">';
-				$url_editar= "noticias.adm.php?tarea=form_editar&id=".$fila["not_id"]."&id_mod=".$this->id_mod;				
+				$url_editar= "noticias.adm.php?tarea=form_editar&id=".$fila["not_id"]."&id_mod=".$this->id_mod;
 				$this->fmt->form->botones_acciones("btn-editar-modulo","btn btn-accion btn-editar",$url_editar,"Editar","icn-pencil","editar",'editar',$fila["not_id"]); //$id,$class,$href,$title,$icono,$tarea,$nom,$ide
-				
+
 				$this->fmt->form->botones_acciones("btn-eliminar","btn btn-eliminar btn-accion","","Eliminar -".$fila["not_id"],"icn-trash","eliminar",$fila["not_titulo"],$fila["not_id"]); //$id,$class,$href,$title,$icono,$tarea,$nom,$ide
 
 				echo '</td>';
@@ -75,7 +75,7 @@ class NOTICIAS{
 
 	function form_editar(){
 		$fila= $this->fmt->form->form_head_form_editar('Editar Noticia','noticia','not_', $this->id_mod,'col-xs-offset-2 head-noticias','noticias');//$nom,$from,$prefijo,$id_mod,$class,$archivo
-		
+
 		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Titulo:","inputTitulo","",$fila['not_titulo'],"input-lg","",""); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar
 		$this->fmt->form->input_hidden_form("inputId",$fila['not_id']);
 		$this->fmt->form->textarea_form('Resumen:','inputResumen','',$fila['not_resumen'],'','','3','','');
@@ -83,7 +83,7 @@ class NOTICIAS{
 		$this->fmt->form->input_hidden_form("inputRutaamigable",$fila['not_ruta_amigable']);
 		$this->fmt->form->input_form('Tags:','inputTags','',$fila['not_tags'],'');
 		$this->fmt->form->input_form('Imagen:','inputImagen','',$fila['not_imagen'],'');
-		
+
 		$cats_id = $this->fmt->categoria->traer_rel_cat_id($fila["not_id"],'noticia_rel','not_rel_cat_id','not_rel_not_id'); //$fila_id,$from,$prefijo_cat,$prefijo_rel
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0",$cats_id,"","");
 
@@ -106,8 +106,8 @@ class NOTICIAS{
 		}
 		if ($_POST["btn-accion"]=="guardar"){
 			$activar=0;
-		}		
-		
+		}
+
 		$ingresar ="not_titulo,
                 not_ruta_amigable,
                 not_resumen,
@@ -124,7 +124,7 @@ class NOTICIAS{
 					$_POST['inputImagen']."','".
 					$_POST['inputTags']."','".
 					$_POST['inputFecha']."','".
-					$_POST['inputUsuario']."','".					
+					$_POST['inputUsuario']."','".
 					$activar."'";
 
 		$sql="insert into noticia (".$ingresar.") values (".$valores.")";
@@ -145,7 +145,7 @@ class NOTICIAS{
 
 		header("location: noticias.adm.php?id_mod=".$this->id_mod);
 	}
-	
+
 	function modificar(){
 		if ($_POST["btn-accion"]=="eliminar"){}
 		if ($_POST["btn-accion"]=="actualizar"){
@@ -163,30 +163,30 @@ class NOTICIAS{
 						WHERE not_id='".$_POST['inputId']."'";
 
 			$this->fmt->query->consulta($sql);
-			
+
 			$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"noticia_rel","not_rel_not_id");  //$valor,$from,$fila
-			
+
 			$ingresar1 ="not_rel_not_id,not_rel_cat_id,not_rel_orden";
 			$valor_cat= $_POST['inputCat'];
 			$num=count( $valor_cat );
 			for ($i=0; $i<$num;$i++){
 				$valores1 = "'".$_POST['inputId']."','".$valor_cat[$i]."','".$_POST['inputOrden']."'";
-				echo $sql1="insert into noticia_rel (".$ingresar1.") values (".$valores1.")";	
+				echo $sql1="insert into noticia_rel (".$ingresar1.") values (".$valores1.")";
 				$this->fmt->query->consulta($sql1);
 			}
 
-			
+
 		}
 			header("location: noticias.adm.php?id_mod=".$this->id_mod);
 	}
 
-	
+
 	function eliminar(){
   		$this->fmt->class_modulo->eliminar_get_id("noticia","not_");
   		$this->fmt->class_modulo->eliminar_get_id("noticia_rel","not_rel_not_");
   		header("location: noticias.adm.php?id_mod=".$this->id_mod);
   	}
-  	
+
   	function activar(){
 	    $this->fmt->class_modulo->activar_get_id("noticia","not_");
 	    header("location: noticias.adm.php?id_mod=".$this->id_mod);

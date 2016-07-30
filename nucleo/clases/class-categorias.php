@@ -109,6 +109,7 @@ class CATEGORIA{
     $consulta = "SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from." WHERE ".$prefijo."id_padre='0' ORDER BY ".$prefijo."orden";
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
+    
     if($num>0){
       echo "<div class='arbol-nuevo'><a href='"._RUTA_WEB.$url_modulo."'><i class='icn-plus'></i> nuevo</a></div>";
       for($i=0;$i<$num;$i++){
@@ -118,7 +119,7 @@ class CATEGORIA{
         $this->accion($fila_id,$from,$prefijo);
         echo "</div>";
         if ($this->tiene_hijos($fila_id,$from,$prefijo)){
-          $this->hijos($fila_id,'1',$from,$prefijo);
+          $this->hijos($fila_id,'0',$from,$prefijo);
         }
       }
     }else{
@@ -130,16 +131,19 @@ class CATEGORIA{
 
   function arbol($id,$cat,$cat_valor){
     //var_dump($cat_valor);
+	//echo  $cat_valor[0];
     echo "<div class='arbol-cat'>";
     $sql="SELECT cat_id, cat_nombre FROM categoria WHERE cat_id_padre='".$cat."'";
     $rs = $this->fmt->query->consulta($sql);
     $num=$this->fmt->query->num_registros($rs);
-    $nivel=1;
+    $nivel=0;
     $espacio = 0;
     $num_v = count($cat_valor);
     if($num>0){
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
+        
+        
         echo "<label style='margin-left:".$espacio."px'><input name='".$id."[]' type='checkbox' id='cat-$fila_id' value='$fila_id' $aux> <span>".$fila_nombre."</span></label>";
         if ($this->tiene_hijos_cat($fila_id)){
           $this->hijos_cat_check($id,$fila_id,$nivel);
@@ -190,6 +194,7 @@ class CATEGORIA{
     $num=$this->fmt->query->num_registros($rs);
     
     if ($num>0){
+	   $nivel++;
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
 
@@ -200,7 +205,7 @@ class CATEGORIA{
         //$this->accion($fila_id,$from,$prefijo_activar);
         echo "</div>";
         if ( $this->tiene_hijos_cat($fila_id) ){
-          $nivel++;
+          
           $this->hijos_cat($fila_id, $nivel);
         }
       }
@@ -211,13 +216,13 @@ class CATEGORIA{
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
     if ($num>0){
+	  $nivel++;  
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
         	$espacio=  $nivel * 10;
 			$aux_nivel = $this->img_nodo("linea",$nivel);
         echo $aux_nivel."<label style='margin-left:".$espacio."px'><input name='".$id."[]' id='cat-$fila_id' type='checkbox' value='$fila_id' $aux> <span>".$fila_nombre."</span></label>";
-        if ( $this->tiene_hijos_cat($fila_id) ){
-          $nivel++;
+        if ( $this->tiene_hijos_cat($fila_id) ){ 
           $this->hijos_cat_check($id,$fila_id,$nivel);
         }
       }
@@ -229,17 +234,16 @@ class CATEGORIA{
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
     if ($num>0){
+	  $nivel++;
       for($i=0;$i<$num;$i++){
-        list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
-
+        list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);	
         $valor_n= 25 * ($nivel+1);
-
         $aux_nivel = $this->img_nodo("linea",$nivel);
-        echo "<div class='nodo-hijo' style='padding-left:".$valor_n."px'> ".$aux_nivel."".$fila_nombre;
+        if ($i==$num-1) { $aux = 'icn-point-4'; } else { $aux = 'icn-point-1'; }
+        echo "<div class='nodo-hijo $aux' style='padding-left:".$valor_n."px'>".$aux_nivel."".$fila_nombre;
         $this->accion($fila_id,$from,$prefijo);
         echo "</div>";
         if ( $this->tiene_hijos($fila_id,$from,$prefijo) ){
-          $nivel++;
           $this->hijos($fila_id, $nivel,$from,$prefijo);
         }
       }

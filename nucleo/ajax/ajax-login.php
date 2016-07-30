@@ -7,7 +7,7 @@ $cat = $fmt->get->get_categoria_index();
 $pla = $fmt->get->get_plantilla_index($fmt->query,$cat);
 
 $email= $_POST['inputEmail'];
-$pw= base64_encode( $_POST['inputPassword'] );
+$pw= base64_encode( $_POST['password'] );
 //echo $email." : ".$pw;
 
 $sql="SELECT usu_id, usu_nombre, usu_email, usu_estado FROM usuarios WHERE usu_email='".$email."' and usu_password='".$pw."' ";
@@ -39,7 +39,7 @@ if($num > 0){
   }
 } else {
   echo "false";
-}
+} 
 
 
 ?>

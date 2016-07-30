@@ -30,6 +30,65 @@ body {}
 	margin-bottom : 0px;
 }
 
+
+.box-md-1{
+	width: 8%;
+}
+.box-md-2{
+	width: 16%;
+}
+.box-md-3{
+	width: 24%;
+}
+.box-md-4{
+	width: 33%;
+}
+.box-md-5{
+	width: 41% ;
+}
+.box-md-6{
+	width: 49%;
+}
+.box-md-7{
+	width: 58%;
+}
+.box-md-8{
+	width: 66%;
+}
+.box-md-9{
+	width: 74%;
+}
+.box-md-10{
+	width: 83%;
+}
+.box-md-11{
+	width: 91%;
+}
+.box-md-12{
+	width: 99%;
+}
+
+.box-md-1,.box-md-2,.box-md-3,.box-md-4,.box-md-5,.box-md-6,.box-md-7,.box-md-8,.box-md-9,.box-md-10,.box-md-11,.box-md-12{
+	float: left;
+	margin-left:3px;
+	padding-bottom: 7px;
+}
+
+.h1, .h2, .h3, h1, h2, h3 {
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+
+.clear-right{
+	clear: right;
+}
+.clear-left{
+	clear: left;
+}
+.clear-both{
+	clear:both;
+}
+
 .menu-adm{
 	z-index:180 !important;
 }
@@ -66,6 +125,11 @@ body {}
 .acordion .panel-heading{
 	padding: 0px;
 	margin-top:1px;
+}
+
+.icn-eye-open,.icn-eye-close{
+	padding-top: 3px;
+	display: inline-block;
 }
 
 .acordion  .panel, .acordion .panel-heading, .acordion .panel-default>.panel-heading{
@@ -115,6 +179,12 @@ body {}
 
 .btn-perfil {
 	margin-top : 8px;
+}
+
+.clearfix{
+	width: 100%;
+ display: inline-block;
+ height: 15px;
 }
 
 .name-user {
@@ -197,6 +267,9 @@ padding-left: 0px;
 	padding    : 15px;
 	text-align : left;
 	list-style : none;
+	height: 97vh;
+	overflow-y: auto;
+
 }
 
 .sidebar-inner .title-menu {
@@ -266,7 +339,7 @@ padding-left: 0px;
 	padding-right : 50px;
 	padding-left: 40px;
 	padding-top: 20px;
-	overflow-y:scroll;
+	overflow-y:auto;
 }
 
 .body-error{
@@ -543,8 +616,8 @@ input[type="file"] {
 
 .arbol .nodo-hijo{
 	position: relative;
-	padding-top: 3px;
-	padding-bottom: 3px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 }
 
 .arbol .nodo .i-nodo{
@@ -642,8 +715,8 @@ input[type="file"] {
 
 .dataTables_paginate .paginate_button{
 	border-radius: 3px;
-	padding: 8px 12px; 
-	margin:auto 3px; 
+	padding: 8px 12px;
+	margin:auto 3px;
 	margin-top: 10px;
 	display: inline-block;
 }
@@ -689,7 +762,7 @@ input[type="file"] {
 
 .box-doc-agregado{
 	width: 100%;
-	padding: 10px 20px 7px 20px; 
+	padding: 10px 20px 7px 20px;
 	margin:10px 0;
 	position:relative;
 }
@@ -717,4 +790,58 @@ input[type="file"] {
 	 right: 0px;
 	 top: 7px;
 	 display: inline-block;
+}
+
+.rol-cat{
+	margin-right: 20px;
+}
+
+.rol-cat .arbol-cat{
+	height: 350px;
+}
+
+.box-ms{
+	display: inline-block;
+}
+
+.box-ms label{
+	float:left;
+	margin-right: 10px;
+}
+.box-ms .btn-permiso{
+	float:left;
+	padding: 3px 3px;
+	cursor: pointer;
+}
+
+.btn-permiso.on{
+	color:#eee;
+}
+
+.box-tabla{
+	display:block;
+	margin-top: 10px;
+}
+.box-tr{
+	width: 100%;
+	height: 43px;
+	float: left;
+
+}
+.box-td{
+	display: inline-block;
+	line-height: 24px;
+	padding: 9px 10px;
+}
+
+.box-td .btn{
+	padding-top: 2px;
+}
+
+
+.tab-content{
+	padding: 20px;
+	display: inline-block;
+	width: 100%;
+	min-height: 83vh;
 }

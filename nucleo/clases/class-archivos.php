@@ -34,12 +34,12 @@ class ARCHIVOS{
     </div>
     <?php
   }
-  
-  
+
+
 
   function listar_directorios_ruta($ruta,$nivel,$directorio_p){
     $rutax = _RUTA_SERVER.$ruta;
-    
+
     $directorio = opendir($rutax);
     for ($i=0;$i<$nivel;$i++){
       $aux .= "-";
@@ -66,9 +66,9 @@ class ARCHIVOS{
     $rx = explode ("/",$ruta);
     $con = count($rx);
     $ar = str_split($ruta);
-    
+
     if ($ar[0]=="/"){ $ruta = substr($ruta, 1); }
-    
+
     /*$ruta_v = explode ("/",$ruta);
     if ($ruta_v[0]==_RUTA_DEFAULT){
       $c = strlen ($ruta_v[0] );
@@ -76,14 +76,14 @@ class ARCHIVOS{
     } else {
       $ruta_valor = $ruta;
     }*/
-  
+
 
 
     //for ($i=0; $i < $con ; $i++) {
 
      // if( $rx[$i] == $directorio_p ){
-	     
-	 if( $this->existe_palabra($ruta,$directorio_p) ){ 
+
+	 if( $this->existe_palabra($ruta,$directorio_p) ){
         echo "<option value='".$ruta."'>";
         echo $ruta;
         echo "</option>";
@@ -124,14 +124,14 @@ class ARCHIVOS{
 
      return  $bytes;
   }
-  
+
  function existe_palabra($cadena,$palabra){
 	$palabra=preg_quote($palabra);
-	if(eregi($palabra,$cadena)) { 
-	    return true; 
-	} else { 
+	if(eregi($palabra,$cadena)) {
+	    return true;
+	} else {
 	    return false;
-	} 
+	}
  }
 
 
@@ -205,12 +205,12 @@ class ARCHIVOS{
   }
 
   function saber_extension_archivo($archivo){
-    $trozos = explode(".", $archivo);
-    return  end($trozos);
+    $trozos = pathinfo($archivo);
+    return $trozos["extension"];
   }
   function saber_nombre_archivo($archivo){
-    $trozos = explode(".", $archivo);
-    return $trozos[0];
+    $trozos = pathinfo($archivo);
+    return $trozos["filename"];
   }
 
   function existe_archivo($ruta_archivo){

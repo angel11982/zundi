@@ -63,7 +63,7 @@ class MULTIMEDIA{
 			<div class="panel panel-default" >
 				<div class="panel-body">
 		<?php
-    $this->fmt->form->file_form_seleccion('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','multimedia');  //$nom,$ruta,$id_form,$class,$class_div,$id_div
+    $this->fmt->form->file_form_seleccion('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','archivos/multimedia');  //$nom,$ruta,$id_form,$class,$class_div,$id_div
 		?>
 				</div>
 			</div>

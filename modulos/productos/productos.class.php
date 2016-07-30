@@ -66,13 +66,13 @@ class PRODUCTOS{
   }
 
 	function traer_rel_cat_nombres($fila_id){
-		$consulta = "SELECT mod_prod_rel_cat_id, mod_prod_cat_nombre FROM mod_productos_cat, mod_productos_rel WHERE mod_prod_rel_prod_id='".$fila_id."' and mod_prod_cat_id = mod_prod_rel_cat_id";
+		$consulta = "SELECT cat_id, cat_nombre FROM categoria, mod_productos_rel WHERE mod_prod_rel_prod_id='".$fila_id."' and cat_id = mod_prod_rel_cat_id";
 		$rs = $this->fmt->query->consulta($consulta);
 		$num=$this->fmt->query->num_registros($rs);
 		if ($num>0){
 			for ($i=0;$i<$num;$i++){
 				list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
-				echo "- ".$fila_nombre."<br/>";
+				echo "- ".$fila_nombre." <br/>";
 			}
 		}
 	}
@@ -80,8 +80,15 @@ class PRODUCTOS{
 	function rel_id_cat($id_prod){
 		$consulta = "SELECT mod_prod_rel_cat_id FROM mod_productos_rel WHERE mod_prod_rel_prod_id='".$id_prod."'";
 		$rs = $this->fmt->query->consulta($consulta);
-		$fila=$this->fmt->query->obt_fila($rs);
-		return $fila["mod_prod_rel_cat_id"];
+		$num=$this->fmt->query->num_registros($rs);
+		if ($num>0){
+			for ($i=0;$i<$num;$i++){
+				list($fila_id)=$this->fmt->query->obt_fila($rs);
+				$valor[$i]=$fila_id;
+			}
+		}
+
+		return $valor;
 	}
 
 
@@ -91,7 +98,7 @@ class PRODUCTOS{
 		$consulta= "SELECT * FROM mod_productos WHERE mod_prod_id='".$id."'";
 		$rs =$this->fmt->query->consulta($consulta);
 		$fila=$this->fmt->query->obt_fila($rs);
-		$this->fmt->form->head_editar('Producto','productos',$this->id_mod,'','form_editar');
+		$this->fmt->form->head_editar('Editar Producto','productos',$this->id_mod,'','form_editar');
 		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Nombre archivo:","inputNombre","",$fila['mod_prod_nombre'],"input-lg","","");
 
 		if (!empty($fila['mod_prod_ruta_amigable'])){
@@ -120,6 +127,7 @@ class PRODUCTOS{
 		$this->fmt->form->input_form('Dominio:','inputDominio','',$this->fmt->categoria->traer_dominio_cat_id($fila['mod_prod_id_dominio']),'');
 		$this->fmt->form->input_form("Codigo:","inputCodigo","",$fila['mod_prod_codigo'],"","","");
 		$this->fmt->form->input_form("Modelo:","inputModelo","",$fila['mod_prod_modelo'],"","","");
+		$this->fmt->form->select_form("Marca:","InputMarca","mod_prod_mar_","mod_productos_marcas",$fila["mod_prod_id_marca"]);
 		$this->fmt->form->textarea_form("Resumen:","inputResumen","",$fila['mod_prod_resumen'],"","","5",""); //$label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
 		$this->fmt->form->textarea_form("Detalles:","inputDetalles","",$fila['mod_prod_detalles'],"summernote","","5","");
 		$this->fmt->form->textarea_form("Especificaciones:","inputEspecificaciones","",$fila['mod_prod_especificaciones'],"summernote","","5","");
@@ -127,7 +135,10 @@ class PRODUCTOS{
 		$this->fmt->form->input_form("Precio:","inputPrecio","",$fila['mod_prod_precio'],"","","");
 		$this->fmt->form->agregar_documentos("Documentos:","inputDoc",$fila['mod_prod_id'],"","","","mod_productos",$id); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
 		$this->fmt->form->input_form("Id Mul:","inputMul","",$fila['mod_prod_id_mul'],"","","");
-		$this->fmt->form->select_form("Categoría productos:","inputCat","mod_prod_cat_","mod_productos_cat",$this->rel_id_cat($fila['mod_prod_id'])); //$label,$id,$prefijo,$from,$id_s
+		//$this->fmt->form->select_form("Categoría productos:","inputCat","mod_prod_cat_","mod_productos_cat",$this->rel_id_cat($fila['mod_prod_id'])); //$label,$id,$prefijo,$from,$id_s
+		//echo $this->rel_id_cat($fila['mod_prod_id']);
+		$this->fmt->form->categoria_form('Categoria','inputCat',"0",$this->rel_id_cat($fila['mod_prod_id']),"",""); //$$label,$id,$cat_raiz,$cat_valor,$class,$class_div
+
 		$this->fmt->form->radio_activar_form($fila['mod_prod_activar']);
 		$this->fmt->form->botones_editar($id,$fila['mod_prod_nombre'],'Producto');//$fila_id,$fila_nombre,$nombre
 		?>
@@ -193,6 +204,9 @@ class PRODUCTOS{
 					<label>Modelo:</label>
 					<input class="form-control" id="inputModelo" name="inputModelo" placeholder="" />
 				</div>
+				<?php
+					$this->fmt->form->select_form("Marca:","InputMarca","mod_prod_mar_","mod_productos_marcas");
+				?>
 				<div class="form-group form-descripcion">
 					<label>Resumén</label>
 					<textarea class="form-control" rows="5" id="inputResumen" name="inputResumen" placeholder=""></textarea>
@@ -215,20 +229,16 @@ class PRODUCTOS{
 					<label>Precio:</label>
 					<input class="form-control" id="inputPrecio" name="inputPrecio" placeholder="" />
 				</div>
-				<div class="form-group">
-					<label>Id Doc:</label>
-					<input class="form-control" id="inputDoc" name="inputDoc" placeholder="" />
-				</div>
+				<?php
+					$this->fmt->form->agregar_documentos("Documentos:","inputDoc","","","","","",""); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
+				?>
 				<div class="form-group">
 					<label>Id Mul:</label>
 					<input class="form-control" id="inputMul" name="inputMul" placeholder="" />
 				</div>
-				<div class="form-group">
-					<label>Categoria productos:</label>
-					<select class="form-control" id="inputCat" name="inputCat">
-						<?php $this->fmt->categoria->traer_opciones($fila['mod_prod_cat_id'],'mod_productos_cat','mod_prod_cat_'); ?>
-					</select>
-				</div>
+				<?php
+				$this->fmt->form->categoria_form('Categoria','inputCat',"0","","",""); //$$label,$id,$cat_raiz,$cat_valor,$class,$class_div
+				?>
 
 				<div class="form-group form-botones">
 					 <button type="submit" class="btn btn-info  btn-guardar color-bg-celecte-b btn-lg" name="btn-accion" id="btn-guardar" value="guardar"><i class="icn-save" ></i> Guardar</button>
@@ -265,7 +275,7 @@ class PRODUCTOS{
 		if ($_POST["btn-accion"]=="guardar"){
 			$activar=0;
 		}
-		$ingresar ="mod_prod_nombre, mod_prod_ruta_amigable, mod_prod_tags, mod_prod_codigo, mod_prod_modelo,mod_prod_resumen, mod_prod_detalles, mod_prod_especificaciones, mod_prod_disponibilidad, mod_prod_imagen,mod_prod_precio, mod_prod_id_doc, mod_prod_id_mul, mod_prod_id_dominio, mod_prod_activar";
+		$ingresar ="mod_prod_nombre, mod_prod_ruta_amigable, mod_prod_tags, mod_prod_codigo, mod_prod_modelo,mod_prod_resumen, mod_prod_detalles, mod_prod_especificaciones, mod_prod_disponibilidad, mod_prod_imagen,mod_prod_precio, mod_prod_id_marca, mod_prod_id_doc, mod_prod_id_mul, mod_prod_id_dominio, mod_prod_activar";
 		$valores  ="'".$_POST['inputNombre']."','".
 									 $_POST['inputNombreAmigable']."','".
 									 $_POST['inputTags']."','".
@@ -277,6 +287,7 @@ class PRODUCTOS{
 									 $_POST['inputDisponibilidad']."','".
 									 $_POST['inputUrlArchivo']."','".
 									 $_POST['inputPrecio']."','".
+									 $_POST['InputMarca']."','".
 									 $_POST['inputDoc']."','".
 									 $_POST['inputMul']."','".
 									 $_POST['inputDominio']."','".
@@ -289,10 +300,27 @@ class PRODUCTOS{
 		$rs= $this->fmt->query->consulta($sql);
 		$fila = $this->fmt->query->obt_fila($rs);
 	  $id = $fila ["id"];
-		$ingresar1 ="mod_prod_rel_prod_id, mod_prod_rel_cat_id";
-		$valores1 = "'".$id."','".$_POST['inputCat']."'";
-		$sql1="insert into mod_productos_rel (".$ingresar1.") values (".$valores1.")";
-		$this->fmt->query->consulta($sql1);
+
+		$ingresar1 = "mod_prod_rel_prod_id,mod_prod_rel_cat_id";
+		$valor_cat=$_POST['inputCat'];
+		$num_cat=count( $valor_cat );
+		//var_dump($valor_cat);
+
+		for ($i=0; $i<$num_cat;$i++){
+			$valores1 = "'".$_POST['inputId']."','".$valor_cat[$i]."'";
+			$sql1="insert into mod_productos_rel  (".$ingresar1.") values (".$valores1.")";
+			$this->fmt->query->consulta($sql1);
+		}
+
+		$ingresar2 ="mod_prod_rel_prod_id,mod_prod_rel_doc_id,mod_prod_rel_orden";
+		//var_dump($_POST['inputDoc']);
+		$valor_doc= $_POST['inputDoc'];
+		$num=count( $valor_doc );
+		for ($i=0; $i<$num;$i++){
+			$valores2 = "'".$_POST['inputId']."','".$valor_doc[$i]."','".$i."'";
+			$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";
+			$this->fmt->query->consulta($sql2);
+		}
 
 		header("location: productos.adm.php?id_mod=".$this->id_mod);
 	}
@@ -313,6 +341,7 @@ class PRODUCTOS{
 						mod_prod_disponibilidad='".$_POST['inputDisponibilidad']."',
 						mod_prod_imagen='".$_POST['inputUrl']."',
 						mod_prod_precio='".$_POST['inputPrecio']."',
+						mod_prod_id_marca='".$_POST['InputMarca']."',
 						mod_prod_id_dominio='".$this->fmt->categoria->traer_id_cat_dominio($_POST['inputDominio'])."',
 						mod_prod_id_doc='".$_POST['inputDoc']."',
 						mod_prod_id_mul='".$_POST['inputMul']."',
@@ -320,27 +349,29 @@ class PRODUCTOS{
 						WHERE mod_prod_id='".$_POST['inputId']."'";
 
 			$this->fmt->query->consulta($sql);
-			
+
 			$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"mod_productos_rel","mod_prod_rel_prod_id");  //$valor,$from,$fila
 
 			$ingresar1 = "mod_prod_rel_prod_id,mod_prod_rel_cat_id";
-			$valores1 = "'".$_POST['inputId']."','".$_POST['inputCat']."'";
-			$sql1="insert into mod_productos_rel  (".$ingresar1.") values (".$valores1.")";
-			$this->fmt->query->consulta($sql1);
-			
-						
+			$valor_cat=$_POST['inputCat'];
+			$num_cat=count( $valor_cat );
+			//var_dump($valor_cat);
+
+			for ($i=0; $i<$num_cat;$i++){
+				$valores1 = "'".$_POST['inputId']."','".$valor_cat[$i]."'";
+				$sql1="insert into mod_productos_rel  (".$ingresar1.") values (".$valores1.")";
+				$this->fmt->query->consulta($sql1);
+			}
+
 			$ingresar2 ="mod_prod_rel_prod_id,mod_prod_rel_doc_id,mod_prod_rel_orden";
-			var_dump($_POST['inputDoc']);
+			//var_dump($_POST['inputDoc']);
 			$valor_doc= $_POST['inputDoc'];
 			$num=count( $valor_doc );
 			for ($i=0; $i<$num;$i++){
 				$valores2 = "'".$_POST['inputId']."','".$valor_doc[$i]."','".$i."'";
-				$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";	
+				$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";
 				$this->fmt->query->consulta($sql2);
 			}
-
-			
-
 
 		}
 		header("location: productos.adm.php?id_mod=".$this->id_mod);

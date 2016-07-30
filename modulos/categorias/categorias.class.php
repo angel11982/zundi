@@ -194,6 +194,24 @@ class CATEGORIAS{
 
       </form>
     </div>
+    <script>
+			$(document).ready(function () {
+					var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-ruta-amigable.php";
+					$("#inputNombre").keyup(function () {
+							var value = $(this).val();
+							//$("#inputNombreAmigable").val();
+							$.ajax({
+									url: ruta,
+									type: "POST",
+									data: { inputRuta:value },
+									success: function(datos){
+										$("#inputRutaamigable").val(datos);
+									}
+							});
+					});
+			});
+		</script>
+
     <?php
     $this->fmt->class_modulo->script_form($this->fmt->query,"modulos/categorias/categorias.adm.php",$this->id_mod);
   }
@@ -327,6 +345,23 @@ class CATEGORIAS{
 
       </form>
     </div>
+        <script>
+			$(document).ready(function () {
+					var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-ruta-amigable.php";
+					$("#inputNombre").keyup(function () {
+							var value = $(this).val();
+							//$("#inputNombreAmigable").val();
+							$.ajax({
+									url: ruta,
+									type: "POST",
+									data: { inputRuta:value },
+									success: function(datos){
+										$("#inputRutaamigable").val(datos);
+									}
+							});
+					});
+			});
+		</script>
     <?php
     $this->fmt->class_modulo->script_form($this->fmt->query,"modulos/categorias/categorias.adm.php",$this->id_mod);
   }

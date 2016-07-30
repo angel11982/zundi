@@ -8,15 +8,41 @@ class NAV{
   function __construct($fmt){
     $this->fmt = $fmt;
   }
+  function activado_sistemas_rol($id_mod,$id_rol){
+	$sql ="SELECT DISTINCT rol_rel_mod_id, rol_rel_mod_p_ver, rol_rel_mod_p_activar,  rol_rel_mod_p_agregar, rol_rel_mod_p_editar, rol_rel_mod_p_eliminar FROM roles_rel WHERE rol_rel_rol_id='$id_rol' and rol_rel_mod_id=$id_mod ";
+    $rs = $this->fmt->query->consulta($sql);
+    $num = $this->fmt->query->num_registros($rs);
+    if($num>0)
+    	return true;
+    else
+    	return false;
+  }
+  function activado_sistemas_rol_mod($id_sis,$id_rol){
+	$sql ="SELECT modulos_mod_id FROM sistemas_modulos where sistemas_sis_id='$id_sis' ORDER BY modulos_mod_id ASC ";
+    $rs = $this->fmt->query->consulta($sql);
+    $num =$this->fmt->query->num_registros($rs);
+    $sw=false;
+    if ($num>0){
+	    for ($i=0; $i<$num; $i++){
+        	list($fila_id) = $this->fmt->query->obt_fila($rs);
+        	if($this->activado_sistemas_rol($fila_id,$id_rol))
+        		$sw=true;
+        }
+    }
+    return $sw;
 
+  }
   function construir_sistemas_rol($id_rol,$id_usu){  // revisar por roles
-    $sql ="SELECT sis_id, sis_nombre, sis_icono FROM sistemas where sis_activar='1' ORDER BY sis_id DESC";
+    $sql ="SELECT sis_id, sis_nombre, sis_icono FROM sistemas where sis_activar='1' ORDER BY sis_nombre ASC";
     $rs = $this->fmt->query->consulta($sql);
     $num = $this->fmt->query->num_registros($rs);
       if($num>0){
         for($i=0;$i < $num; $i++){
           list($fila_id,$fila_nombre,$fila_icono) = $this->fmt->query->obt_fila($rs);
-          $aux .= $this->acordion($fila_id, "btn-menu-sidebar", $fila_nombre, $fila_icono); //$nombre, $menu, $id_sistema, $id_modulo
+          if($id_rol==1)
+          	$aux .= $this->acordion($fila_id, "btn-menu-sidebar", $fila_nombre, $fila_icono,$id_rol); //$nombre, $menu, $id_sistema, $id_modulo
+          else if($this->activado_sistemas_rol_mod($fila_id,$id_rol))
+	       	$aux .= $this->acordion($fila_id, "btn-menu-sidebar", $fila_nombre, $fila_icono,$id_rol);
         }
       }
     return $aux;
@@ -78,7 +104,7 @@ class NAV{
     return $aux;
   }
 
-  function acordion($id, $clase,$nombre, $icono){
+  function acordion($id, $clase,$nombre, $icono,$id_rol,$id_usu){
     $aux ='<div class="panel-group acordion" id="accordion" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading-'.$id.'">
@@ -88,7 +114,7 @@ class NAV{
         </div>
         <div id="collapse-'.$id.'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-'.$id.'">
           <div class="panel-body">
-            '.$this->traer_modulos($id).'
+            '.$this->traer_modulos($id,$id_rol).'
           </div>
         </div>
       </div>
@@ -96,14 +122,19 @@ class NAV{
     return $aux;
   }
 
-  function traer_modulos($id){
-    $sql ="SELECT modulos_mod_id FROM sistemas_modulos where sistemas_sis_id='$id' ORDER BY modulos_mod_id DESC ";
+  function traer_modulos($id,$id_rol,$id_usu){
+    $sql ="SELECT modulos_mod_id FROM sistemas_modulos where sistemas_sis_id='$id' ORDER BY modulos_mod_id ASC ";
     $rs = $this->fmt->query->consulta($sql);
     $num =$this->fmt->query->num_registros($rs);
     if ($num>0){
       for ($i=0; $i<$num; $i++){
         list($fila_id) = $this->fmt->query->obt_fila($rs);
-        $aux .= $this->construir_btn_sidebar("btn btn-sm-sidebar btn-menu-ajax",$fila_id);
+        if($id_rol==1)
+        	$aux .= $this->construir_btn_sidebar("btn btn-sm-sidebar btn-menu-ajax",$fila_id);
+        else{
+	        if($this->activado_sistemas_rol($fila_id,$id_rol))
+	        	$aux .= $this->construir_btn_sidebar("btn btn-sm-sidebar btn-menu-ajax",$fila_id);
+        }
       }
     }
     return $aux;
