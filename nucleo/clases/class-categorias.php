@@ -47,13 +47,24 @@ class CATEGORIA{
 
   function nombre_categoria($cat){
 	$this->fmt->get->validar_get($cat);
-  if ($cat==0){
-    return 'raiz (0)';
-  }
+	  if ($cat==0){
+	    return 'raiz (0)';
+	  }
 	$consulta = "SELECT cat_nombre FROM categoria WHERE cat_id='$cat' ";
     $rs = $this->fmt->query->consulta($consulta);
     $fila = $this->fmt->query->obt_fila($rs);
     $nombre=$fila["cat_nombre"];
+    return $nombre;
+  }
+
+
+  function cat_imagen($cat){
+	$consulta = "SELECT cat_imagen FROM categoria WHERE cat_id='$cat' ";
+    $rs = $this->fmt->query->consulta($consulta);
+    $fila = $this->fmt->query->obt_fila($rs);
+    $nombre=$fila["cat_imagen"];
+    if($nombre=="")
+    	$nombre="sitios/intranet/images/default-noticias-cat.png";
     return $nombre;
   }
 
@@ -80,6 +91,8 @@ class CATEGORIA{
     $nombre=$fila[$prefijo."nombre"];
     return $nombre;
   }
+
+
 
   function categoria_padre_sitio($cat){
   	$this->fmt->get->validar_get($cat);
@@ -109,7 +122,7 @@ class CATEGORIA{
     $consulta = "SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from." WHERE ".$prefijo."id_padre='0' ORDER BY ".$prefijo."orden";
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
-    
+
     if($num>0){
       echo "<div class='arbol-nuevo'><a href='"._RUTA_WEB.$url_modulo."'><i class='icn-plus'></i> nuevo</a></div>";
       for($i=0;$i<$num;$i++){
@@ -129,6 +142,61 @@ class CATEGORIA{
     return;
   }
 
+  function arbol_editable_nodo($from,$prefijo,$raiz){
+    echo "<div class='arbol'>";
+	if (empty($raiz))
+		$raiz=0;
+    $consulta = "SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from." WHERE ".$prefijo."id='".$raiz."' ORDER BY ".$prefijo."orden";
+    $rs = $this->fmt->query->consulta($consulta);
+    $num=$this->fmt->query->num_registros($rs);
+
+    if($num>0){
+      //echo "<div class='arbol-nuevo'><a href='"._RUTA_WEB.$url_modulo."'><i class='icn-plus'></i> nuevo</a></div>";
+      for($i=0;$i<$num;$i++){
+        list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
+        if ($i==$num-1) { $aux = 'icn-point-4'; } else { $aux = 'icn-point-1'; }
+        echo "<div class='nodo'><i class='".$aux." i-nodo'></i> ".$fila_nombre;
+        $this->accion($fila_id,$from,$prefijo);
+        echo "</div>";
+        if ($this->tiene_hijos($fila_id,$from,$prefijo)){
+          $this->hijos($fila_id,'0',$from,$prefijo);
+        }
+      }
+    }else{
+      //echo "<div class='arbol-nuevo'><a href='"._RUTA_WEB.$url_modulo."'><i class='icn-plus'></i> nuevo</a></div>";
+    }
+    echo "</div>";
+    return;
+  }
+
+  function arbol_editable_mod($from,$prefijo,$where,$url_modulo,$class_div){
+    echo "<div class='arbol ".$class_div." '>";
+  if (empty($raiz))
+    $consulta = "SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from." WHERE ".$where." ORDER BY ".$prefijo."orden";
+    $rs = $this->fmt->query->consulta($consulta);
+    $num=$this->fmt->query->num_registros($rs);
+
+    if($num>0){
+      echo "<div class='arbol-nuevo'><a href='"._RUTA_WEB.$url_modulo."'><i class='icn-plus'></i> nuevo</a></div>";
+       for($i=0;$i<$num;$i++){
+        list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
+        if ($i==$num-1) { $aux = 'icn-point-4'; } else { $aux = 'icn-point-1'; }
+        echo "<div class='nodo'><i class='".$aux." i-nodo'></i> ".$fila_nombre;
+        $this->accion($fila_id,$from,$prefijo);
+        echo "</div>";
+          if ($this->tiene_hijos($fila_id,$from,$prefijo)){
+           $this->hijos($fila_id,'0',$from,$prefijo);
+           //echo "tiene";
+          }
+        }
+    }else{
+      echo "<div class='arbol-nuevo'><a href='"._RUTA_WEB.$url_modulo."'><i class='icn-plus'></i> nuevo</a></div>";
+    }
+    echo "</div>";
+    return;
+  }
+
+
   function arbol($id,$cat,$cat_valor){
     //var_dump($cat_valor);
 	//echo  $cat_valor[0];
@@ -142,8 +210,8 @@ class CATEGORIA{
     if($num>0){
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
-        
-        
+
+
         echo "<label style='margin-left:".$espacio."px'><input name='".$id."[]' type='checkbox' id='cat-$fila_id' value='$fila_id' $aux> <span>".$fila_nombre."</span></label>";
         if ($this->tiene_hijos_cat($fila_id)){
           $this->hijos_cat_check($id,$fila_id,$nivel);
@@ -192,7 +260,7 @@ class CATEGORIA{
     $consulta = "SELECT cat_id,cat_nombre  FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_orden";
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
-    
+
     if ($num>0){
 	   $nivel++;
       for($i=0;$i<$num;$i++){
@@ -205,7 +273,7 @@ class CATEGORIA{
         //$this->accion($fila_id,$from,$prefijo_activar);
         echo "</div>";
         if ( $this->tiene_hijos_cat($fila_id) ){
-          
+
           $this->hijos_cat($fila_id, $nivel);
         }
       }
@@ -216,13 +284,13 @@ class CATEGORIA{
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
     if ($num>0){
-	  $nivel++;  
+	  $nivel++;
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
         	$espacio=  $nivel * 10;
 			$aux_nivel = $this->img_nodo("linea",$nivel);
         echo $aux_nivel."<label style='margin-left:".$espacio."px'><input name='".$id."[]' id='cat-$fila_id' type='checkbox' value='$fila_id' $aux> <span>".$fila_nombre."</span></label>";
-        if ( $this->tiene_hijos_cat($fila_id) ){ 
+        if ( $this->tiene_hijos_cat($fila_id) ){
           $this->hijos_cat_check($id,$fila_id,$nivel);
         }
       }
@@ -236,7 +304,7 @@ class CATEGORIA{
     if ($num>0){
 	  $nivel++;
       for($i=0;$i<$num;$i++){
-        list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);	
+        list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
         $valor_n= 25 * ($nivel+1);
         $aux_nivel = $this->img_nodo("linea",$nivel);
         if ($i==$num-1) { $aux = 'icn-point-4'; } else { $aux = 'icn-point-1'; }
@@ -260,7 +328,7 @@ class CATEGORIA{
     echo " <i class='".$i." btn-i btn-activar-i' estado='".$a."'  cat='".$cat."'></i>";
     echo " <i class='icn-pencil btn-i btn-editar-i' title='editar $cat' cat='".$cat."'></i>";
     echo " <i class='icn-block-page btn-i btn-contenedores' cat='".$cat."' ></i>";
-    echo " <i class='icn-trash btn-i btn-eliminar' idEliminar='".$cat."' nombreEliminar='".$this->nombre($cat,$from,$prefijo)."'  cat='".$cat."' ></i>";
+    echo " <i class='icn-trash btn-i btn-eliminar' ide='".$cat."' tarea='eliminar' nombre='".$this->nombre($cat,$from,$prefijo)."'  cat='".$cat."' ></i>";
     return;
   }
 
@@ -448,6 +516,15 @@ class CATEGORIA{
     $rs = $this->fmt->query->consulta($consulta);
     $fila=$this->fmt->query->obt_fila($rs);
     return $fila["cat_id"];
+  }
+  function traer_ruta_amigable_padre($cat){
+	  $ruta=$this->ruta_amigable($cat);
+	  $cat_padre=$this->categoria_id_padre($cat);
+	  if($cat_padre!=0){
+		  $ruta=$this->traer_ruta_amigable_padre($cat_padre)."/".$ruta;
+	  }
+	  return $ruta;
+
   }
 }
 ?>

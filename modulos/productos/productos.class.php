@@ -16,6 +16,7 @@ class PRODUCTOS{
     $botones = $this->fmt->class_pagina->crear_btn("productos.adm.php?tarea=form_nuevo&id_mod=$this->id_mod","btn btn-primary","icn-plus","Nuevo Producto");  // link, tarea, clase, icono, nombre
     $this->fmt->class_pagina->crear_head( $this->id_mod, $botones); // bd, id modulo, botones
     $this->fmt->class_modulo->script_form("modulos/productos/productos.adm.php",$this->id_mod);
+    $this->eliminar_mul("0");
     ?>
     <div class="body-modulo">
     <div class="table-responsive">
@@ -49,7 +50,7 @@ class PRODUCTOS{
               <td>
 
                 <a  id="btn-editar-modulo" class="btn btn-accion btn-editar" href="<? echo $url; ?>" title="Editar <? echo $fila_id."-".$fila_url; ?>" ><i class="icn-pencil"></i></a>
-                <a  title="eliminar <? echo $fila_id; ?>" type="button" idEliminar="<? echo $fila_id; ?>" nombreEliminar="<? echo $fila_nombre; ?>" class="btn btn-eliminar btn-accion"><i class="icn-trash"></i></a>
+                <a  title="eliminar <? echo $fila_id; ?>" type="button" idEliminar="<? echo $fila_id; ?>" nombreEliminar="<? echo $fila_nombre; ?>" tarea="eliminar" class="btn btn-eliminar btn-accion"><i class="icn-trash"></i></a>
               </td>
             </tr>
             <?php
@@ -135,6 +136,7 @@ class PRODUCTOS{
 		$this->fmt->form->input_form("Precio:","inputPrecio","",$fila['mod_prod_precio'],"","","");
 		$this->fmt->form->agregar_documentos("Documentos:","inputDoc",$fila['mod_prod_id'],"","","","mod_productos",$id); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
 		$this->fmt->form->input_form("Id Mul:","inputMul","",$fila['mod_prod_id_mul'],"","","");
+		$this->fmt->form->multimedia_form("Multimedia:","imagenes","archivos/productos/","100x100","mod_productos_mul","mod_pro_mul_id_prod_mul","mod_pro_mul_id_prod","mod_pro_mul_ruta","mod_pro_mul_dominio",$fila['mod_prod_id']);
 		//$this->fmt->form->select_form("Categoría productos:","inputCat","mod_prod_cat_","mod_productos_cat",$this->rel_id_cat($fila['mod_prod_id'])); //$label,$id,$prefijo,$from,$id_s
 		//echo $this->rel_id_cat($fila['mod_prod_id']);
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0",$this->rel_id_cat($fila['mod_prod_id']),"",""); //$$label,$id,$cat_raiz,$cat_valor,$class,$class_div
@@ -171,15 +173,15 @@ class PRODUCTOS{
 		$this->fmt->class_pagina->crear_head_form("Nuevo Producto", $botones,"");// nombre, botones-left, botones-right
 		?>
 		<div class="body-modulo col-xs-6 col-xs-offset-3">
-			<form class="form form-modulo" action="productos.adm.php?tarea=ingresar&id_mod=<? echo $this->id_mod; ?>"  method="POST" id="form_nuevo">
+			<form class="form form-modulo" action="productos.adm.php?tarea=ingresar&id_mod=<? echo $this->id_mod; ?>"  method="POST" id="form_nuevo" enctype="multipart/form-data">
 				<div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
 				<div class="form-group">
 					<label>Nombre Producto:</label>
-					<input class="form-control input-lg"  id="inputNombre" name="inputNombre" placeholder=" " type="text" autofocus />
+					<input class="form-control input-lg" required  id="inputNombre" name="inputNombre" placeholder=" " type="text" autofocus />
 				</div>
 				<div class="form-group">
 					<label>Nombre amigable:</label>
-					<input class="form-control"  id="inputNombreAmigable" name="inputNombreAmigable" placeholder=" " type="text" disabled/>
+					<input class="form-control"  id="inputNombreAmigable" name="inputNombreAmigable" placeholder=" " type="text" />
 				</div>
 
 				<div class="form-group">
@@ -236,7 +238,9 @@ class PRODUCTOS{
 					<label>Id Mul:</label>
 					<input class="form-control" id="inputMul" name="inputMul" placeholder="" />
 				</div>
+
 				<?php
+				$this->fmt->form->multimedia_form("Multimedia:","imagenes","archivos/productos/","100x100","mod_productos_mul","mod_pro_mul_id_prod_mul","mod_pro_mul_id_prod","mod_pro_mul_ruta","mod_pro_mul_dominio"); //$label,$input,$ruta,$thumb,$table,$col_id_extra,$col_id,$col_ruta,$col_dom,$id_mul
 				$this->fmt->form->categoria_form('Categoria','inputCat',"0","","",""); //$$label,$id,$cat_raiz,$cat_valor,$class,$class_div
 				?>
 
@@ -261,6 +265,8 @@ class PRODUCTOS{
 									}
 							});
 			    });
+
+
 			});
 		</script>
 		<?php
@@ -275,82 +281,35 @@ class PRODUCTOS{
 		if ($_POST["btn-accion"]=="guardar"){
 			$activar=0;
 		}
-		$ingresar ="mod_prod_nombre, mod_prod_ruta_amigable, mod_prod_tags, mod_prod_codigo, mod_prod_modelo,mod_prod_resumen, mod_prod_detalles, mod_prod_especificaciones, mod_prod_disponibilidad, mod_prod_imagen,mod_prod_precio, mod_prod_id_marca, mod_prod_id_doc, mod_prod_id_mul, mod_prod_id_dominio, mod_prod_activar";
-		$valores  ="'".$_POST['inputNombre']."','".
-									 $_POST['inputNombreAmigable']."','".
-									 $_POST['inputTags']."','".
-									 $_POST['inputCodigo']."','".
-									 $_POST['inputModelo']."','".
-									 $_POST['inputResumen']."','".
-									 $_POST['inputDetalles']."','".
-									 $_POST['inputEspecificaciones']."','".
-									 $_POST['inputDisponibilidad']."','".
-									 $_POST['inputUrlArchivo']."','".
-									 $_POST['inputPrecio']."','".
-									 $_POST['InputMarca']."','".
-									 $_POST['inputDoc']."','".
-									 $_POST['inputMul']."','".
-									 $_POST['inputDominio']."','".
-									 $activar."'";
+		if($_POST["inputNombre"]!=""){
+			$ingresar ="mod_prod_nombre, mod_prod_ruta_amigable, mod_prod_tags, mod_prod_codigo, mod_prod_modelo,mod_prod_resumen, mod_prod_detalles, mod_prod_especificaciones, mod_prod_disponibilidad, mod_prod_imagen,mod_prod_precio, mod_prod_id_marca, mod_prod_id_doc, mod_prod_id_mul, mod_prod_id_dominio, mod_prod_activar";
+			$valores  ="'".$_POST['inputNombre']."','".
+										 $_POST['inputNombreAmigable']."','".
+										 $_POST['inputTags']."','".
+										 $_POST['inputCodigo']."','".
+										 $_POST['inputModelo']."','".
+										 $_POST['inputResumen']."','".
+										 $_POST['inputDetalles']."','".
+										 $_POST['inputEspecificaciones']."','".
+										 $_POST['inputDisponibilidad']."','".
+										 $_POST['inputUrlArchivo']."','".
+										 $_POST['inputPrecio']."','".
+										 $_POST['InputMarca']."','".
+										 $_POST['inputDoc']."','".
+										 $_POST['inputMul']."','".
+										 $_POST['inputDominio']."','".
+										 $activar."'";
 
-		$sql="insert into mod_productos (".$ingresar.") values (".$valores.")";
-		$this->fmt->query->consulta($sql);
-
-		$sql="select max(mod_prod_id) as id from mod_productos";
-		$rs= $this->fmt->query->consulta($sql);
-		$fila = $this->fmt->query->obt_fila($rs);
-	  $id = $fila ["id"];
-
-		$ingresar1 = "mod_prod_rel_prod_id,mod_prod_rel_cat_id";
-		$valor_cat=$_POST['inputCat'];
-		$num_cat=count( $valor_cat );
-		//var_dump($valor_cat);
-
-		for ($i=0; $i<$num_cat;$i++){
-			$valores1 = "'".$_POST['inputId']."','".$valor_cat[$i]."'";
-			$sql1="insert into mod_productos_rel  (".$ingresar1.") values (".$valores1.")";
-			$this->fmt->query->consulta($sql1);
-		}
-
-		$ingresar2 ="mod_prod_rel_prod_id,mod_prod_rel_doc_id,mod_prod_rel_orden";
-		//var_dump($_POST['inputDoc']);
-		$valor_doc= $_POST['inputDoc'];
-		$num=count( $valor_doc );
-		for ($i=0; $i<$num;$i++){
-			$valores2 = "'".$_POST['inputId']."','".$valor_doc[$i]."','".$i."'";
-			$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";
-			$this->fmt->query->consulta($sql2);
-		}
-
-		header("location: productos.adm.php?id_mod=".$this->id_mod);
-	}
-
-	function modificar(){
-		if ($_POST["btn-accion"]=="eliminar"){}
-		if ($_POST["btn-accion"]=="actualizar"){
-
-			$sql="UPDATE mod_productos SET
-						mod_prod_nombre='".$_POST['inputNombre']."',
-						mod_prod_ruta_amigable ='".$_POST['inputNombreAmigable']."',
-						mod_prod_tags ='".$_POST['inputTags']."',
-						mod_prod_codigo='".$_POST['inputCodigo']."',
-						mod_prod_modelo='".$_POST['inputModelo']."',
-						mod_prod_resumen='".$_POST['inputResumen']."',
-						mod_prod_detalles='".$_POST['inputDetalles']."',
-						mod_prod_especificaciones='".$_POST['inputEspecificaciones']."',
-						mod_prod_disponibilidad='".$_POST['inputDisponibilidad']."',
-						mod_prod_imagen='".$_POST['inputUrl']."',
-						mod_prod_precio='".$_POST['inputPrecio']."',
-						mod_prod_id_marca='".$_POST['InputMarca']."',
-						mod_prod_id_dominio='".$this->fmt->categoria->traer_id_cat_dominio($_POST['inputDominio'])."',
-						mod_prod_id_doc='".$_POST['inputDoc']."',
-						mod_prod_id_mul='".$_POST['inputMul']."',
-						mod_prod_activar='".$_POST['inputActivar']."'
-						WHERE mod_prod_id='".$_POST['inputId']."'";
-
+			$sql="insert into mod_productos (".$ingresar.") values (".$valores.")";
 			$this->fmt->query->consulta($sql);
 
-			$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"mod_productos_rel","mod_prod_rel_prod_id");  //$valor,$from,$fila
+			$sql="select max(mod_prod_id) as id from mod_productos";
+			$rs= $this->fmt->query->consulta($sql);
+			$fila = $this->fmt->query->obt_fila($rs);
+			$id = $fila ["id"];
+
+		  	$sql_upd="UPDATE mod_productos_mul SET mod_pro_mul_id_prod='$id' where mod_pro_mul_id_prod='0'";
+		  	$this->fmt->query->consulta($sql_upd);
 
 			$ingresar1 = "mod_prod_rel_prod_id,mod_prod_rel_cat_id";
 			$valor_cat=$_POST['inputCat'];
@@ -358,7 +317,7 @@ class PRODUCTOS{
 			//var_dump($valor_cat);
 
 			for ($i=0; $i<$num_cat;$i++){
-				$valores1 = "'".$_POST['inputId']."','".$valor_cat[$i]."'";
+				$valores1 = "'".$id."','".$valor_cat[$i]."'";
 				$sql1="insert into mod_productos_rel  (".$ingresar1.") values (".$valores1.")";
 				$this->fmt->query->consulta($sql1);
 			}
@@ -372,7 +331,58 @@ class PRODUCTOS{
 				$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";
 				$this->fmt->query->consulta($sql2);
 			}
+		}
+		header("location: productos.adm.php?id_mod=".$this->id_mod);
+	}
 
+	function modificar(){
+		if ($_POST["btn-accion"]=="eliminar"){}
+		if ($_POST["btn-accion"]=="actualizar"){
+			if($_POST["inputNombre"]!=""){
+				$sql="UPDATE mod_productos SET
+							mod_prod_nombre='".$_POST['inputNombre']."',
+							mod_prod_ruta_amigable ='".$_POST['inputNombreAmigable']."',
+							mod_prod_tags ='".$_POST['inputTags']."',
+							mod_prod_codigo='".$_POST['inputCodigo']."',
+							mod_prod_modelo='".$_POST['inputModelo']."',
+							mod_prod_resumen='".$_POST['inputResumen']."',
+							mod_prod_detalles='".$_POST['inputDetalles']."',
+							mod_prod_especificaciones='".$_POST['inputEspecificaciones']."',
+							mod_prod_disponibilidad='".$_POST['inputDisponibilidad']."',
+							mod_prod_imagen='".$_POST['inputUrl']."',
+							mod_prod_precio='".$_POST['inputPrecio']."',
+							mod_prod_id_marca='".$_POST['InputMarca']."',
+							mod_prod_id_dominio='".$this->fmt->categoria->traer_id_cat_dominio($_POST['inputDominio'])."',
+							mod_prod_id_doc='".$_POST['inputDoc']."',
+							mod_prod_id_mul='".$_POST['inputMul']."',
+							mod_prod_activar='".$_POST['inputActivar']."'
+							WHERE mod_prod_id='".$_POST['inputId']."'";
+
+				$this->fmt->query->consulta($sql);
+
+				$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"mod_productos_rel","mod_prod_rel_prod_id");  //$valor,$from,$fila
+
+				$ingresar1 = "mod_prod_rel_prod_id,mod_prod_rel_cat_id";
+				$valor_cat=$_POST['inputCat'];
+				$num_cat=count( $valor_cat );
+				//var_dump($valor_cat);
+
+				for ($i=0; $i<$num_cat;$i++){
+					$valores1 = "'".$_POST['inputId']."','".$valor_cat[$i]."'";
+					$sql1="insert into mod_productos_rel  (".$ingresar1.") values (".$valores1.")";
+					$this->fmt->query->consulta($sql1);
+				}
+
+				$ingresar2 ="mod_prod_rel_prod_id,mod_prod_rel_doc_id,mod_prod_rel_orden";
+				//var_dump($_POST['inputDoc']);
+				$valor_doc= $_POST['inputDoc'];
+				$num=count( $valor_doc );
+				for ($i=0; $i<$num;$i++){
+					$valores2 = "'".$_POST['inputId']."','".$valor_doc[$i]."','".$i."'";
+					$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";
+					$this->fmt->query->consulta($sql2);
+				}
+			}
 		}
 		header("location: productos.adm.php?id_mod=".$this->id_mod);
 	}
@@ -387,13 +397,22 @@ class PRODUCTOS{
 		$sql="DELETE FROM mod_productos_rel WHERE mod_prod_rel_prod_id='".$id."'";
 		$this->fmt->query->consulta($sql);
 
+		$this->eliminar_mul($id);
+
 		$up_sqr6 = "ALTER TABLE mod_productos AUTO_INCREMENT=1";
 		$this->fmt->query->consulta($up_sqr6);
 
 		$up_sqr7 = "ALTER TABLE mod_productos_rel AUTO_INCREMENT=1";
 		$this->fmt->query->consulta($up_sqr7);
 
+
+
 		header("location: productos.adm.php?id_mod=".$this->id_mod);
 	}
-
+	function eliminar_mul($id){
+		$sql="DELETE FROM mod_productos_mul WHERE mod_pro_mul_id_prod='".$id."'";
+		$this->fmt->query->consulta($sql);
+		$up_sqr8 = "ALTER TABLE mod_productos_mul AUTO_INCREMENT=1";
+		$this->fmt->query->consulta($up_sqr8);
+	}
 }

@@ -39,18 +39,23 @@ class HEADER{
 	$cat_tipo =  $this->fmt->categoria->categoria_id_tipo($cat);
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
 	$cat_nombre= $this->fmt->categoria->nombre_categoria($cat);
+	$consulta = "SELECT conf_nombre_sitio FROM configuracion";
+	$rs = $this->fmt->query->consulta($consulta);
+	$fila = $this->fmt->query->obt_fila($rs);
+	$nombre=$fila["conf_nombre_sitio"];
 
 	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
-		$nombre = $cat_nombre;
+		if ($cat==1){
+			$nombre = $nombre;
+		}else{
+			$nombre = $cat_nombre;
+		}
 	}else{
 		$cat_padre_sitio =  $this->fmt->categoria->categoria_padre_sitio($cat);
 		if (!empty($cat_padre_sitio)){
 			$nombre= $this->fmt->categoria->nombre_categoria($cat_padre_sitio)." - ".$cat_nombre;
 		}else{
-	    	$consulta = "SELECT conf_nombre_sitio FROM configuracion";
-			$rs = $this->fmt->query->consulta($consulta);
-			$fila = $this->fmt->query->obt_fila($rs);
-			$nombre=$fila["conf_nombre_sitio"];
+	    	
 			if (empty($nombre)){ $nombre = _VZ; }
 	    }
     }
@@ -62,21 +67,34 @@ class HEADER{
 
 	$cat_tipo = $this->fmt->categoria->categoria_id_tipo($cat);
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
-
+	
+	$consulta = "SELECT conf_favicon FROM configuracion";
+	$rs = $this->fmt->query->consulta($consulta);
+	$fila = $this->fmt->query->obt_fila($rs);
+	$fav=$fila["conf_favicon"];
+	
 
 	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
 		$cat_favicon= $this->fmt->categoria->favicon_categoria($cat);
 		if (!empty($cat_favicon)){
 			return $cat_favicon;
 		} else {
+			if (empty($fav)){
 			return "images/favicon.ico";
+			}else{
+			return $fav;	
+			}
 		}
 	}else{
 		$cat_padre_sitio =  $this->fmt->categoria->categoria_padre_sitio($cat);
 		if (!empty($cat_padre_sitio)){
 			return $this->fmt->categoria->favicon_categoria($cat_padre_sitio);
 		}else{
-	    	return "images/favicon.ico";
+	    	if (empty($fav)){
+			return "images/favicon.ico";
+			}else{
+			return $fav;	
+			}
 	    }
     }
   }
@@ -113,6 +131,7 @@ class HEADER{
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/summernote.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/estilos.adm.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/theme.adm.css" rel="stylesheet" type="text/css">'."\n";
+    $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/fileinput.min.css" rel="stylesheet" type="text/css">'."\n";
 
     return $aux;
   }
@@ -127,8 +146,8 @@ class HEADER{
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/summernote-es-ES.min.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.mixitup.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.mixitup-pagination.min.js"></script>'."\n";
-
-
+	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/fileinput.min.js"></script>'."\n";
+	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/fileinput.es.js"></script>'."\n";
 
     return $aux;
   }

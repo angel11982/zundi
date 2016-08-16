@@ -25,9 +25,11 @@ class FOOTER{
 	    $aux .= '</div>'."\n";
     }
 
-    $aux .='<script src="'._RUTA_WEB.'js/bootstrap-datetimepicker.min.js"></script>'."\n";
-    $aux .='<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/bootstrap-datepicker.es.js" charset="UTF-8"></script>'."\n";
+
+
     $aux .='<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/moment.js"></script>'."\n";
+    $aux .='<script src="'._RUTA_WEB.'js/bootstrap-datetimepicker.js"></script>'."\n";
+    $aux .='<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/bootstrap-datepicker.es.js" charset="UTF-8"></script>'."\n";
 
 $aux .= $this->js();
     $aux .= '</body>'."\n";

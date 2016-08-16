@@ -1,0 +1,8 @@
+[13-Aug-2016 08:26:27 America/Denver] PHP Catchable fatal error:  Object of class MYSQL could not be converted to string in /home1/hermanyu/public_html/next/nucleo/clases/class-modulos.php on line 91
+[13-Aug-2016 08:28:03 America/Denver] PHP Catchable fatal error:  Object of class MYSQL could not be converted to string in /home1/hermanyu/public_html/next/nucleo/clases/class-modulos.php on line 91
+[13-Aug-2016 08:42:05 America/Denver] PHP Catchable fatal error:  Object of class MYSQL could not be converted to string in /home1/hermanyu/public_html/next/nucleo/clases/class-modulos.php on line 91
+[13-Aug-2016 23:59:10 America/Denver] PHP Parse error:  syntax error, unexpected 'ui' (T_STRING), expecting ',' or ';' in /home1/hermanyu/public_html/next/modulos/categorias/contenedor.class.php on line 35
+[14-Aug-2016 00:07:15 America/Denver] PHP Parse error:  syntax error, unexpected '}' in /home1/hermanyu/public_html/next/modulos/categorias/contenedor.class.php on line 37
+[14-Aug-2016 00:07:33 America/Denver] PHP Parse error:  syntax error, unexpected end of file in /home1/hermanyu/public_html/next/modulos/categorias/contenedor.class.php on line 85
+[14-Aug-2016 08:42:55 America/Denver] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home1/hermanyu/public_html/next/modulos/categorias/contenedor.class.php on line 34
+[14-Aug-2016 08:50:56 America/Denver] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home1/hermanyu/public_html/next/modulos/categorias/contenedor.class.php on line 37

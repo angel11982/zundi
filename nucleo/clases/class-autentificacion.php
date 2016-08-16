@@ -22,7 +22,7 @@ class AUTENTIFICACION{
       $cat = $this->fmt->get->get_categoria_index();
       $pla = $this->fmt->get->get_plantilla_index($this->fmt->query, $cat);
     }
-    
+
     if ( $this->dominio_cat(_RUTA_WEB) ) {
 	    $cat= $this->dominio_cat(_RUTA_WEB);
     }
@@ -112,7 +112,7 @@ class AUTENTIFICACION{
 		}else{
 			return false;
 		}
-	  	
+
 	  }else{
 		return false;
 	  }

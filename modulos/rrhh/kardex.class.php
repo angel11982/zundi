@@ -41,12 +41,26 @@ class KARDEX{
 		<div class="form-paso animated fadeIn" id='form-paso-2'>
 			<? $this->paso_2_nuevo(); ?>
 			<div class='clearfix'></div>
-			<a class="btn btn-info btn-anterior   btn-lg " paso-anterior='1'>Anterior <i class="icn-chevron-right"></i></a>
+			<a class="btn btn-info btn-anterior   btn-lg " paso-anterior='1'>Anterior <i class="icn-chevron-left"></i></a>
 			<a class="btn btn-info btn-siguiente pull-right btn-lg " paso-siguiente='3'>Siguiente <i class="icn-chevron-right"></i></a>
 		</div>
-		<div class="form-paso animated fadeIn" id='form-paso-3'>paso 3</div>
-		<div class="form-paso animated fadeIn" id='form-paso-4'>paso 4</div>
-		<div class="form-paso animated fadeIn" id='form-paso-5'>paso 5</div>
+		<div class="form-paso animated fadeIn" id='form-paso-3'>
+			<? $this->paso_3_nuevo(); ?>
+			<div class='clearfix'></div>
+			<a class="btn btn-info btn-anterior   btn-lg " paso-anterior='2'>Anterior <i class="icn-chevron-left"></i></a>
+			<a class="btn btn-info btn-siguiente pull-right btn-lg " paso-siguiente='4'>Siguiente <i class="icn-chevron-right"></i></a>
+		</div>
+		<div class="form-paso animated fadeIn" id='form-paso-4'>
+			<? $this->paso_4_nuevo(); ?>
+			<a class="btn btn-info btn-anterior   btn-lg " paso-anterior='3'>Anterior <i class="icn-chevron-left"></i></a>
+			<a class="btn btn-info btn-siguiente pull-right btn-lg " paso-siguiente='5'>Siguiente <i class="icn-chevron-right"></i></a>
+		</div>
+		<div class="form-paso animated fadeIn" id='form-paso-5'>
+			<? $this->paso_5_nuevo(); ?>
+			<button type="submit" class="btn btn-info  pull-right btn-guardar color-bg-celecte-b btn-lg" name="btn-accion" id="btn-guardar" disabled="true" value="guardar"><i class="icn-save" ></i> Guardar</button>
+			<button type="submit" class="btn btn-success  pull-right color-bg-verde btn-activar btn-lg" name="btn-accion" id="btn-activar" disabled="true" value="activar"><i class="icn-eye-open" ></i> Activar</button>
+			<a class="btn btn-info btn-anterior   btn-lg " paso-anterior='4'>Anterior <i class="icn-chevron-right"></i></a>
+		</div>
 		<script>
 			$(document).ready(function () {
 				$(".paso").click(function(event) {
@@ -143,6 +157,8 @@ class KARDEX{
 			$this->fmt->form->input_form('Telf. Referencia','inputTelefonoReferencia','','','','box-md-3','Ej: (591) 3 340-32323 o (591) 768-78789'); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
 		echo "</div>";
 		echo "</div>";
+		$this->fmt->form->input_file("Cargar Imagen:","inputImagen","","","","box-md-4","Archivo no mayo a 1M jpg,png","",""); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar
+		echo "<div class='clearfix'></div>";
 		echo "<a class='btn btn-success clear-both box-md-2 btn-ref'><i class='icn-plus'></i> Añadir Referencia</a>";
 
 		$this->fmt->class_modulo->script_form("modulos/rrhh/kardex.adm.php",$this->id_mod);
@@ -156,15 +172,12 @@ class KARDEX{
 					var $klon = $div.clone().prop('id', 'klon'+num );
 					$('.box-hijos').append($klon).append('<a class="btn-eliminar-box-hijo pull-left color-text-rojo" v="klon'+num+'"><i class="icn-close"></i></a>');
 
-					$('.datetimepicker').datetimepicker({
-						isRTL: false,
-						format: 'dd/MM/yyyy',
-						autoclose:true,
-						language: 'es',
-						keyboardNavigation : true
-					}).on("changeDate", function(e){
-						$(this).datetimepicker('hide');
+
+					$('.dp').datetimepicker({
+						format: 'dddd, LL',
+						locale: 'es'
 					});
+
 					$(".btn-eliminar-box-hijo").click(function(event) {
 						//alert("hola");
 						var id = $(this).attr('v');
@@ -195,6 +208,226 @@ class KARDEX{
 
 	function paso_2_nuevo(){
 		echo "<h3>Datos Laborales actuales</h3>";
+		$this->fmt->form->select_form("Empresa actual:","inputEmpresaActual","mod_kdx_emp_","mod_kardex_empresa","","","box-md-3"); //$label,$id,$prefijo,$from,$id_select,$id_disabled
+		$this->fmt->form->select_form("División/área:","inputDivision","mod_kdx_div_","mod_kardex_division","","","box-md-4"); //$label,$id,$prefijo,$from,$id_select,$id_disabled
+		$this->fmt->form->select_form("Cargo Actual:","inputCargoActual","mod_kdx_car_","mod_kardex_cargo","","","box-md-4"); //$label,$id,$prefijo,$from,$id_select,$id_disabled
+
+		$options=$this->departamentos();
+		$valores=$this->departamentos();
+		$this->fmt->form->select_form_simple('Departamentos:','inputDepartamento',$options,$valores,'','','box-md-4');
+		$this->fmt->form->input_date('Fecha de ingreso:','inputIngresoEmpresaActual','','','','box-md-3',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+		$this->fmt->form->input_date('Fecha de retiro:','inputRetiroActual','','','','box-md-3','','retiro-actual'); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+		$this->fmt->form->input_form('Antiguedad (años):','inputAntiguedad','','','','box-md-2','');
+		$this->fmt->form->input_form('CODIGO SAP:','inputCodigoSAP','','','','box-md-3','');
+		$this->fmt->form->input_form('Cuenta abono de sueldo (Bmsc):','inputCuentaSueldo','','','','box-md-4','');
+		echo "<div class='box-bancos'>";
+		echo "<div class='box-banco clear-both' id='kcuenta_1'>";
+		$this->fmt->form->input_form('Cuenta Banco:','inputCuentaBanco[]','','','','box-md-5 clear-left',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+		$options=$this->bancos();
+		$valores= array("0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15");
+		$this->fmt->form->select_form_simple('Banco:','inputBanco[]',$options,$valores,'','','box-md-4');
+		echo "</div>";
+		echo "</div>";
+		echo "<a class='btn btn-success clear-both box-md-2 btn-acuenta'><i class='icn-plus'></i> Añadir otra cuenta</a>";
+		echo "<div class='clearfix'></div>";
+
+		$options=$this->contratos();
+		$valores= array("0","1","2","3","4","5");
+		$this->fmt->form->select_form_simple('Formato de Contrato:','inputFormatoContrato',$options,$valores,'','','box-md-3');
+
+		?>
+		<script>
+			$(document).ready(function () {
+				$(".btn-acuenta").click(function(event) {
+					//var $button = $("#klon1").clone();
+					var $div = $('div[id^="kcuenta"]:last');
+					var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+					var $klon = $div.clone().prop('id', 'kcuenta'+num );
+					$('.box-bancos').append($klon).append('<a class="btn-eliminar-box-cuenta pull-left color-text-rojo" v="kcuenta'+num+'"><i class="icn-close"></i></a>');
+
+
+					$('.dp').datetimepicker({
+						format: 'DD/MM/YYYY',
+						locale: 'es'
+					});
+
+					$(".btn-eliminar-box-cuenta").click(function(event) {
+						//alert("hola");
+						var id = $(this).attr('v');
+						$("#"+id).remove();
+						$(this).remove();
+					});
+				});
+				$(".dp").on("dp.change", function (e) {
+					var fecha_in=$("#inputIngresoEmpresaActual").val();
+					var fecha_hoy="<?php echo date("Y-m-d");?>";
+					var dia = 86400000;
+					var anho = dia * (365);
+					fecha_in = CambiarFormatFecha(fecha_in);
+					var diferencia =  Math.floor(( Date.parse(fecha_hoy) - Date.parse(fecha_in) ) / anho);
+					// if(diferencia < 0){
+					// diferencia = diferencia*(-1);
+					// }
+					$("#inputAntiguedad").val(diferencia);
+				});
+		});
+		function CambiarFormatFecha(fecha){
+			var dato = fecha.split("/");
+			return dato[2]+"-"+dato[1]+"-"+dato[0];
+		}
+		</script>
+		<?php
+
+	}
+
+	function paso_3_nuevo(){
+		echo "<h3>Datos Formación</h3>";
+		$this->fmt->form->input_file("Cargar CV:","inputCV","Cargar CV","","","box-md-4","Archivo no mayo a 8M pdf,doc","",""); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar
+		echo "<div class='clearfix'></div>";
+		$options=$this->nivel_formacion();
+		$valores= array("0","1","2","3","4","5","6","7");
+		$this->fmt->form->select_form_simple('Nivel Educación:','inputNivelEducacion[]',$options,$valores,'','','box-md-4');
+		echo "<div class='clearfix'></div>";
+		echo "<h3>Formación profesional</h3>";
+		echo "<div class='box-estudios'>";
+		echo "<div class='box-titulo clear-both' id='kt_1'>";
+		$this->fmt->form->input_form('Titulo:','inputTitulo[]','','','','box-md-4 ',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+		$this->fmt->form->input_form('Institución:','inputInstitucion[]','','','','box-md-3  ','');
+		$this->fmt->form->input_date('Fecha de obtención:','inputFechaTitulo[]','','','','box-md-3','','');
+		echo "</div>";
+		echo "</div>";
+		echo "<a class='btn btn-success clear-both box-md-2 btn-atitulo'><i class='icn-plus'></i> Añadir Titulo</a>";
+		echo "<div class='clearfix'></div>";
+
+		echo "<h3>Formación Complementaria</h3>";
+		echo "<div class='box-estudiosc'>";
+		echo "<div class='box-curso clear-both' id='kc_1'>";
+		$this->fmt->form->input_form('Nombre del curso/capacitación:','inputCurso[]','','','','box-md-4 ',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+		$this->fmt->form->input_form('Institución:','inputInstitucionCurso[]','','','','box-md-3  ','');
+		$this->fmt->form->input_date('Fecha de obtención:','inputFechaCurso[]','','','','box-md-3','','');
+		echo "</div>";
+		echo "</div>";
+		echo "<a class='btn btn-success clear-both box-md-3 btn-acurso'><i class='icn-plus'></i> Añadir Curso/Capacitación</a>";
+		echo "<div class='clearfix'></div>";
+		?>
+		<script>
+			$(document).ready(function () {
+				$(".btn-atitulo").click(function(event) {
+					//var $button = $("#klon1").clone();
+					var $div = $('div[id^="kt"]:last');
+					var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+					var $klon = $div.clone().prop('id', 'kt'+num );
+					$('.box-estudios').append($klon).append('<a class="btn-eliminar-box-titulo pull-left color-text-rojo" v="kt'+num+'"><i class="icn-close"></i></a>');
+
+
+					$('.dp').datetimepicker({
+						format: 'DD/MM/YYYY',
+						locale: 'es'
+					});
+
+					$(".btn-eliminar-box-titulo").click(function(event) {
+						//alert("hola");
+						var id = $(this).attr('v');
+						$("#"+id).remove();
+						$(this).remove();
+					});
+				});
+
+				$(".btn-acurso").click(function(event) {
+					//var $button = $("#klon1").clone();
+					var $div = $('div[id^="kc"]:last');
+					var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+					var $klon = $div.clone().prop('id', 'kc'+num );
+					$('.box-estudiosc').append($klon).append('<a class="btn-eliminar-box-curso pull-left color-text-rojo" v="kc'+num+'"><i class="icn-close"></i></a>');
+
+
+					$('.dp').datetimepicker({
+						format: 'DD/MM/YYYY',
+						locale: 'es'
+					});
+
+					$(".btn-eliminar-box-curso").click(function(event) {
+						//alert("hola");
+						var id = $(this).attr('v');
+						$("#"+id).remove();
+						$(this).remove();
+					});
+				});
+		});
+		</script>
+		<?php
+	}
+
+	function paso_4_nuevo(){
+		echo "<h3>Datos Laborales Coorporativos</h3>";
+
+		$this->fmt->form->input_form('Empresa Anterior:','inputEmpresaAnterior','','','','box-md-3','');
+		$this->fmt->form->input_form('Cargo:','inputEmpresaAnterior','','','','box-md-3','');
+		$this->fmt->form->input_date('Fecha de ingreso:','inputIngresoEmpresaAnterior','','','','box-md-3','');
+		$this->fmt->form->input_date('Fecha de retiro:','inputRetiroAnterior','','','','box-md-3','','retiro-actual');
+		$this->fmt->form->input_form('Antiguedad (años):','inputAntiguedadAnterior','','','','box-md-2','');
+		echo "<div class='clearfix'></div>";
+		echo "<h3>Historial oorporativo</h3>";
+		echo "<div class='box-otros-cargos'>";
+		echo "<div class='box-otros clear-both' id='kcorp_1'>";
+			$this->fmt->form->select_form("Empresa:","inputEmpresaAnterior[]","mod_kdx_emp_","mod_kardex_empresa","","","box-md-3");
+			$this->fmt->form->input_date('Fecha de ingreso:','inputIngresoEmpresa[]','','','','box-md-2',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+			$this->fmt->form->input_date('Fecha de retiro:','inputRetiro[]','','','','box-md-2','','retiro-actual');
+			$this->fmt->form->select_form("Cargo:","inputCargo[]","mod_kdx_car_","mod_kardex_cargo","","","box-md-4");
+		echo "</div>";
+
+		echo "</div>";
+		echo "<a class='btn btn-success clear-both box-md-2 btn-acargo'><i class='icn-plus'></i> Añadir otra cargo</a>";
+		echo "<div class='clearfix'></div>";
+		?>
+		<script>
+			$(document).ready(function () {
+				$(".btn-acargo").click(function(event) {
+					//var $button = $("#klon1").clone();
+					var $div = $('div[id^="kcorp"]:last');
+					var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+					var $klon = $div.clone().prop('id', 'kcorp'+num );
+					$('.box-otros-cargos').append($klon).append('<a class="btn-eliminar-box-cargo pull-left color-text-rojo" v="corp'+num+'"><i class="icn-close"></i></a>');
+
+
+					$('.dp').datetimepicker({
+						format: 'DD/MM/YYYY',
+						locale: 'es'
+					});
+
+					$(".btn-eliminar-box-cargo").click(function(event) {
+						//alert("hola");
+						var id = $(this).attr('v');
+						$("#"+id).remove();
+						$(this).remove();
+					});
+				});
+			});
+		</script>
+		<?php
+	}
+
+	function paso_5_nuevo(){
+		echo "<h3>Consolidado</h3>";
+		$this->fmt->form->input_form('E-mail /Usuario:','inputEmailUsuario','','','','box-md-5','');
+		$this->fmt->form->input_form('Password:','inputPasword','','','','box-md-3','');
+		$this->fmt->form->input_form('confirmar Password:','inputPaswordConfirmar','','','','box-md-3','');
+		echo "<div class='clearfix'></div>";
+		?>
+		<div class="form-group">
+			<div class="row">
+				<div class="col-xs-6" >
+					<label>Rol:  </label>
+					<?php echo $this->fmt->usuario->opciones_roles();  ?>
+				</div>
+				<div class="col-xs-6" >
+
+					<?php  $this->fmt->class_modulo->grupos_select("Grupo Roles","inputRolGrupo","");  ?>
+				</div>
+			</div>
+		</div>
+		<?php
+
 	}
 
 	function extensiones(){
@@ -209,6 +442,73 @@ class KARDEX{
 		$ext[8] = 'TR';
 		$ext[9] = 'BN';
 
+		return $ext;
+	}
+
+	function nivel_formacion(){
+		$ext[0] = 'Seleccione una opción';
+		$ext[1] = 'Básico incial';
+		$ext[2] = 'Bachilerato';
+		$ext[3] = 'Egresado';
+		$ext[4] = 'Licencitura';
+		$ext[5] = 'Diplomado';
+		$ext[6] = 'Master';
+		$ext[7] = 'PHD';
+
+		return $ext;
+	}
+
+	function contratos(){
+		$ext[0] = 'Seleccione una opción';
+		$ext[1] = 'Contrato a plazo fijo';
+		$ext[2] = 'Contrato indefinido';
+		$ext[3] = 'Contrato de pasantias';
+		$ext[4] = 'Contrato de reemplazo';
+		$ext[5] = 'Contrato de capacitación pagada';
+
+		return $ext;
+	}
+
+	function departamentos(){
+		$ext[0] = 'Seleccione una opción';
+		$ext[1] = 'Departamento Comercial Agro';
+		$ext[2] = 'Departamento Comercial  Maquinaria';
+		$ext[3] = 'Departamento Comercial Línea Eco';
+		$ext[4] = 'Departamento Comercial Construcción';
+		$ext[5] = 'Departamento Investigación & Desarrollo';
+		$ext[6] = 'Departamento Marketing';
+		$ext[7] = 'Departamento Registros';
+		$ext[8] = 'Departamento Logística e Importaciones';
+		$ext[9] = 'Departamento Activos Fijos y Servicios';
+		$ext[10] = 'Departamento Tecnología de la Información';
+		$ext[11] = 'Departamento Finanzas';
+		$ext[12] = 'Departamento Contable';
+		$ext[13] = 'Departamento Legal';
+		$ext[14] = 'Departamento Crédito y Cobranzas';
+		$ext[15] = 'Departamento Servicio Técnico';
+		$ext[16] = 'Departamento Administración y Gestión de Calidad';
+		$ext[17] = 'Departamento Desarrollo Organizacional';
+
+		return $ext;
+	}
+
+	function bancos(){
+		$ext[0] = 'Seleccione una opción';
+		$ext[1] = 'Banco Mercantil Santa Cruz';
+		$ext[2] = 'Banco Nacional de Bolivia';
+		$ext[3] = 'Banco Central de Bolivia';
+		$ext[4] = 'Banco de Crédito de Bolivia';
+		$ext[5] = 'Banco Do Brasil';
+		$ext[6] = 'Banco Bisa S.A.';
+		$ext[7] = 'Banco Unión S.A.';
+		$ext[8] = 'Banco Económico';
+		$ext[9] = 'Banco Solidario S.A.';
+		$ext[10] = 'Banco Ganadero';
+		$ext[11] = 'Banco Los Andes Pro Credit S.A.';
+		$ext[12] = 'Banco Fie';
+		$ext[13] = 'BANCO FASSIL S.A.';
+		$ext[14] = 'Banco Fortaleza';
+		$ext[15] = 'Banco Pyme Ecofuturo S.A.';
 		return $ext;
 	}
 

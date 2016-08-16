@@ -15,7 +15,7 @@ class NOTICIAS{
 	function busqueda(){
 		$this->fmt->form->head_busqueda_simple('Nueva Noticia','noticias',$this->id_mod,''); //$nom,$archivo,$id_mod,$botones
 		$this->fmt->form->head_table('table_id');
-		$this->fmt->form->thead_table('Titulo:Autor:Categorías:Etiquetas:Fecha:Estado:Acciones');
+		$this->fmt->form->thead_table('#:Titulo:Autor:Categorías:Etiquetas:Fecha:Estado:Acciones');
 		$this->fmt->form->tbody_table_open();
 		$sql="SELECT * FROM noticia ORDER BY not_id asc";
 		$rs =$this->fmt->query->consulta($sql);
@@ -24,6 +24,7 @@ class NOTICIAS{
 			for($i=0;$i<$num;$i++){
 				$fila=$this->fmt->query->obt_fila($rs);
 				echo "<tr>";
+				echo '<td class="">'.$fila["not_id"].'</td>';
 				echo '<td class=""><strong>'.$fila["not_titulo"].'</strong></td>';
 				echo '<td class="">'.$this->fmt->usuario->nombre_usuario( $fila["not_usuario"]).'</td>';
 				echo '<td class="">';
@@ -48,7 +49,7 @@ class NOTICIAS{
 		}
 		$this->fmt->form->tbody_table_close();
 		$this->fmt->form->footer_table();
-		$this->fmt->class_modulo->script_form("modulos/noticias/noticias.adm.php",$this->id_mod);
+		$this->fmt->class_modulo->script_form("modulos/noticias/noticias.adm.php",$this->id_mod,"desc");
 		$this->fmt->form->footer_page();
 	}
 
@@ -60,6 +61,18 @@ class NOTICIAS{
 		$this->fmt->form->textarea_form('Cuerpo:','inputCuerpo','','','summernote','textarea-cuerpo','',''); //label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
 		$this->fmt->form->input_form('Tags:','inputTags','',"",'');
 		$this->fmt->form->input_form('Imagen:','inputImagen','',"",'');
+		?>
+		<div class="form-group">
+			<label>Imagen:</label>
+			<div class="panel panel-default" >
+				<div class="panel-body">
+        <?php
+        $this->fmt->form->file_form_nuevo_save_thumb('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','archivos/noticias','476x268');  //$nom,$ruta,$id_form,$class,$class_div,$id_div
+        ?>
+        </div>
+      </div>
+    </div>
+		<?php
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0","","",""); //$label,$id,$cat_raiz,$cat_valor,$class,$class_div
 		$fecha=$this->fmt->class_modulo->fecha_hoy('America/La_Paz');
 		$this->fmt->form->input_form('Fecha:','inputFecha','',$fecha,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
@@ -82,8 +95,28 @@ class NOTICIAS{
 		$this->fmt->form->textarea_form('Cuerpo:','inputCuerpo','',$fila['not_cuerpo'],'summernote','textarea-cuerpo','',''); //label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
 		$this->fmt->form->input_hidden_form("inputRutaamigable",$fila['not_ruta_amigable']);
 		$this->fmt->form->input_form('Tags:','inputTags','',$fila['not_tags'],'');
-		$this->fmt->form->input_form('Imagen:','inputImagen','',$fila['not_imagen'],'');
+		if($fila['not_imagen']!=""){
+			$imagen=_RUTA_WEB.$fila['not_imagen'];
+			$nombre_archivo = $this->fmt->archivos->convertir_nombre_thumb($imagen);
+			if(file_exists($nombre_archivo))
+				$imagen=$nombre_archivo;
 
+
+			echo "<img width='200px' src='".$imagen."'>";
+		}
+		$this->fmt->form->input_form('Imagen:','inputImagen','',$fila['not_imagen'],'');
+		?>
+		<div class="form-group">
+			<label>Imagen:</label>
+			<div class="panel panel-default" >
+				<div class="panel-body">
+        <?php
+        $this->fmt->form->file_form_nuevo_save_thumb('Cargar Archivo (max 8MB)','','form_editar','form-file','','box-file-form','archivos/noticias','476x268');  //$nom,$ruta,$id_form,$class,$class_div,$id_div
+        ?>
+        </div>
+      </div>
+    </div>
+		<?php
 		$cats_id = $this->fmt->categoria->traer_rel_cat_id($fila["not_id"],'noticia_rel','not_rel_cat_id','not_rel_not_id'); //$fila_id,$from,$prefijo_cat,$prefijo_rel
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0",$cats_id,"","");
 
@@ -107,6 +140,10 @@ class NOTICIAS{
 		if ($_POST["btn-accion"]=="guardar"){
 			$activar=0;
 		}
+		if(isset($_POST["inputUrl"]))
+			$imagen=$_POST["inputUrl"];
+		else
+			$imagen=$_POST['inputImagen'];
 
 		$ingresar ="not_titulo,
                 not_ruta_amigable,
@@ -121,7 +158,7 @@ class NOTICIAS{
 					$this->fmt->get->convertir_url_amigable($_POST['inputTitulo'])."','".
 					$_POST['inputResumen']."','".
 					$_POST['inputCuerpo']."','".
-					$_POST['inputImagen']."','".
+					$imagen."','".
 					$_POST['inputTags']."','".
 					$_POST['inputFecha']."','".
 					$_POST['inputUsuario']."','".
@@ -149,14 +186,17 @@ class NOTICIAS{
 	function modificar(){
 		if ($_POST["btn-accion"]=="eliminar"){}
 		if ($_POST["btn-accion"]=="actualizar"){
-
+			if(isset($_POST["inputUrl"]))
+				$imagen=$_POST["inputUrl"];
+			else
+				$imagen=$_POST['inputImagen'];
 			$sql="UPDATE noticia SET
 						not_titulo='".$_POST['inputTitulo']."',
 						not_ruta_amigable ='".$_POST['inputRutaamigable']."',
 						not_tags ='".$_POST['inputTags']."',
 						not_resumen ='".$_POST['inputResumen']."',
 						not_cuerpo ='".$_POST['inputCuerpo']."',
-						not_imagen ='".$_POST['inputImagen']."',
+						not_imagen ='".$imagen."',
 						not_fecha='".$_POST['inputFecha']."',
 						not_usuario='".$_POST['inputUsuario']."',
 						not_activar='".$_POST['inputActivar']."'

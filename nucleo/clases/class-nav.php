@@ -161,13 +161,13 @@ class NAV{
   }
 
   function traer_cat_hijos_menu($cat){
-    $sql="SELECT cat_id, cat_nombre, cat_id_padre, cat_icono, cat_url, cat_destino, cat_ruta_amigable FROM categoria WHERE cat_id_padre='$cat' and cat_activar='1' ORDER BY cat_orden ASC";
+    $sql="SELECT cat_id, cat_nombre, cat_id_padre, cat_icono, cat_imagen, cat_url, cat_destino, cat_ruta_amigable FROM categoria WHERE cat_id_padre='$cat' and cat_activar='1' ORDER BY cat_orden ASC";
     $rs = $this->fmt->query->consulta($sql);
     $num = $this->fmt->query->num_registros($rs);
     if ($num>0){
       for ($i=0; $i<$num; $i++){
 
-        list($fila_id, $fila_nombre, $fila_id_padre, $fila_icono, $fila_url, $fila_destino, $fila_ruta_amigable) =  $this->fmt->query->obt_fila($rs);
+        list($fila_id, $fila_nombre, $fila_id_padre,$fila_icono, $fila_imagen, $fila_url, $fila_destino, $fila_ruta_amigable) =  $this->fmt->query->obt_fila($rs);
 
         if (!empty($fila_url)){
           $url= $fila_url; $destino=$fila_destino;
@@ -177,15 +177,23 @@ class NAV{
         if ( $this->tiene_cat_hijos($fila_id) ){
           $aux .= $this->fmt_li_hijos($fila_id, $fila_nombre);
         } else {
-          $aux .= $this->fmt_li($fila_id,"","",$fila_nombre, $url, $destino );
+          $aux .= $this->fmt_li($fila_id,"","",$fila_nombre, $url, $destino, $fila_imagen);
         }
       }
       return $aux;
     }
   }
 
-  function fmt_li($id, $clase, $icono, $nombre,$url, $destino ){
-    $aux = '<li id="btn-m'.$id.'" class="btn-m'.$id.' '.$clase.'"><a href="'.$url.'" target="'.$destino.'"><i class="'.$icono.'"></i><span>'.$nombre.'</span></a></li>';
+  function fmt_li($id, $clase, $icono, $nombre,$url, $destino, $imagen){
+    $nombre_x = $this->convertir_url_amigable($nombre);
+    $url=_RUTA_WEB_temp.$this->fmt->categoria->traer_ruta_amigable_padre($id);
+    if (empty($imagen)){ $aux_x=""; }else{ $aux_x="<img class='img-m' src='"._RUTA_WEB.$imagen."' border=0>"; }
+    $aux  = '<li id="btn-m'.$id.'" class="btn-m'.$id.' '.$clase.' btn-m-'.$nombre_x.'">';
+    $aux .= '<a href="'.$url.'" target="'.$destino.'">';
+    $aux .= $aux_x;
+    $aux .= '<i class="'.$icono.'"></i>';
+    $aux .= '<span>'.$nombre.'</span></a>';
+    $aux .= '</li>';
     return $aux;
   }
 
@@ -202,12 +210,33 @@ class NAV{
 
   function fmt_li_hijos($id, $nombre){
     $aux  = '<li class="dropdown">';
-    $aux .= ' <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.$nombre.'<span class="caret"></span></a>';
+    $aux .= ' <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.$nombre.'<span class="fa fa-angle-down"></span></a>';
     $aux .=   '<ul class="dropdown-menu animated fadeIn">';
     $aux .=     $this->traer_cat_hijos_menu($id);
     $aux .=   '</ul>';
     $aux .= '</li>';
     return $aux;
+  }
+
+  function convertir_url_amigable($cadena){
+    $cadena= utf8_decode($cadena);
+    $cadena = strtolower($cadena);
+    $cadena = str_replace(' ', '-', $cadena);
+    $cadena = str_replace('?', '', $cadena);
+    $cadena = str_replace('+', '', $cadena);
+    $cadena = str_replace(':', '', $cadena);
+    $cadena = str_replace('??', '', $cadena);
+    $cadena = str_replace('`', '', $cadena);
+    $cadena = str_replace('!', '', $cadena);
+    $cadena = str_replace('¿', '', $cadena);
+    $cadena = str_replace(',', '-', $cadena);
+    $cadena = str_replace('(', '', $cadena);
+    $cadena = str_replace(')', '', $cadena);
+    $originales = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿ??';
+    $modificadas = 'aaaaaaaceeeeiiiidnoooooouuuuybsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
+    $cadena = strtr($cadena, utf8_decode($originales), $modificadas);
+
+    return $cadena;
   }
 
 }

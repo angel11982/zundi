@@ -198,7 +198,8 @@ class ARCHIVOS{
     $extencion=$this->saber_extension_archivo($archivo);
     $nombre = $this->saber_nombre_archivo($archivo);
     if ( ($extencion=='jpg') || ($extencion=='jpge') || ($extencion=='png') || ($extencion=='gif')) {
-        return $nombre."_thumb.".$extencion;
+        $nombre_tumb = $nombre."_thumb.".$extencion;
+        return str_replace($nombre.".".$extencion, $nombre_tumb, $archivo);
     }else{
         return 'error no es una imagen';
     }

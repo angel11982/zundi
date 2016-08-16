@@ -168,6 +168,13 @@ body {}
 	padding-top: 7px;
 	display:block-inline;
 }
+
+.td-id{
+	width: 5% !important;
+}
+.td-acciones{
+	width: 150px !important;
+}
 .checkbox{
 	margin-left: 25px;
 }
@@ -844,4 +851,28 @@ input[type="file"] {
 	display: inline-block;
 	width: 100%;
 	min-height: 83vh;
+}
+
+.box-departamentos .btn-contenedores{
+	display: none;
+}
+
+.box-contenedores .btn-contenedores{
+	display: none;
+}
+
+.body-config{
+	padding: 40px;
+}
+
+.box-publicaciones{
+	float: left;
+	height: 100vh;
+	display: inline-block;
+	position: fixed;
+	top:0px;
+	left: -2px;	
+}
+.box-publicaciones label{
+padding: 10px 5px;
 }

@@ -2,12 +2,12 @@
 require_once("../../nucleo/clases/class-constructor.php");
 $fmt = new CONSTRUCTOR();
 
-require_once('plantillas.class.php');
+require_once('contenedores.class.php');
 
 $fmt->get->validar_get( $_GET['tarea'] );
 $tarea = $_GET['tarea'];
 
-$form =new PLANTILLAS($fmt);
+$form =new CONTENEDORES($fmt);
 
 echo $fmt->header->header_modulo();
 

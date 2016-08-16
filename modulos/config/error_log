@@ -1,0 +1,15 @@
+[13-Aug-2016 09:34:15 America/Denver] PHP Fatal error:  Class 'PUBLICACIONES' not found in /home1/hermanyu/public_html/next/modulos/config/plantillas.adm.php on line 10
+[13-Aug-2016 09:38:07 America/Denver] PHP Fatal error:  Class 'PLANTILLAS' not found in /home1/hermanyu/public_html/next/modulos/config/plantillas.adm.php on line 10
+[13-Aug-2016 09:41:08 America/Denver] PHP Fatal error:  Call to undefined method PLANTILLAS::busqueda() in /home1/hermanyu/public_html/next/modulos/config/plantillas.adm.php on line 22
+[13-Aug-2016 09:48:15 America/Denver] PHP Parse error:  syntax error, unexpected '<' in /home1/hermanyu/public_html/next/modulos/config/plantillas.class.php on line 20
+[13-Aug-2016 10:37:01 America/Denver] PHP Fatal error:  Call to undefined method PLANTILLAS::form_editar() in /home1/hermanyu/public_html/next/modulos/config/plantillas.adm.php on line 17
+[13-Aug-2016 10:37:08 America/Denver] PHP Fatal error:  Call to undefined method PLANTILLAS::eliminar() in /home1/hermanyu/public_html/next/modulos/config/plantillas.adm.php on line 21
+[13-Aug-2016 10:51:59 America/Denver] PHP Fatal error:  Call to undefined method PLANTILLAS::activar() in /home1/hermanyu/public_html/next/modulos/config/plantillas.adm.php on line 20
+[13-Aug-2016 11:01:23 America/Denver] PHP Parse error:  syntax error, unexpected '$this' (T_VARIABLE), expecting identifier (T_STRING) in /home1/hermanyu/public_html/next/modulos/config/plantillas.class.php on line 124
+[13-Aug-2016 11:05:26 America/Denver] PHP Fatal error:  Call to undefined method PLANTILLAS::modificar() in /home1/hermanyu/public_html/next/modulos/config/plantillas.adm.php on line 19
+[13-Aug-2016 18:50:10 America/Denver] PHP Parse error:  syntax error, unexpected 'header' (T_STRING) in /home1/hermanyu/public_html/next/modulos/config/plantillas.class.php on line 242
+[13-Aug-2016 18:50:23 America/Denver] PHP Parse error:  syntax error, unexpected 'header' (T_STRING) in /home1/hermanyu/public_html/next/modulos/config/plantillas.class.php on line 242
+[13-Aug-2016 19:18:14 America/Denver] PHP Parse error:  syntax error, unexpected ''Nombre de la planti' (T_ENCAPSED_AND_WHITESPACE), expecting ')' in /home1/hermanyu/public_html/next/modulos/config/plantillas.class.php on line 81
+[13-Aug-2016 19:36:02 America/Denver] PHP Parse error:  syntax error, unexpected 'btn' (T_STRING) in /home1/hermanyu/public_html/next/modulos/config/plantillas.class.php on line 22
+[13-Aug-2016 19:36:24 America/Denver] PHP Parse error:  syntax error, unexpected 'btn' (T_STRING) in /home1/hermanyu/public_html/next/modulos/config/plantillas.class.php on line 22
+[13-Aug-2016 19:52:01 America/Denver] PHP Fatal error:  Call to a member function crear_btn() on a non-object in /home1/hermanyu/public_html/next/modulos/config/contenedores.class.php on line 22

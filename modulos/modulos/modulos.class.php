@@ -222,7 +222,7 @@ class MODULOS{
 	function modificar(){
 		if ($_POST["btn-accion"]=="eliminar"){}
 		if ($_POST["btn-accion"]=="actualizar"){
-
+			$id=$_POST['inputId'];
 			$sql="UPDATE modulos SET
 						mod_nombre='".$_POST['inputNombre']."',
 						mod_descripcion='".$_POST['inputDescripcion']."',
@@ -230,7 +230,7 @@ class MODULOS{
 						mod_tipo='".$_POST['inputTipo']."',
 						mod_icono='".$_POST['inputIcono']."',
 						mod_activar='".$_POST['inputActivar']."'
-	          WHERE mod_id='".$_POST['inputId']."'";
+	          WHERE mod_id='".$id."'";
 
 			$this->fmt->query->consulta($sql);
 

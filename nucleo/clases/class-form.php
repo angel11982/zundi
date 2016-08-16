@@ -82,7 +82,7 @@ class FORM{
 
 				for($i=0; $i < $c_st;$i++){
 					$xst = explode(":",$st[$i]);
-					echo "<option value='".$xst[0]."' >".$xst[1]."</option>";
+					echo "<option value='".$xst[0]."' >".$xst[0]."</option>";
 				}
 			?>
 		</select>
@@ -148,14 +148,185 @@ class FORM{
     </script>
     <?php
   }
-	function file_form_doc($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p){
+  function file_form_nuevo_save_thumb($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb){
+  	//echo $ruta;
+    ?>
+    <div class="form-group <?php echo $class_div; ?>" id="<?php echo $id_div; ?>" >
+      <label>Seleccionar ruta url para subir : </label>
+      <?php $this->fmt->archivos->select_archivos($ruta,$directorio_p); ?>
+			<br/><label>Seleccionar tamaño thumb (ancho x alto):</label>
+			<?php $this->sizes_thumb($sizethumb); ?>
+      <br/>
+			<label><? echo $nom; ?> :</label>
+      <input type="file" ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivos" name="inputArchivos"  />
+			<div id='prog'></div>
+      <div id="respuesta"></div>
+    </div>
+		<script>
+      $(function(){
+        $(".<?php echo $class; ?>").on("change", function(){
+        var formData = new FormData($("#<?php echo $id_form; ?>")[0]);
+        var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-upload-mul-tumb.php";
+        $("#respuesta").toggleClass('respuesta-form');
+        $.ajax({
+            url: ruta,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+						xhr: function() {
+			        var xhr = $.ajaxSettings.xhr();
+			        xhr.upload.onprogress = function(e) {
+								var dat = Math.floor(e.loaded / e.total *100);
+			          //console.log(Math.floor(e.loaded / e.total *100) + '%');
+								$("#prog").html('<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="'+ dat +'" aria-valuemin="0" aria-valuemax="100" style="width: '+ dat +'%;">'+ dat +'%</div></div>');
+			        };
+			        return xhr;
+				    },
+            success: function(datos){
+              	$("#respuesta").html(datos);
+            }
+          });
+        });
+
+      });
+
+
+
+			function guardar_thumb(){
+				size = 'viewport';
+				$('.demo').croppie('result', {
+				type: 'canvas',
+				size: size
+				}).then(function (resp) {
+
+					var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-save-thumb-mul.php";
+					var ruta_url = $("#inputUrl").val();
+					var nombre = $("#inputNombreArchivo").val();
+					var ext = $("#inputTipo").val();
+
+					datos = [{name: "imagen", value: resp},{name: "dir", value: ruta_url},{name: "nombre", value: nombre},{name: "ext", value: ext}];
+					$.ajax({
+						url: ruta,
+						type: 'post',
+						data: datos,
+						success: function(data) {
+							$("#respuesta-thumb").html('<p class="text-success">El thumb se guardo correctamente.</p>');
+						}
+					});
+				});
+			}
+    </script>
+    <?php
+  }
+  function multimedia_form($label,$input,$ruta,$thumb,$table,$col_id_extra,$col_id,$col_ruta,$col_dom,$id_mul=0){
+
+  		$dom=0;
+  		$aux="";
+
+  		$sql="SELECT $col_id_extra, $col_id, $col_ruta, $col_dom FROM $table WHERE $col_id=$id_mul ";
+		$rs=$this->fmt->query->consulta($sql);
+		$num =$this->fmt->query->num_registros($rs);
+		$i=0;
+		while($filax=$this->fmt->query->obt_fila($rs)){
+			$prev[$i]=_RUTA_WEB.$filax[$col_ruta];
+			$ids[$i]=$filax[$col_id_extra];
+			$dom=$filax[$col_dom];
+			$i++;
+		}
+
+		if($num>0){
+			$aux.="initialPreview: [\n";
+			$div="";
+			foreach ($prev as $file) {
+		        $aux.="$div '".$file."'";
+		        $div=",";
+		    }
+			$aux.="],\n";
+			$aux.="initialPreviewAsData: true,\n";
+			$aux.="initialPreviewConfig: [\n";
+			$div="";
+			$data=explode("/", _RUTA_WEB);
+			$dato=$data[3]."/sitios/".$data[3]."/".$ruta;
+
+			for ($i=0; $i < count($ids); $i++) {
+		        $aux.="$div {\n";
+		        $nom_cap=explode($dato, $prev[$i]);
+		        $ext = $this->fmt->archivos->saber_extension_archivo($prev[$i]);
+				if($ext=="mp4"){
+		        	$aux.="type: 'video', filetype: 'video/mp4',\n";
+		        }
+		        if($ext=="mp3"){
+		        	$aux.="type: 'audio', filetype: 'audio/mp3',\n";
+		        }
+		        $aux.="caption: '".$nom_cap[1]."',\n";
+		        $aux.="url: '"._RUTA_WEB."nucleo/ajax/ajax-mul-delete-db.php',\n";
+		        $aux.="key: ".$ids[$i].",\n";
+		        $aux.="extra: {table: '".$table."', col_id: '".$col_id_extra."', col_ruta: '".$col_ruta."'}\n";
+		        $aux.="}\n";
+		        $div=",";
+		    }
+		    $aux.="],\n";
+		}
+		/*
+		initialPreviewConfig: [
+    {
+        caption: 'desert.jpg',
+        width: '120px',
+        url: '/localhost/avatar/delete',
+        key: 100,
+        extra: {id: 100}
+    },
+    */
+
+	  ?>
+	  	<div class="form-group">
+			<label class="control-label"><?php echo $label; ?></label>
+			<input id="<?php echo $input; ?>" name="<?php echo $input; ?>[]" type="file" multiple class="file-loading">
+			<div id="errorBlock" class="help-block"></div>
+		</div>
+		<script>
+			$(document).ready(function () {
+				$("#<?php echo $input; ?>").fileinput({
+			    	<?php echo $aux; ?>
+			    	language: "es",
+			        allowedFileExtensions: ["jpg", "png", "gif", "mp3", "mp4"],
+			        maxFilePreviewSize: 10240,
+			        uploadUrl: "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-mul-upload-db.php", // your upload server url
+			        uploadExtraData: function() {
+			            return {
+			                input_img: "<?php echo $input; ?>",
+			                ruta: "<?php echo $ruta; ?>",
+			                thumb: "<?php echo $thumb; ?>",
+			                dominio: "<?php echo _RUTA_WEB; ?>",
+			                table: "<?php echo $table; ?>",
+			                col_id: "<?php echo $col_id; ?>",
+			                col_ruta: "<?php echo $col_ruta; ?>",
+			                col_dom: "<?php echo $col_dom; ?>",
+			                id_mul: "<?php echo $id_mul; ?>"
+			            };
+			        },
+			        overwriteInitial: false
+			    });
+				$("#<?php echo $input; ?>").on("filepredelete", function(jqXHR) {
+				    var abort = true;
+				    if (confirm("¿ Esta seguro eliminar este archivo ?")) {
+				        abort = false;
+				    }
+				    return abort; // you can also send any data/object that you can receive on `filecustomerror` event
+				});
+			});
+		</script>
+	  <?php
+  }
+	function file_form_doc($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$req){
 		?>
 		<div class="form-group">
 			<label><? echo $nom; ?></label>
 			<div class="panel panel-default" >
 				<div class="panel-body">
 					<?php $this->fmt->archivos->select_archivos($ruta,$directorio_p,"inputRutaArchivosDocs"); ?>
-					<input type="file" ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivosDocs" name="inputArchivosDocs"  />
+					<input type="file" <?php echo $req; ?> ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivosDocs" name="inputArchivosDocs"  />
 					<div id='prog'></div>
 		      <div id="respuesta-docs"></div>
 					<script>
@@ -304,7 +475,7 @@ class FORM{
 		  <div id="respuesta-modal">
 		  <?
 			if (!empty($id_item)){ $xvalor="&id=".$id_item; }else{ $xvalor=""; }
-			$url_mod =  _RUTA_WEB."modulos/documentos/documentos.adm.php?tarea=form_nuevo&modo=modal&from=".$from.$xvalor;
+			$url_mod =  _RUTA_WEB."modulos/documentos/documentos.adm.php?tarea=form_nuevo&id_mod=15&modo=modal&from=".$from.$xvalor;
 			echo "<iframe class='frame-modal' src='".$url_mod."'  name='frame_content_modal' scrolling=auto ></iframe>";
 		  ?>
 		  </div>
@@ -377,14 +548,15 @@ $.ajax({
     <?php
   }
 
-  function thead_table($cab){
+  function thead_table($cab,$class){
     $valor = explode(":",$cab);
+		$valor_clase = explode(":",$class);
     $num = count($valor);
     ?><thead>
       <tr>
         <?
         for ($i=0; $i<$num;$i++){
-          echo '<th>'.$valor[$i].'</th>';
+          echo '<th class="'.$valor_clase[$i].'">'.$valor[$i].'</th>';
         }
         ?>
       </tr>
@@ -427,6 +599,17 @@ $.ajax({
     </div>
     <?php
   }
+  function input_file($label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar){
+    ?>
+    <div class="form-group <?php echo $class_div; ?>">
+      <label><?php echo $label; ?></label>
+      <input type="file" class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>" validar="<?php echo $validar; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" <?php echo $disabled; ?> >
+			<?php if (!empty($mensaje)){ ?>
+			<p class="help-block"><?php echo $mensaje; ?></p>
+			<? } ?>
+    </div>
+    <?php
+  }
 
 	function var_input_form($label,$id,$placeholder,$valor,$class,$class_div,$mensaje){
 		$aux= '<div class="form-group '.$class_div.'">
@@ -451,7 +634,7 @@ $.ajax({
     <?php
   }
 
-	function input_date($label,$id,$placeholder,$valor,$class,$class_div,$mensaje){
+	function input_date($label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$id_input){
 		date_default_timezone_set('America/La_Paz');
 		switch ($valor) {
 			case 'hoy':
@@ -465,13 +648,23 @@ $.ajax({
 			break;
 		}
 		?>
-			<div class="form-group <?php echo $class_div; ?>" >
-			<label><?php echo $label; ?></label>
-			<div class="datetimepicker <?php echo $class; ?>">
-				<input type="text" class="form-control add-on" id="<?php echo $id; ?>" name="<?php echo $id; ?>" value="<?php echo  $va; ?>"/>
-				<span class="input-icon"><i class="fa fa-calendar"></i></span>
+			<div class="<?php echo $class_div; ?> " >
+				<label><?php echo $label; ?></label>
+        <div class="form-group">
+					<div class='input-group date <?php echo $class; ?>' id="<?php echo $id_input; ?>" >
+						<input type="text" class="form-control add-on dp" id="<?php echo $id; ?>" name="<?php echo $id; ?>" value="<?php echo  $va; ?>"/>
+						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+					</div>
+				</div>
 			</div>
-			</div>
+			<script type="text/javascript">
+					$(function () {
+							$('.dp').datetimepicker({
+								format: 'DD/MM/YYYY',
+								locale: 'es'
+							});
+					});
+			</script>
 		<?php
 	}
   function categoria_form($label,$id,$cat_raiz,$cat_valor,$class,$class_div){
@@ -494,17 +687,17 @@ $.ajax({
     <?php
   }
 
-  function select_form($label,$id,$prefijo,$from,$id_select,$id_disabled){
+  function select_form($label,$id,$prefijo,$from,$id_select,$id_disabled,$class_div){
     ?>
-    <div class="form-group">
+    <div class="form-group <?php echo $class_div; ?>">
       <label><?php echo $label; ?></label>
       <select class="form-control" id="<?php echo $id; ?>" name="<?php echo $id; ?>">
     <?php
     $consulta ="SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from;
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
-    echo "<option class='' value='0'>Sin selección (0)</option>";
-    if($num>0){
+		echo "<option class='' value='0'>Sin selección (0)</option>";
+		if($num>0){
       for($i=0;$i<$num;$i++){
         list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
         if ($fila_id==$id_select){  $aux="selected";  }else{  $aux=""; }
@@ -537,7 +730,41 @@ $.ajax({
 		</div>
 		<?php
 		}
-
+		
+	function radio_form($label,$id,$prefijo,$from,$id_select,$id_disabled,$class_div,$class){
+		$consulta ="SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from;
+		$rs = $this->fmt->query->consulta($consulta);
+		$num=$this->fmt->query->num_registros($rs);
+		?>
+		<div class="form-group <?php echo $class_div; ?>">
+			<label><?php echo $label; ?></label>
+		<?php
+		if($num>0){
+			for($i=0;$i<$num;$i++){
+				list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
+				if ($fila_id==$id_select){  
+					$aux="checked"; 
+				}else{ 
+					$aux=""; 
+					if ($i==0){
+						$aux="checked"; 
+					} 
+				}
+				
+				if ($fila_id==$id_disabled){  $idd="disabled"; }else{ $idd=""; }
+			?>
+				 <label class="radio">
+				 <input type="radio" class="<?php echo $class." ".$idd; ?>" name="<?php echo $id; ?>" id="<?php echo $id.$i; ?>" value="<?php echo $fila_id; ?>" <?php echo $aux; ?>>
+				 <?php echo $fila_nombre; ?>
+				 </label>
+			<?php
+			}
+		}
+		?>
+		</div>
+		<?php
+	}
+	
   function radio_activar_form($valor){
     ?>
     <div class="form-group">
@@ -551,10 +778,10 @@ $.ajax({
     <?php
   }
 
-  function botones_editar($fila_id,$fila_nombre,$nombre){
+  function botones_editar($fila_id,$fila_nombre,$nombre,$tarea_eliminar){
     ?>
     <div class="form-group form-botones clear-both">
-       <button  type="button" class="btn-accion-form btn btn-danger btn-eliminar color-bg-rojo-a"  idEliminar="<? echo $fila_id; ?>" title="<? echo $fila_id; ?> : <? echo $fila_nombre; ?>" nombreEliminar="<? echo $fila_nombre; ?>" name="btn-accion" id="btn-eliminar" value="eliminar"><i class="icn-trash" ></i> Eliminar <? echo $nombre; ?></button>
+       <button  type="button" class="btn-accion-form btn btn-danger btn-eliminar color-bg-rojo-a" 	tarea="<?php echo $tarea_eliminar; ?>" nombre="<?php echo $fila_nombre;  ?>" ide="<?php echo $fila_id; ?>" title="<? echo $fila_id; ?> : <? echo $fila_nombre; ?>"  name="btn-accion" id="btn-eliminar" value="eliminar"><i class="icn-trash" ></i> Eliminar <? echo $nombre; ?></button>
 
        <button type="submit" class="btn-accion-form btn btn-info  btn-actualizar hvr-fade btn-lg color-bg-celecte-c btn-lg " name="btn-accion" id="btn-activar" value="actualizar"><i class="icn-sync" ></i> Actualizar</button>
     </div>

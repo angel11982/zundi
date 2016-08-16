@@ -165,7 +165,7 @@ class USUARIOS{
 
 	function opciones_roles($rol){
 		$sql="select rol_id, rol_nombre from roles ORDER BY rol_id asc";
-            $rs =$this->fmt->query-> consulta($sql);
+            $rs =$this->fmt->query->consulta($sql);
             $num=$this->fmt->query->num_registros($rs);
             if($num>0){
               for($i=0;$i<$num;$i++){

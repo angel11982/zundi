@@ -70,10 +70,15 @@ class USUARIO{
     $sql="select usu_imagen from usuarios where usu_id=$usuario";
     $rs = $this->fmt->query-> consulta($sql);
     $fila = $this->fmt->query->obt_fila($rs);
-    return $fila["usu_imagen"];
+    if (empty($fila["usu_imagen"])){
+      $r = "images/user/user-default.png";
+    }else{
+      $r = $fila["usu_imagen"];
+    }
+    return $r;
   }
 
-  function opciones_roles(){
+  function opciones_roles_list(){
 		$sql ="SELECT rol_id, rol_nombre FROM roles";
 		$rs = $this->fmt->query -> consulta($sql);
 		$num = $this->fmt->query -> num_registros($rs);
@@ -93,6 +98,27 @@ class USUARIO{
 		}
 		return $aux;
 	}
+
+  function opciones_roles($rol){
+    $sql="select rol_id, rol_nombre from roles ORDER BY rol_id asc";
+            $rs =$this->fmt->query->consulta($sql);
+            $num=$this->fmt->query->num_registros($rs);
+            if($num>0){
+              for($i=0;$i<$num;$i++){
+                list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
+                $ch="";
+        if (in_array($fila_id, $rol))
+          $ch="checked";
+    ?>
+    <div class="checkbox">
+          <label>
+            <input name="inputRol" <?php echo $ch; ?> id="inputRol<?php echo $fila_id; ?>" type="radio" value="<?php echo $fila_id; ?>"> <?php echo $fila_nombre; ?>
+          </label>
+        </div>
+    <?php
+        }
+      }
+  }
 
 	function opciones_grupos(){
 		$sql ="SELECT rol_grupo_id, rol_grupo_nombre FROM roles_grupo";

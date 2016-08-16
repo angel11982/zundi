@@ -84,6 +84,10 @@ class MYSQL {
 			return 	(@mysqli_fetch_array($rs));
 			//return mysql_fetch_row($this->Consulta_ID);
 		}
+		function obt_fila_id(&$rs){
+			return 	(@mysqli_fetch_row($rs));
+			//return mysql_fetch_row($this->Consulta_ID);
+		}
 	/* UltimoID Devuelve el Ultimo id insertado despues de una insercion  */
 		function ultimo_id(){
 			return (@mysql_insert_id($this->Conexion_ID));

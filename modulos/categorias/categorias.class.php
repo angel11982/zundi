@@ -41,7 +41,7 @@ class CATEGORIAS{
       });
 			$(".btn-contenedores").click(function(e){
 				var cat = $( this ).attr("cat");
-				url="contenedores.adm.php?tarea=editar_contenidos&cat="+cat;
+				url="contenedor.adm.php?tarea=editar_contenidos&cat="+cat;
 				//alert(url);
 				window.location=(url);
 			});
@@ -170,6 +170,10 @@ class CATEGORIAS{
               <div class="form-group">
                 <label>Ruta Sitio:</label>
                 <input class="form-control" id="inputRutasitio" name="inputRutasitio" placeholder="" value="<? echo $fila["cat_ruta_sitio"]; ?>" />
+              </div>
+              <div class="form-group">
+                <label>Dominio:</label>
+                <input class="form-control" id="inputDominio" name="inputDominio" placeholder="" value="<? echo $fila["cat_dominio"]; ?>" />
               </div>
 							<div class="form-group">
                 <label>Id Orden:</label>
@@ -329,7 +333,10 @@ class CATEGORIAS{
                 <label>Analitica:</label>
                 <input class="form-control" id="inputAnalitica" name="inputAnalitica" placeholder="" value="" />
               </div>
-
+							<div class="form-group">
+                <label>Dominio:</label>
+                <input class="form-control" id="inputDominio" name="inputDominio" placeholder="" value="" />
+              </div>
               <div class="form-group">
                 <label>Ruta Sitio:</label>
                 <input class="form-control" id="inputRutasitio" name="inputRutasitio" placeholder="" value="" />
@@ -389,6 +396,7 @@ class CATEGORIAS{
             cat_favicon='".$_POST['inputFavicon']."',
             cat_analitica='".$_POST['inputAnalitica']."',
             cat_ruta_sitio='".$_POST['inputRutasitio']."',
+            cat_dominio='".$_POST['inputDominio']."',
 						cat_orden='".$_POST['inputOrden']."',
             cat_activar='".$_POST['inputActivar']."'
             WHERE cat_id='".$_POST['inputId']."'";
@@ -404,7 +412,7 @@ class CATEGORIAS{
     if ($_POST["btn-accion"]=="guardar"){
       $activar=0;
     }
-    $ingresar ="cat_nombre, cat_descripcion, cat_ruta_amigable, cat_imagen, cat_icono, cat_color, cat_codigos, cat_css, cat_clase, cat_meta, cat_theme, cat_id_padre, cat_id_plantilla, cat_tipo, cat_url, cat_destino, cat_favicon, cat_analitica, cat_ruta_sitio, cat_activar";
+    $ingresar ="cat_nombre, cat_descripcion, cat_ruta_amigable, cat_imagen, cat_icono, cat_color, cat_codigos, cat_css, cat_clase, cat_meta, cat_theme, cat_id_padre, cat_id_plantilla, cat_tipo, cat_url, cat_destino, cat_favicon, cat_analitica, cat_dominio,cat_ruta_sitio, cat_activar";
 		$valores  ="'".$_POST['inputNombre']."','".
 									 $_POST['inputDescripcion']."','".
                    $_POST['inputRutaamigable']."','".
@@ -423,6 +431,7 @@ class CATEGORIAS{
 									 $_POST['inputDestino']."','".
 									 $_POST['inputFavicon']."','".
 									 $_POST['inputAnalitica']."','".
+									 $_POST['inputDominio']."','".
 									 $_POST['inputRutasitio']."','".
 									 $activar."'";
 

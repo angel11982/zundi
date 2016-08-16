@@ -16,7 +16,7 @@
       $inputNombre = str_replace($var,'',$fmt->get->convertir_url_amigable($nombre));
       $tipo = $file["type"];
       $var_tipo = array ('image/','audio/','video/');
-      $inputTipo = str_replace($var_tipo,'',$tipo);
+
       $ruta_provisional = $file["tmp_name"];
       $size = $file["size"];
       $inputSize = $fmt->archivos->formato_size_archivo($size);
@@ -40,6 +40,7 @@
         $fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
         //$src, $dst, $width, $height, $crop=0
         $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;
+        $inputTipo = $fmt->archivos->saber_extension_archivo($inputUrl);
         $ruta_v = explode ("/",$inputUrl);
         $inputDominio = _RUTA_WEB;
 
@@ -50,31 +51,53 @@
         }
 
        // if (!isset($_POST["inputId"])){
-          echo "<img width='100%' src='".$inputDominio.$inputUrl."'></br></br>";
+          	echo '<div class="contenedor-imagen">';
+          echo "<img width='100%' src='".$inputDominio.$inputUrl."'>";
+          echo '</div></br></br>';
           ?>
+          <style>
+          .contenedor-imagen {
+			    width: 100%;
+			    position: relative;
+			    margin: 0 auto;
+			    text-align: center;
+			}
+			.contenedor-button {
+			    width: 100%;
+			    position: relative;
+			    text-align: right;
+			}
+          </style>
             <div class="demo"></div>
             <script>
             $(document).ready(function () {
               $('.demo').croppie({
                   url: '<?php echo $inputDominio.$inputUrl; ?>',
                   enableExif: true,
+                  boundary: { width: 476, height: 476 },
                   viewport: {
                       width: <?php echo  $thumb_s[0] ?>,
                       height: <?php echo  $thumb_s[1] ?>,
                       type: 'square'
-                  },
+                  }
               });
+              $("#btn-save-thumb").click(function(){
+
+	           	guardar_thumb();
+
+			   });
             });
             </script>
           <?php
           echo "</div>";
-
+          echo '<div id="respuesta-thumb"></div>';
+          echo '<div class="contenedor-button">';
+          echo '<a id="btn-save-thumb" class="btn btn-warning"><font><font>Guardar Thumb </font></font></a>';
+           echo '</div>';
           $fmt->form->input_form('<span class="obligatorio">*</span> Nombre archivo:','inputNombreArchivo','',$inputNombre,'','','En minúsculas');
           $fmt->form->input_form('Url archivo:','inputUrl','',$inputUrl,'');
           $fmt->form->input_form('Tipo archivo:','inputTipo','',$inputTipo,'');
-          $fmt->form->input_form('Leyenda:','inputLeyenda','','','','',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
-          $fmt->form->input_form('Texto Alternativo:','inputTextoalternativo','','','','','');
-          $fmt->form->textarea_form('Descripción:','inputDescripcion','','','','3',''); //$label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
+
           $fmt->form->input_form('Dimensión:','inputDimension','',$dimension,'','','');
           $fmt->form->input_form('Tamaño:','inputTamano','',$inputSize,'','','');
           $fmt->form->input_form('Dominio:','','',$inputDominio,'','','');

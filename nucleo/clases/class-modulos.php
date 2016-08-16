@@ -51,34 +51,27 @@ class CLASSMODULOS{
 		<?php
 	}  // fin script_busqueda()
 
-	function script_form($ruta,$id_mod){
+	function script_form($ruta,$id_mod,$tipo="asc",$orden=0,$cant=25){
+
 		?>
 			<script language="JavaScript">
 			$(document).ready(function() {
         $('.requerido').before('<span class="obligatorio">*</span>');
-        $('.datetimepicker').datetimepicker({
-          isRTL: false,
-          format: 'dd/MM/yyyy',
-          autoclose:true,
-          language: 'es',
-          keyboardNavigation : true
-        }).on("changeDate", function(e){
-          $(this).datetimepicker('hide');
-        });
+
 
 				$('#table_id').DataTable({
 					"language": {
 		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
 		            },
-		            "pageLength": 25,
-		            "order": [[ 0, 'asc' ]]
+		            "pageLength": <?php echo $cant; ?>,
+		            "order": [[ <?php echo $orden; ?>, '<?php echo $tipo; ?>' ]]
 				});
 				$('#table_id_modal').DataTable({
 					"language": {
 		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
 		            },
-		            "pageLength": 25,
-		            "order": [[ 0, 'asc' ]]
+		            "pageLength": <?php echo $cant; ?>,
+		            "order": [[ <?php echo $orden; ?>, '<?php echo $tipo; ?>' ]]
 				});
 
 				$(".btn-eliminar").click(function() {
@@ -145,10 +138,122 @@ class CLASSMODULOS{
 			</script>
 		<?php
 	}
+	function fecha_zona($zona){
+	date_default_timezone_set($zona);
+	setlocale(LC_TIME, "es_ES");
+  }
+	function traer_fecha_literal($fecha_hora){
+		$month = array(' ','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre');
+		$dato=explode(" ", $fecha_hora);
+		$data=explode("-", $dato[0]);
+		$mes=(string)(int)$data[1];
+		return $data[2]." de ".$month[$mes]." del ".$data[0];
+	}
+	function tiempo_restante($desde,$hasta) {
+	    $ini = explode(" ",$desde);
+	    $fIni = $ini[0];
+	    $hIni = $ini[1];
+	    $fIni = explode("-",$fIni);
+	    $hIni = explode(":",$hIni);
+
+	    $fin = explode(" ",$hasta);
+	    $fFin = $fin[0];
+	    $hFin = $fin[1];
+	    $fFin = explode("-",$fFin);
+	    $hFin = explode(":",$hFin);
+
+	    $anos = $fFin[0] - $fIni[0];
+	    $meses = $fFin[1] - $fIni[1];
+	    $dias = $fFin[2] - $fIni[2];
+	    $horas = $hFin[0] - $hIni[0];
+	    $minutos = $hFin[1] - $hIni[1];
+	    $segundos = $hFin[2] - $hIni[2];
+
+	    if ($segundos < 0) {
+	        $minutos--;
+	        $segundos = 60 + $segundos;
+	    }
+	    if ($minutos < 0) {
+	        $horas--;
+	        $minutos = 60 + $minutos;
+	    }
+	    if ($horas < 0) {
+	        $dias--;
+	        $horas = 24 + $horas;
+	    }
+	    if ($dias < 0)
+	    {
+	        --$meses;
+	        switch ($fIni[1]) {
+	            case 1:     $dias_mes_anterior=31; break;
+	            case 2:     $dias_mes_anterior=31; break;
+	            case 3:
+	                if (checkdate(2,29,$fIni[0]))
+	                {
+	                    $dias_mes_anterior=29; break;
+	                } else {
+	                    $dias_mes_anterior=28; break;
+	                }
+	            case 4:     $dias_mes_anterior=31; break;
+	            case 5:     $dias_mes_anterior=30; break;
+	            case 6:     $dias_mes_anterior=31; break;
+	            case 7:     $dias_mes_anterior=30; break;
+	            case 8:     $dias_mes_anterior=31; break;
+	            case 9:     $dias_mes_anterior=31; break;
+	            case 10:     $dias_mes_anterior=30; break;
+	            case 11:     $dias_mes_anterior=31; break;
+	            case 12:     $dias_mes_anterior=30; break;
+	        }
+
+	        $dias=$dias + $dias_mes_anterior;
+	    }
+	    if ($meses < 0)
+	    {
+	        --$anos;
+	        $meses = $meses + 12;
+	    }
+	    if($anos==0){
+	    	if($meses==0){
+		    	if($dias>0){
+			    	if($dias==0){
+				    	if($horas==0){
+					    	 if($minutos==0){
+							 	$tiempo="hace instanten";
+							 }
+							 else{
+							 	$tiempo="hace ".$minutos." min.";
+							 }
+				    	}
+						else{
+							$tiempo="hace ".$horas." hr.";
+						}
+			    	}
+			    	else{
+				    	if($dias==1){
+				    		$tiempo="Ayer";
+				    	}
+				    	else{
+				    		$tiempo=$this->traer_fecha_literal($desde);
+				    	}
+			    	}
+		    	}
+		    	else{
+		    		$tiempo=$this->traer_fecha_literal($desde);
+		    	}
+	    	}
+	    	else{
+	    		$tiempo=$this->traer_fecha_literal($desde);
+	    	}
+	    }
+	    else{
+	    	$tiempo=$this->traer_fecha_literal($desde);
+		}
+	    return $tiempo;
+	}
 
   function fecha_hoy($zona){
     setlocale(LC_TIME,"es_ES");
-    date_default_timezone_set($zona);
+	date_default_timezone_set($zona);
     return date("Y-m-d h:i");
   }
 
@@ -288,8 +393,10 @@ class CLASSMODULOS{
 	function activar_get_id($from,$prefijo){
 		$this->fmt->get->validar_get ( $_GET['estado'] );
 	    $this->fmt->get->validar_get ( $_GET['id'] );
+	    $estado=$_GET['estado'];
+	    if ($estado=="0"){ $e="1"; }else{ $e="0"; }
 	    $sql="update ".$from." set
-	        ".$prefijo."activar='".$_GET['estado']."' where ".$prefijo."id='".$_GET['id']."'";
+	        ".$prefijo."activar='".$e."' where ".$prefijo."id='".$_GET['id']."'";
 	    $this->fmt->query->consulta($sql);
 	}
 
@@ -505,8 +612,10 @@ class CLASSMODULOS{
   function ingresar_tabla($from,$filas,$valores_post){
     $filas = str_replace("[\n|\r|\n\r|\t| ]","",$filas);
     $valores_post = eregi_replace("[\n|\r|\n\r|\t| ]","",$valores_post);
+    $filas1= explode(',',$filas);
     $valores_post1= explode(',',$valores_post);
     //var_dump($valores_post1);
+    //echo $valores_post;
     $num_filas = count($filas1);
     $num_post = count($valores_post1);
     $valores ="";
@@ -514,15 +623,23 @@ class CLASSMODULOS{
           for ($i=0; $i < $num_filas; $i++) {
             $x=$valores_post1[$i];
             $y= $_POST[$x];
-            if ( $i==$num_filas-1){ $aux=""; }else{ $aux=","; };
-            $valores .=$filas1[$i].'="'.$y.'"'.$aux;
+            if ( $i==$num_filas-1){
+              $aux="";
+              $d= explode('=',$valores_post1[$i]);
+              if ($d[0]=='inputActivar'){
+                $y=$d[1];
+              }
+            }else{
+              $aux=",";
+            };
+            $valores .='"'.$y.'"'.$aux;
           }
         }else{
           $this->fmt->error->error_parametrizacion();
         }
 
-        echo $sql="insert into $from (".$filas.") values (".$valores.")";
-        //$this->fmt->query->consulta($sql);
+        $sql="insert into $from (".$filas.") values (".$valores.")";
+        $this->fmt->query->consulta($sql);
   }
 
 }

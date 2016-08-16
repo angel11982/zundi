@@ -85,6 +85,7 @@ class CLASSSISTEMAS{
                $ruta_com = $ruta."/".$ruta1;
               // echo '<script type="text/javascript">alert("id_cat' . $id_cat .' ruta='.$ruta_com.' ");</script>';
                fwrite($archivo, "Rewriterule ^".$ruta_com."$  index.php?cat=".$id_cat."&pla=".$pla.PHP_EOL) or die(print_r(error_get_last(),true));
+               fwrite($archivo, "Rewriterule ^".$ruta_com."/([^/]*).html$  index.php?cat=".$id_cat."&pla=3&nota=$1".PHP_EOL);
 
                $sql2="SELECT mod_prod_id, mod_prod_ruta_amigable FROM mod_productos, mod_productos_rel WHERE mod_prod_id=mod_prod_rel_prod_id and mod_prod_rel_cat_id=".$id_cat;
 
@@ -97,6 +98,7 @@ class CLASSSISTEMAS{
                     if (!empty($ruta2)) {
                     	fwrite($archivo, "Rewriterule ^".$ruta."/".$ruta1."/".$ruta2."$  index.php?cat=".$id_cat."&pla=2&prod=".$id_prod.PHP_EOL);
                         fwrite($archivo, "Rewriterule ^".$ruta."/".$ruta1."/".$ruta2."/pag=([0-9]+)$  index.php?cat=".$id_cat."&pla=1&prod=".$id_prod."&pag=$1".PHP_EOL);
+
                     }
                  }
                 }
@@ -138,11 +140,7 @@ class CLASSSISTEMAS{
                      fwrite($archivo, "Rewriterule ^".$ruta1."/p=([0-9]+)$  index.php?cat=".$id_cat."&pla=$1".PHP_EOL);
                      // sitios con paginación
                      fwrite($archivo, "Rewriterule ^".$ruta1."/pag=([0-9]+)$  index.php?cat=".$id_cat."&pla=".$pla."&pag=$1".PHP_EOL);
-
-
-
-                     //verificar categoria producdo
-
+                     fwrite($archivo, "Rewriterule ^".$ruta1."/([^/]*).html$  index.php?cat=".$id_cat."&pla=3&nota=$1".PHP_EOL);
 
                      //escribir en htaccess las categorias del producdo
                      $sql2="SELECT mod_prod_id, mod_prod_ruta_amigable FROM mod_productos, mod_productos_rel WHERE mod_prod_id=mod_prod_rel_prod_id and mod_prod_rel_cat_id=".$id_cat;
@@ -157,6 +155,7 @@ class CLASSSISTEMAS{
                          if (!empty($ruta2)) {
                          	fwrite($archivo, "Rewriterule ^".$ruta1."/".$ruta2."$  index.php?cat=".$id_cat."&pla=2&prod=".$id_prod.PHP_EOL);
                             fwrite($archivo, "Rewriterule ^".$ruta1."/".$ruta2."/pag=([0-9]+)$  index.php?cat=".$id_cat."&pla=1&prod=".$id_prod."&pag=$1".PHP_EOL);
+
                          }
                         }
                       }

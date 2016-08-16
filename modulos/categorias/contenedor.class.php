@@ -1,62 +1,59 @@
 <?php
 header("Content-Type: text/html;charset=utf-8");
 
-class CONTENEDORES{
+class CONTENEDOR{
 
 	var $fmt;
 	var $id_mod;
 
-	function CONTENEDORES($fmt){
+	function CONTENEDOR($fmt){
 		$this->fmt = $fmt;
 	}
 
-  function editar_contenidos(){
-    $this->fmt->get->validar_get ( $_GET['cat'] );
-    $cat = $_GET['cat'];
-    $pla = $this->fmt->categoria->id_plantilla_cat($cat);
-    $nombre_cat=$this->fmt->categoria->nombre_categoria($cat);
-    $botones .= $this->fmt->class_pagina->crear_btn("publicaciones.adm.php?tarea=form_nuevo","btn btn-primary","icn-plus","Nueva Publicación");  // link, tarea, clase, icono, nombre
-		$this->fmt->class_pagina->crear_head_mod( "icn-block-page color-text-rojo","Contenidos: ".$nombre_cat, $botones); // bd, id modulo, botones
-
-    ?>
-    <link href="<?php echo _RUTA_WEB; ?>css/estilos.cont.css" rel="stylesheet" type="text/css" />
-		<div class="body-modulo sorteable">
-      <?php
-        $rs = $this->fmt->plantilla->obtener_padre($cat,$pla);
-        $num = $this->fmt->query->num_registros($rs);
-        if ($num > 0){
-					list($cont_id, $cont_nombre, $cont_css,$cont_clase, $con_id_contenedor, $cont_codigos) = $this->fmt->query->obt_fila($rs);
-					//echo "id_cont:".$cont_id;
-          echo "<div class='cnt-box-head unsorteable'><label>".$cont_nombre."</label>";
-          echo "  <i class='pull-right icn-pencil btn-i btn-editar' id_cont='".$cont_id."' ></i><div class='cnt-box'>";
-          $rs_pub = $this->fmt->plantilla->obtener_publicaciones($cont_id,$cat,$pla);
-          $cant = $this->fmt->query->num_registros($rs_pub);
-          if ($cant > 0){
-            //echo "aqui pub";
-            while ($fila_aux = $this->fmt->query->obt_fila($rs_pub)){
-              $this->cargar_pub($fila_aux["pub_nombre"],$fila_aux["pub_id"],$fila_aux["pubrel_activar"]);
-            }
-          }
-          echo "</div></div>";
-				}
-      ?>
-    </div>
-      <script>
-        $(function() {
-          $( "#sortable1, #sortable2" ).sortable({
-            connectWith: ".connectedSortable"
-          }).disableSelection();
-        });
-        $(".btn-editar").click(function(e) {
-          var id = $( this ).attr("id_cont");
-          url="contenedores.adm.php?tarea=form_editar&modo=editar_contenidos&cat=<?php echo $cat; ?>&id="+id;
-          //alert(url);
-          window.location=(url);
-        });
-      </script>
-      
-    <?php
-  }
+	function editar_contenidos(){
+	    $this->fmt->get->validar_get ( $_GET['cat'] );
+	    $cat = $_GET['cat'];
+	    $pla = $this->fmt->categoria->id_plantilla_cat($cat);
+	    $nombre_cat=$this->fmt->categoria->nombre_categoria($cat);
+	    ?>
+	    <div class="box-md-2 box-publicaciones">
+		    <label><a class='btn-volver-o' href='categorias.adm.php?id_mod=5'><i class='icn-chevron-left'></i></a> <i class="icn-block-page"></i> Cn : <?php echo $nombre_cat; ?><a class='small' href='javascript:location.reload()'><i class='icn-sync'></i></a></label>
+		    <div class="tipo-pub">
+			    <ul class="nav nav-tabs" role="tablist">
+				    <li role="presentation" class="active"><a href="#todos" aria-controls="home" role="tab" data-toggle="tab">Todos</a></li>
+				    <li role="presentation" class=""><a href="#elementales" aria-controls="elementales" role="tab" data-toggle="tab">Elementales</a></li>
+			    </ul>
+			    <div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="todos">
+						<?php
+							$sql="SELECT pub_id, pub_nombre, pub_imagen, pub_activar FROM publicacion order by pub_nombre asc";
+							$rs=$this->fmt->query->consulta($sql);
+							$num=$this->fmt->query->num_registros($rs);
+							
+							if($num>0){
+								for($i=0;$i<$num;$i++){
+									list($fila_id,$fila_nombre,$fila_imagen,$fila_activar)=$this->fmt->query->obt_fila($rs);
+									if(empty($fila_imagen)){
+										$im = _RUTA_WEB."images/pub.png";
+									}else{
+										$im = _RUTA_WEB.$fila_imagen;
+									}
+									echo "<li class='ui-state'><i class='icn-move'></i><img src='".$im."' >".$fila_nombre."</li>";
+								}
+							}
+						?>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="elementales">
+						
+					</div>
+			    </div>
+			</div>
+	    </div>
+	    <div class="box-md-9 box-estructura">
+		    
+	    </div>
+	    <?php
+	}
 
   function cargar_pub($pub_nombre,$pub_id,$pub_activar){
     echo "<div class='cnt-publicacion' idpub='".$pub_id."' id='pub-".$pub_id."'>";

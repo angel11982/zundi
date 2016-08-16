@@ -37,7 +37,7 @@ class DOCUMENTOS{
 			?>
 					<td class="td-user col-xl-offset-2 acciones">
 						<a  id="btn-editar-modulo" class="btn btn-accion btn-editar <?php echo $aux; ?>" href="documentos.adm.php?tarea=form_editar&id=<? echo $fila["doc_id"]; ?>&id_mod=<? echo $this->id_mod; ?>" title="Editar <? echo $fila["doc_id"]."-".$fila["doc_url"]; ?>" ><i class="icn-pencil"></i></a>
-						<a  title="eliminar <? echo $fila["doc_id"]; ?>" type="button" idEliminar="<? echo $fila["doc_id"]; ?>" nombreEliminar="<? echo $fila["doc_nombre"]; ?>"   class="btn btn-eliminar btn-accion <?php echo $aux; ?>"><i class="icn-trash"></i></a>
+						<a  title="eliminar <? echo $fila["doc_id"]; ?>" type="button" idEliminar="<? echo $fila["doc_id"]; ?>" nombreEliminar="<? echo $fila["doc_nombre"]; ?>" tarea="eliminar" class="btn btn-eliminar btn-accion <?php echo $aux; ?>"><i class="icn-trash"></i></a>
 					</td>
 			<?php
 			echo "</tr>";
@@ -51,10 +51,10 @@ class DOCUMENTOS{
 	}
 
 	function form_nuevo($modo){
-		
+
 		$this->fmt->form->head_nuevo('Nuevo archivo','documentos',$this->id_mod,'','form_nuevo','',$modo); //$nom,$archivo,$id_mod,$botones,$id_form,$class,$modo
-		
-		$this->fmt->form->file_form_doc("<span class='obligatorio'>*</span> Cargar archivo (pdf, doc/x, pptx, xls/x, zip):","","form_nuevo","input-form-doc","","","docs"); //$nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p
+
+		$this->fmt->form->file_form_doc("<span class='obligatorio'>*</span> Cargar archivo (pdf, doc/x, pptx, xls/x, zip):","","form_nuevo","input-form-doc","","","docs","required"); //$nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0","","",""); //$label,$id,$cat_raiz,$cat_valor,$class,$class_div
 		$fecha=$this->fmt->class_modulo->fecha_hoy('America/La_Paz');
 		$this->fmt->form->input_form_sololectura('Fecha:','inputFecha','',$fecha,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
@@ -80,7 +80,7 @@ class DOCUMENTOS{
 		$this->fmt->form->input_form('Nombre amigable:','inputNombreAmigable','',$fila['doc_ruta_amigable'],'disabled','','');
 		$this->fmt->form->input_form('Tags:','inputTags','',$fila['doc_tags'],'');
 		$this->fmt->form->textarea_form('Descripción:','inputDescripcion','',$fila['doc_descripcion'],'','3',''); //$label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
-        
+
 		$this->fmt->form->input_form('Url archivo:','inputUrl','',$fila['doc_url'],'');
 
 		$this->fmt->form->input_form('Tipo de Archivo:','inputTipo','',$fila['doc_tipo_archivo'],'');
@@ -90,7 +90,7 @@ class DOCUMENTOS{
 		$this->fmt->form->input_hidden_form('inputDominio',$fila['doc_id_dominio']);
 		$cats_id = $this->fmt->categoria->traer_rel_cat_id($id,'documento_rel','doc_rel_cat_id','doc_rel_doc_id'); //$fila_id,$from,$prefijo_cat,$prefijo_rel
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0",$cats_id,"","");
-		
+
 		$this->fmt->form->input_form_sololectura('Fecha:','inputFecha','',$fila['doc_fecha'],'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
 		$usuario_n = $this->fmt->usuario->nombre_usuario($fila['doc_usuario']);
 
@@ -218,28 +218,28 @@ class DOCUMENTOS{
   		$this->fmt->class_modulo->eliminar_get_id("documento_rel","doc_rel_");
   		header("location: documentos.adm.php?id_mod=".$this->id_mod);
   	}
-  	
+
   	function busqueda_seleccion($modo,$valor){
 	  	//var_dump($valor);
-  		$this->fmt->form->head_modal('Busqueda Documentos',$modo);  //$nom,$archivo,$id_mod,$botones,$id_form,$class,$modo)		
+  		$this->fmt->form->head_modal('Busqueda Documentos',$modo);  //$nom,$archivo,$id_mod,$botones,$id_form,$class,$modo)
   		$this->fmt->form->head_table('table_id_modal');
 		$this->fmt->form->thead_table('Archivo:Acciones');
 		$this->fmt->form->tbody_table_open();
-		
+
 		$sql="SELECT doc_id,doc_url,doc_nombre,doc_tipo_archivo,doc_id_dominio  FROM documento ORDER BY doc_orden asc";
 		$rs =$this->fmt->query->consulta($sql);
 		$num=$this->fmt->query->num_registros($rs);
 		if($num>0){
 		  for($i=0;$i<$num;$i++){
-		    
+
 		    list($fila_id,$fila_url,$fila_nombre,$fila_tipo,$fila_dominio)=$this->fmt->query->obt_fila($rs);
-		    
+
 		    if (!empty($valor)){
 				$num_v = count($valor);
 				$class_a ='';
 				$class_do ='';
 
-				
+
 				for ($j=0; $j<$num_v;$j++){
 					if ( $fila_id ==$valor[$j]){
 						$class_a ="on";
@@ -248,7 +248,7 @@ class DOCUMENTOS{
 				}
 			}
 			//echo $class_do;
-			
+
 		    if (empty($fila_dominio)){ $aux=_RUTA_WEB; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila_dominio); }
 		    //var_dump($fila);
 		    	echo "<tr>";

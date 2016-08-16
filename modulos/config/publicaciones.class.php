@@ -18,7 +18,7 @@ class PUBLICACIONES{
 		?>
 		<div class="body-modulo">
 			<div class="table-responsive">
-				<table class="table table-hover">
+				<table class="table table-hover" id="table_id">
 				  <thead>
 				    <tr>
 				      <th>Nombre Publicación</th>
