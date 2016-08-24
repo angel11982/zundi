@@ -8,6 +8,6 @@
    */
   require_once("nucleo/clases/class-constructor.php");
   $fmt = new CONSTRUCTOR();
-  $fmt->autentificacion->index();
+  $fmt->autentificacion->index('sitios/mainter');
 
 ?>
