@@ -56,7 +56,49 @@ class CATEGORIA{
     $nombre=$fila["cat_nombre"];
     return $nombre;
   }
+  
+  	function metas($cat){
+	  	$consulta="SELECT cat_meta FROM categoria WHERE cat_id=$cat ";
+	  	$rs = $this->fmt->query->consulta($consulta);
+	  	$fila = $this->fmt->query->obt_fila($rs);
+	  	$meta=$fila["cat_meta"];
+	  	
+	  	if (!empty($meta)){
+	      	return $meta;
+      	}else{
+	      	$est=false;
+	      	$this->tiene_padre_sitio($cat,$est);
+	      	if($est!=false){
+		      	echo $est;
+	      	}else{
+		      	return false;
+	      	}
+	      	//echo $this->nombre_categoria($cat);
+	  
+	  	}
+		    
+	}
+	
+	function padre_sitio($cat){
+		
+	}
 
+	function tiene_padre_sitio($cat,&$est){
+	    $consulta="SELECT cat_id_padre, cat_tipo FROM categoria WHERE cat_id=".$cat ;
+	    $rs = $this->fmt->query->consulta($consulta);
+	    $num = $this->fmt->query->num_registros($rs);
+	    if ($num > 0){
+		  $fila = $this->fmt->query->obt_fila($rs);
+		   
+	      if ($fila["cat_tipo"]=="2"){
+		    $est =  $cat;
+	      }else{
+		      $this->tiene_padre_sitio($fila["cat_id_padre"],$est);
+	      }
+	    }else{
+	       $est = false;
+    	}
+	}
 
   function cat_imagen($cat){
 	$consulta = "SELECT cat_imagen FROM categoria WHERE cat_id='$cat' ";
@@ -318,6 +360,24 @@ class CATEGORIA{
     }
   }
 
+  function traer_hijos_array($cat,&$ids_cat){
+	 $consulta = "SELECT cat_id FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_id asc";
+	 //echo $consulta;
+	 $rs = $this->fmt->query->consulta($consulta);
+	 $num=$this->fmt->query->num_registros($rs);
+	 if ($num>0){
+	    for($j=0;$j<$num;$j++){
+	        list($fila_id)=$this->fmt->query->obt_fila($rs);
+	        $i=count($ids_cat);
+			$ids_cat[$i]=$fila_id;
+
+			if($this->tiene_hijos_cat($fila_id)){
+				$this->traer_hijos_array($fila_id,$ids_cat);
+			}
+		}
+	 }
+  }
+
   function img_nodo($modo,$nivel){
   }
 
@@ -510,6 +570,13 @@ class CATEGORIA{
     $fila=$this->fmt->query->obt_fila($rs);
     return $fila["cat_dominio"];
   }
+  
+   function traer_meta_cat($cat){
+    $consulta = "SELECT cat_meta FROM categoria WHERE cat_id=".$cat;
+    $rs = $this->fmt->query->consulta($consulta);
+    $fila=$this->fmt->query->obt_fila($rs);
+    return $fila["cat_meta"];
+  }
 
   function traer_id_cat_dominio($dato){
     $consulta = "SELECT cat_id FROM categoria WHERE cat_dominio='".$dato."' and cat_tipo='2'";
@@ -517,14 +584,24 @@ class CATEGORIA{
     $fila=$this->fmt->query->obt_fila($rs);
     return $fila["cat_id"];
   }
-  function traer_ruta_amigable_padre($cat){
+  function traer_ruta_amigable_padre($cat, $padre){
 	  $ruta=$this->ruta_amigable($cat);
 	  $cat_padre=$this->categoria_id_padre($cat);
-	  if($cat_padre!=0){
-		  $ruta=$this->traer_ruta_amigable_padre($cat_padre)."/".$ruta;
+	  if($cat_padre!=$padre){
+		  if($cat_padre!=0){
+			  $ruta=$this->traer_ruta_amigable_padre($cat_padre, $padre)."/".$ruta;
+		  }
 	  }
 	  return $ruta;
 
+  }
+
+
+  function traer_id_cat_producto($prod){
+	$consulta = "SELECT mod_prod_rel_cat_id FROM mod_productos_rel WHERE mod_prod_rel_prod_id='".$prod."' order by mod_prod_rel_prod_id asc";
+    $rs = $this->fmt->query->consulta($consulta);
+    $fila=$this->fmt->query->obt_fila($rs);
+    return $fila["mod_prod_rel_cat_id"];
   }
 }
 ?>

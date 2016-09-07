@@ -47,7 +47,7 @@ class MARCAS{
               <td><img class="img-responsive" width="60px" src="<?php echo $aux.$img; ?>" alt="" /></td>
               <td><strong><a href="<? echo $url; ?>" ><?php echo $fila_nombre; ?></a></strong></td>
               <td><?php	$this->traer_rel_cat_nombres($fila_id); ?> </td>
-              <td><?php $this->fmt->class_modulo->estado_publicacion($fila_activar,"modulos/modulos/modulos.adm.php", $this->id_mod,$aux, $fila_id ); ?></td>
+              <td><?php $this->fmt->class_modulo->estado_publicacion($fila_activar,"modulos/productos/marcas.adm.php", $this->id_mod,$aux, $fila_id ); ?></td>
               <td>
 
                 <a  id="btn-editar-modulo" class="btn btn-accion btn-editar" href="<? echo $url; ?>" title="Editar <? echo $fila_id."-".$fila_url; ?>" ><i class="icn-pencil"></i></a>
@@ -375,7 +375,7 @@ class MARCAS{
 
 
 						WHERE mod_prod_mar_id='".$_POST['inputId']."'";
-			echo $sql;
+			//echo $sql;
 			$this->fmt->query->consulta($sql);
 
 			$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"mod_productos_rel","mod_prod_rel_mar_id");  //$valor,$from,$fila

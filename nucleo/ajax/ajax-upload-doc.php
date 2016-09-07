@@ -13,7 +13,7 @@
       $inputNombre = str_replace(".".$extension,"",$nombre);
       $ruta_provisional = $file["tmp_name"];
       $size = $file["size"];
-      
+
       $inputSize = $fmt->archivos->formato_size_archivo($size);
 
       $pdf_tipo="application/pdf";
@@ -28,8 +28,8 @@
 
       if ( ($tipo != $pdf_tipo) && ($tipo != $xlsx_tipo) && ($tipo != $zip_tipo) && ($tipo != $docx_tipo) && ($tipo !=   $doc_tipo) && ($tipo != $xls_tipo) && ($tipo != $doc_tipo) && ($tipo!=$xls_tipo) && ($tipo!=$pptx_tipo)){
         echo "Error, el archivo no es valido (pdf,zip,doc/x,pptx,xls/s)";
-      }else if ($size > 1024*1024*8){
-        echo "Error, el tamaño máximo permitido es un 8MB";
+      }else if ($size > 1024*1024*11){
+        echo "Error, el tamaño máximo permitido es un 11MB";
       }else{
         move_uploaded_file($_FILES["inputArchivosDocs"]["tmp_name"],$output_dir."/".$nombre_url);
         $ruta_v = explode ("/",$inputUrl);
@@ -40,7 +40,7 @@
           $inputUrl = substr($inputUrl, $c +1 );
           $inputDominio = $fmt->categoria->traer_dominio_cat_ruta($ruta_v[1]."/".$ruta_v[0]);
         }
-        
+
         $usuario = $fmt->sesion->get_variable('usu_id');
         $usuario_n = $fmt->usuario->nombre_usuario($usuario);
 

@@ -30,14 +30,17 @@
       }else if ($size > 1024*1024*8){
         echo "Error, el tamaño máximo permitido es un 8MB";
       }else if ($width > 1900 || $height > 1900){
-        echo "Error la anchura y la altura maxima permitida es 500px";
+        echo "Error la anchura y la altura maxima permitida es 1900px";
       }else if($width < 60 || $height < 60){
-        echo "Error la anchura y la altura mínima permitida es 60px";
+        echo "Error la anchura y la altura mínima permitida es > 60px";
       }else{
         move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
         $src = $_POST["inputRutaArchivos"]."/".$nombre_url;
         $nombre_t=$fmt->archivos->convertir_nombre_thumb($nombre_url);
-        $fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
+        if(empty($_POST["inputThumb"]))
+        	$fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_t,100,100,1);
+        else
+        	$fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
         //$src, $dst, $width, $height, $crop=0
         $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;
         $ruta_v = explode ("/",$inputUrl);

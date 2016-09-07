@@ -3,7 +3,75 @@
   $fmt = new CONSTRUCTOR();
 
   $output_dir = _RUTA_SERVER.$_POST["inputRutaArchivos"];
-  if(isset($_FILES["inputArchivos"])){
+  if(isset($_POST["inputArchivosEdit"])){
+  	$inputUrl=$_POST["inputArchivosEdit"];
+  	$inputDominio = _RUTA_WEB;
+  	$ruta_provisional = $inputDominio.$inputUrl;
+  	$dato = pathinfo($ruta_provisional);
+  	$thumb_s= explode("x",$_POST["inputThumb"]);
+    $inputNombre = $fmt->get->convertir_url_amigable($dato["filename"]);
+	$inputTipo = $dato["extension"];
+
+	$size = filesize(_RUTA_SERVER.$_POST["inputRutaArchivos"]."/".$dato["basename"]);
+    $inputSize = $fmt->archivos->formato_size_archivo($size);
+    $dimensiones = getimagesize($ruta_provisional);
+	$width = $dimensiones[0];
+    $height = $dimensiones[1];
+    $dimension = $width." x ".$height;
+
+	 echo '<div class="contenedor-imagen">';
+          echo "<img width='100%' src='".$inputDominio.$inputUrl."'>";
+          echo '</div></br></br>';
+          ?>
+          <style>
+          .contenedor-imagen {
+			    width: 100%;
+			    position: relative;
+			    margin: 0 auto;
+			    text-align: center;
+			}
+			.contenedor-button {
+			    width: 100%;
+			    position: relative;
+			    text-align: right;
+			}
+          </style>
+            <div class="demo"></div>
+            <script>
+            $(document).ready(function () {
+              $('.demo').croppie({
+                  url: '<?php echo $inputDominio.$inputUrl; ?>',
+                  enableExif: true,
+                  boundary: { width: 476, height: 476 },
+                  viewport: {
+                      width: <?php echo  $thumb_s[0] ?>,
+                      height: <?php echo  $thumb_s[1] ?>,
+                      type: 'square'
+                  }
+              });
+              $("#btn-save-thumb").click(function(){
+
+	           	guardar_thumb();
+
+			   });
+            });
+            </script>
+          <?php
+          echo "</div>";
+          echo '<div id="respuesta-thumb"></div>';
+          echo '<div class="contenedor-button">';
+          echo '<a id="btn-save-thumb" class="btn btn-warning"><font><font>Guardar Thumb </font></font></a>';
+           echo '</div>';
+          $fmt->form->input_form('<span class="obligatorio">*</span> Nombre archivo:','inputNombreArchivo','',$inputNombre,'','','En minúsculas');
+          $fmt->form->input_form('Url archivo:','inputUrl','',$inputUrl,'');
+          $fmt->form->input_form('Tipo archivo:','inputTipo','',$inputTipo,'');
+
+          $fmt->form->input_form('Dimensión:','inputDimension','',$dimension,'','','');
+          $fmt->form->input_form('Tamaño:','inputTamano','',$inputSize,'','','');
+          $fmt->form->input_form('Dominio:','','',$inputDominio,'','','');
+          $fmt->form->input_hidden_form('inputDominio',$fmt->categoria->traer_id_cat_dominio($inputDominio));
+  }
+  else if(isset($_FILES["inputArchivos"])){
 
     $error = $_FILES["inputArchivos"]["error"];
 
@@ -24,6 +92,7 @@
       $width = $dimensiones[0];
       $height = $dimensiones[1];
       $dimension = $width." x ".$height;
+
       $thumb_s= explode("x",$_POST["inputThumb"]);
       if ($tipo != 'image/jpg' && $tipo != 'image/jpeg' && $tipo != 'image/png' && $tipo != 'image/gif' && $tipo != 'audio/mp3' && $tipo != 'video/mp4' && $tipo != 'audio/quicktime'){
         echo "Error, el archivo no es valido (jpg,jpeg,png,gif)";
@@ -37,6 +106,7 @@
         move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
         $src = $_POST["inputRutaArchivos"]."/".$nombre_url;
         $nombre_t=$fmt->archivos->convertir_nombre_thumb($nombre_url);
+
         $fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
         //$src, $dst, $width, $height, $crop=0
         $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;

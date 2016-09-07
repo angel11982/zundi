@@ -777,6 +777,18 @@ width: 80%;
 .agregado{
 	color:#444  !important;
 }
+.box-pest-agregado{
+	background-color: #f4f8fc;
+	border-radius: 5px;
+	color:#444  !important;
+	border:1px solid #ddd;
+}
+
+.box-pest-agregado .quitar-pest{
+	color:#FF2D55;
+	cursor: pointer;
+}
+
 .box-tabla{}
 .box-tr{
   border-bottom:1px solid #f1f1f1;
@@ -793,15 +805,7 @@ width: 80%;
 
 .nav-tabs > li > a{ color:#555; }
 
-.tab-content{
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: #fff;
-	border:thin solid #ddd;
-  border-top: 0px;
-  font-family : "Lato-Light",sans-serif !important;
-  font-weight:normal !important;
-}
+
 
 .radio{
 	width: 90%;
@@ -834,5 +838,4 @@ width: 80%;
 
 .tab-content{
 	border:0px !important;
-	overflow-y: scroll !important; 
 }

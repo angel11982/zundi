@@ -148,7 +148,7 @@ class FORM{
     </script>
     <?php
   }
-  function file_form_nuevo_save_thumb($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb){
+  function file_form_nuevo_save_thumb($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb,$imagen){
   	//echo $ruta;
     ?>
     <div class="form-group <?php echo $class_div; ?>" id="<?php echo $id_div; ?>" >
@@ -191,6 +191,31 @@ class FORM{
 
       });
 
+	  function CargarCrop(){
+		 var formData = new FormData($("#<?php echo $id_form; ?>")[0]);
+
+        var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-upload-mul-tumb.php";
+        $("#respuesta").toggleClass('respuesta-form');
+        $.ajax({
+            url: ruta,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+						xhr: function() {
+			        var xhr = $.ajaxSettings.xhr();
+			        xhr.upload.onprogress = function(e) {
+								var dat = Math.floor(e.loaded / e.total *100);
+			          //console.log(Math.floor(e.loaded / e.total *100) + '%');
+								$("#prog").html('<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="'+ dat +'" aria-valuemin="0" aria-valuemax="100" style="width: '+ dat +'%;">'+ dat +'%</div></div>');
+			        };
+			        return xhr;
+				    },
+            success: function(datos){
+              	$("#respuesta").html(datos);
+            }
+          });
+	  }
 
 
 			function guardar_thumb(){
@@ -216,6 +241,10 @@ class FORM{
 					});
 				});
 			}
+			<?php
+				if($imagen!="")
+				echo "CargarCrop();";
+			?>
     </script>
     <?php
   }
@@ -291,7 +320,7 @@ class FORM{
 			    	<?php echo $aux; ?>
 			    	language: "es",
 			        allowedFileExtensions: ["jpg", "png", "gif", "mp3", "mp4"],
-			        maxFilePreviewSize: 10240,
+			        maxFilePreviewSize: 20480,
 			        uploadUrl: "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-mul-upload-db.php", // your upload server url
 			        uploadExtraData: function() {
 			            return {
@@ -438,9 +467,148 @@ class FORM{
 		</script>
     <?php
   }
+  function agregar_pestana($label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item,$id_item_doc){
+	$idx=$id;
+	  ?>
+	<div class="form-group <?php echo $class_div; ?>">
+      <label><?php echo $label; ?></label>
+      <a class="btn btn-nuevo-pest pull-right"><i class="fa fa-plus"></i> Nueva Pestaña </a>
+      <a class="btn btn-agregar-pest pull-right"><i class="fa fa-plus"></i> Agregar Pestaña </a>
+      <?php if (!empty($mensaje)){ ?>
+	  <p class="help-block"><?php echo $mensaje; ?></p>
+	  <? } ?>
+	  <div class="" id="box-adiciones_pest">
+		  <?php
+			  $orden_pest=0;
+			if (!empty($valor)){
+				$sql="SELECT DISTINCT pes_id, pes_nombre, mod_pro_pes_contenido, mod_pro_pes_orden FROM $from, pestana WHERE $id_item_doc=pes_id and $id_item=$valor order by mod_pro_pes_orden asc ";
+				$rs=$this->fmt->query->consulta($sql);
+				$num =$this->fmt->query->num_registros($rs);
+				if ($num>0){
 
+					for($i=0;$i<$num;$i++){
+						$filax=$this->fmt->query->obt_fila($rs);
+						echo '<div class="box-pest-agregado box-pest-'.$filax["pes_id"].'" "><input type="hidden" name="'.$id.'[]" id="'.$id.'[]" value="'.$filax["pes_id"].'" /> <label>'.$filax["pes_nombre"].'</label><a class="btn quitarpest" value="'.$filax["pes_id"].'" id="e-'.$filax["pes_id"].'" nombre="'.$filax["pes_nombre"].'"><i class="icn-close"></i></a><div class="form-group"><label for="textArea" class="col-lg-2 control-label">Contenido:<p></p>Orden:<input type="number" class="form-control" min="0" name="orden_pest'.$filax["pes_id"].'" id="orden_pest'.$filax["pes_id"].'" value="'.$filax["mod_pro_pes_orden"].'"></label><div class="col-lg-10"><textarea class="form-control text-note" rows="3" name="contenido'.$filax["pes_id"].'" id="contenido'.$filax["pes_id"].'">'.$filax["mod_pro_pes_contenido"].'</textarea></div></div></div>';
 
-  function agregar_documentos($label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item){
+						$valor_ids[$i] = $filax["pes_id"];
+						$orden_pest=$filax["mod_pro_pes_orden"];
+					}
+
+				}
+			}
+		  ?>
+	  </div>
+	  <div class="box-modal" id="box-modal-pest" style="display:none;">
+		  <div id="respuesta-modal">
+		  <?
+			if (!empty($valor)){ $xvalor="&id=".$valor; }else{ $xvalor=""; }
+			$url_mod =  _RUTA_WEB."modulos/config-ec/config-ec.adm.php?tarea=form_nuevo&modo=modal&from=".$from.$xvalor;
+			echo "<iframe class='frame-modal' src='".$url_mod."'  name='frame_content_modal' scrolling=auto ></iframe>";
+		  ?>
+		  </div>
+	  </div>
+
+	  <div class="box-modal" id="box-modal-apest" style="display:none;">
+		  <?php
+			  require_once(_RUTA_HOST."modulos/config-ec/config-ec.class.php");
+			  $form_e =new CONFIG_EC($this->fmt);
+			  $form_e->busqueda_seleccion('modal',$valor_ids);
+		   ?>
+	  </div>
+	  <script>
+		  	$(document).ready( function (){
+		  		var orden_pst = <?php echo $orden_pest; ?>;
+			  	$(".btn-nuevo-pest").click( function(){
+				  $("#box-modal-pest").toggle();
+				  $(".btn-nuevo-pest").toggleClass("on");
+			  	});
+
+			  	$(".btn-agregar-pest").click( function(){
+				  $("#box-modal-apest").toggle();
+				  $(".btn-agregar-pest").toggleClass("on");
+				});
+
+				$( "#box-modal-apest" ).on( "click", ".btn-agregar-pes", function(){
+					orden_pst++;
+				  var idv = $( this ).attr("value");
+				  var nom = $( this ).attr("nombre");
+				  $('#bp-' + idv).toggleClass("on");
+				  $('.btp-' + idv).toggleClass("on");
+				  $('#box-adiciones_pest').append('<div class="box-pest-agregado box-pest-'+idv+'"><input type="hidden" name="<?php echo $idx; ?>[]" id="<?php echo $idx; ?>[]" value="'+idv+'" /> <label>'+nom+'</label><a class="btn quitarpest" value="'+idv+'" id="e-'+idv+'" nombre="'+nom+'"><i class="icn-close"></i></a><div class="form-group"><label for="textArea" class="col-lg-2 control-label">Contenido:<p></p>Orden:<input type="number" class="form-control" min="0" name="orden_pest'+idv+'" id="orden_pest'+idv+'" value="'+orden_pst+'"></label><div class="col-lg-10"><textarea class="form-control text-note" rows="3" name="contenido'+idv+'" id="contenido'+idv+'"></textarea></div></div></div>');
+
+				  	$(".quitarpest").off('click');
+    				$(".quitarpest").on('click', function() {
+	    				var ide = $( this ).attr("value");
+	    				var nom = $( this ).attr("nombre");
+	    				$('#bp-' + ide).toggleClass("on");
+	    				$('.btp-' + ide).toggleClass("on");
+	    				$('.box-pest-' + ide ).remove();
+					});
+
+					$('.text-note').summernote({
+						height: 150,                 // set editor height
+						minHeight: null,             // set minimum height of editor
+						maxHeight: null,             // set maximum height of editor
+						lang: 'es-ES',
+						focus: false,
+						toolbar: [
+							['style', ['style','bold', 'italic', 'underline', 'clear','hr']],
+						    ['font', ['strikethrough', 'superscript', 'subscript']],
+						    ['fontsize', ['fontsize']],
+						    ['color', ['color']],
+						    ['table', ['table']],
+						    ['para', ['ul', 'ol', 'paragraph']],
+						    ['height', ['height']],
+						    ['codeview',['codeview','fullscreen']],
+							['mybutton', ['imagen','link']],
+						]
+					});
+				});
+				$(".quitarpest").click(function() {
+	    				var ide = $( this ).attr("value");
+	    				$('#bp-' + ide).toggleClass("on");
+	    				$('.btp-' + ide).toggleClass("on");
+	    				$('.box-pest-' + ide ).remove();
+				});
+				$( "#box-modal-apest" ).on( "click", ".btn-actualizar-modal", function() {
+					  $("#box-modal-apest").html("cargando..");
+					 var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-act-seccion.php";
+					 var dato = [{name:"action", value:"pestana"},{name:"valor", value:"<?php echo $valor; ?>"}];
+					 $.ajax({
+					          url: ruta,
+					          type: "POST",
+					          data: dato,
+							  success: function(datos){
+							  	$("#box-modal-apest").html(datos);
+							  }
+					});
+				});
+				$('.text-note').summernote({
+						height: 150,                 // set editor height
+						minHeight: null,             // set minimum height of editor
+						maxHeight: null,             // set maximum height of editor
+						lang: 'es-ES',
+						focus: false,
+						toolbar: [
+							['style', ['style','bold', 'italic', 'underline', 'clear','hr']],
+						    ['font', ['strikethrough', 'superscript', 'subscript']],
+						    ['fontsize', ['fontsize']],
+						    ['color', ['color']],
+						    ['table', ['table']],
+						    ['para', ['ul', 'ol', 'paragraph']],
+						    ['height', ['height']],
+						    ['codeview',['codeview','fullscreen']],
+							['mybutton', ['imagen','link']],
+						]
+					});
+			});
+
+       </script>
+    </div>
+	<?php
+  }
+
+  function agregar_documentos($label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item,$id_item_doc){
 	  $idx=$id;
 	  ?>
 	<div class="form-group <?php echo $class_div; ?>">
@@ -454,7 +622,7 @@ class FORM{
 		  <?php
 
 			if (!empty($valor)){
-				$sql="SELECT DISTINCT doc_id,doc_nombre,doc_tipo_archivo FROM mod_productos_rel, documento WHERE mod_prod_rel_doc_id=doc_id and mod_prod_rel_prod_id=$valor ";
+				$sql="SELECT DISTINCT doc_id,doc_nombre,doc_tipo_archivo FROM $from, documento WHERE $id_item_doc=doc_id and $id_item=$valor ";
 				$rs=$this->fmt->query->consulta($sql);
 				$num =$this->fmt->query->num_registros($rs);
 				if ($num>0){
@@ -474,7 +642,7 @@ class FORM{
 	  <div class="box-modal" id="box-modal-docs" style="display:none;">
 		  <div id="respuesta-modal">
 		  <?
-			if (!empty($id_item)){ $xvalor="&id=".$id_item; }else{ $xvalor=""; }
+			if (!empty($valor)){ $xvalor="&id=".$valor; }else{ $xvalor=""; }
 			$url_mod =  _RUTA_WEB."modulos/documentos/documentos.adm.php?tarea=form_nuevo&id_mod=15&modo=modal&from=".$from.$xvalor;
 			echo "<iframe class='frame-modal' src='".$url_mod."'  name='frame_content_modal' scrolling=auto ></iframe>";
 		  ?>
@@ -500,7 +668,7 @@ class FORM{
 				  $(".btn-agregar-docs").toggleClass("on");
 				});
 
-				$(".btn-agregar").on('click', function(){
+				$("#box-modal-adocs").on('click', ".btn-agregar", function(){
 				  var idv = $( this ).attr("value");
 				  var nom = $( this ).attr("nombre");
 				  $('#b-' + idv).toggleClass("on");
@@ -533,6 +701,20 @@ $.ajax({
 	    				$('#b-' + ide).toggleClass("on");
 	    				$('.bt-' + ide).toggleClass("on");
 	    				$('.box-doc-' + ide ).remove();
+				});
+				$( "#box-modal-adocs" ).on( "click", ".btn-actualizar-modal", function() {
+					  $("#box-modal-adocs").html("cargando..");
+					 var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-act-seccion.php";
+					 var dato = [{name:"action", value:"documento"},{name:"valor", value:"<?php echo $valor; ?>"}];
+					 $.ajax({
+					          url: ruta,
+					          type: "POST",
+					          data: dato,
+							  success: function(datos){
+								  $("#box-modal-adocs").html(datos);
+
+							  }
+					});
 				});
 			});
        </script>
@@ -593,6 +775,17 @@ $.ajax({
     <div class="form-group <?php echo $class_div; ?>">
       <label><?php echo $label; ?></label>
       <input class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>" validar="<?php echo $validar; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" <?php echo $disabled; ?> >
+			<?php if (!empty($mensaje)){ ?>
+			<p class="help-block"><?php echo $mensaje; ?></p>
+			<? } ?>
+    </div>
+    <?php
+  }
+  function input_mail($label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar){
+    ?>
+    <div class="form-group <?php echo $class_div; ?>">
+      <label><?php echo $label; ?></label>
+      <input type="email" class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>" validar="<?php echo $validar; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" <?php echo $disabled; ?>  >
 			<?php if (!empty($mensaje)){ ?>
 			<p class="help-block"><?php echo $mensaje; ?></p>
 			<? } ?>
@@ -730,41 +923,7 @@ $.ajax({
 		</div>
 		<?php
 		}
-		
-	function radio_form($label,$id,$prefijo,$from,$id_select,$id_disabled,$class_div,$class){
-		$consulta ="SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from;
-		$rs = $this->fmt->query->consulta($consulta);
-		$num=$this->fmt->query->num_registros($rs);
-		?>
-		<div class="form-group <?php echo $class_div; ?>">
-			<label><?php echo $label; ?></label>
-		<?php
-		if($num>0){
-			for($i=0;$i<$num;$i++){
-				list($fila_id,$fila_nombre)=$this->fmt->query->obt_fila($rs);
-				if ($fila_id==$id_select){  
-					$aux="checked"; 
-				}else{ 
-					$aux=""; 
-					if ($i==0){
-						$aux="checked"; 
-					} 
-				}
-				
-				if ($fila_id==$id_disabled){  $idd="disabled"; }else{ $idd=""; }
-			?>
-				 <label class="radio">
-				 <input type="radio" class="<?php echo $class." ".$idd; ?>" name="<?php echo $id; ?>" id="<?php echo $id.$i; ?>" value="<?php echo $fila_id; ?>" <?php echo $aux; ?>>
-				 <?php echo $fila_nombre; ?>
-				 </label>
-			<?php
-			}
-		}
-		?>
-		</div>
-		<?php
-	}
-	
+
   function radio_activar_form($valor){
     ?>
     <div class="form-group">

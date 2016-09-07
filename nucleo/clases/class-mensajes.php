@@ -14,6 +14,10 @@ class MENSAJE{
     return "<div role='alert' class='alert alert-success animated fadeIn' id='success_mail'><i class='icn-checkmark-circle'></i> Su consulta se envió correctamente, nos pondremos en contacto con usted lo antes posible.</div>";
   }
 
+  function mail_compartir_ok(){
+    return "<div role='alert' class='alert alert-success animated fadeIn' id='success_mail'><i class='icn-checkmark-circle'></i> Su consulta se envió correctamente, muchas gracias por compartir nuestros productos.</div>";
+  }
+
   function login_ok(){
     return "<div  class='btn animated fadeIn color-text-negro-b' id='login_ok'><i class='color-text-verde icn-checkmark-circle'></i> Logín correcto. Redireccionando...</div>";
   }

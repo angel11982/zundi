@@ -845,6 +845,33 @@ input[type="file"] {
 	padding-top: 2px;
 }
 
+.box-pest-agregado{
+	width: 100%;
+	height: 120px;
+	padding: 10px 20px 7px 20px;
+	margin:10px 0;
+	position:relative;
+}
+
+
+.box-pest-agregado label{
+	display: inline-block;
+	margin-top: 3px;
+}
+
+.quitarpest{
+	 position: absolute;
+	 right: 0px;
+	 top: 7px;
+	 display: inline-block;
+}
+.agregado, .btn-agregar-pes.on{
+	display: none;
+}
+
+.agregado.on, .btn-agregar-pest{
+	display: block;
+}
 
 .tab-content{
 	padding: 20px;
@@ -865,14 +892,3 @@ input[type="file"] {
 	padding: 40px;
 }
 
-.box-publicaciones{
-	float: left;
-	height: 100vh;
-	display: inline-block;
-	position: fixed;
-	top:0px;
-	left: -2px;	
-}
-.box-publicaciones label{
-padding: 10px 5px;
-}

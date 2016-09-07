@@ -12,6 +12,7 @@ class PLANTILLA{
 		var $cat_css;
 		var $cat_clase;
 		var $cat_ruta_amigable;
+		var $cat_meta;
 		var $pla_id;
 		var $pla_icono;
 		var $pla_css;
@@ -40,6 +41,7 @@ class PLANTILLA{
 			cat_css,
 			cat_theme,
 			cat_ruta_amigable,
+			cat_meta,
 			pla_icono,
 			pla_css,
 			pla_codigos,
@@ -58,10 +60,11 @@ class PLANTILLA{
 					$this->cat_analitica  = $fila["cat_analitica"];
 					$this->cat_favicon 		= $fila["cat_favicon"];
 					$this->cat_codigos 		= $fila["cat_codigos"];
-					$this->cat_css 				= $fila["cat_css"];
-					$this->cat_clase 			= $fila["cat_clase"];
-					$this->cat_theme 			= $fila["cat_theme"];
-					$this->cat_ruta_amigable 		= $fila["cat_ruta_amigable"];
+					$this->cat_css 			= $fila["cat_css"];
+					$this->cat_clase 		= $fila["cat_clase"];
+					$this->cat_theme 		= $fila["cat_theme"];
+					$this->cat_meta			= $fila["cat_meta"];
+					$this->cat_ruta_amigable = $fila["cat_ruta_amigable"];
 					$this->pla_id			 		= $fila["pla_id"];
 					$this->pla_icono   		= $fila["pla_icono"];
 					$this->pla_css     		= $fila["pla_css"];
@@ -75,10 +78,18 @@ class PLANTILLA{
 			    return false;
 			}
 		}
+		
+	
 
 		function dibujar_cabecera($cat,$pla){
 				
 				echo $this->fmt->header->header_html($cat);
+				
+				$id_p=$this->fmt->categoria->traer_id_cat_dominio(_RUTA_WEB);
+				$meta=$this->fmt->categoria->traer_meta_cat($id_p);
+				if (!empty($meta)){
+					require_once (_RUTA_HOST.$meta);
+				}
 
 				echo "	<!-- inicio css plantilla contenedores  -->"."\n";
 
@@ -107,6 +118,8 @@ class PLANTILLA{
 				}
 
 				echo $this->scripts_head();
+				
+				
 
 				echo "	<!-- fin js plantilla contenedores  -->"."\n";
 				?>

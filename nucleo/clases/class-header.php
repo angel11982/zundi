@@ -10,6 +10,7 @@ class HEADER{
   }
 
   function header_html($cat){
+
     $aux  = '<!DOCTYPE HTML>'."\n";
     $aux .= '<html id="pagIndex" lang="ES">'."\n";
     $aux .= '<head>'."\n";
@@ -39,62 +40,46 @@ class HEADER{
 	$cat_tipo =  $this->fmt->categoria->categoria_id_tipo($cat);
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
 	$cat_nombre= $this->fmt->categoria->nombre_categoria($cat);
-	$consulta = "SELECT conf_nombre_sitio FROM configuracion";
-	$rs = $this->fmt->query->consulta($consulta);
-	$fila = $this->fmt->query->obt_fila($rs);
-	$nombre=$fila["conf_nombre_sitio"];
 
 	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
-		if ($cat==1){
-			$nombre = $nombre;
-		}else{
-			$nombre = $cat_nombre;
-		}
+		$nombre = $cat_nombre;
 	}else{
 		$cat_padre_sitio =  $this->fmt->categoria->categoria_padre_sitio($cat);
 		if (!empty($cat_padre_sitio)){
 			$nombre= $this->fmt->categoria->nombre_categoria($cat_padre_sitio)." - ".$cat_nombre;
 		}else{
-	    	
+	    	$consulta = "SELECT conf_nombre_sitio FROM configuracion";
+			$rs = $this->fmt->query->consulta($consulta);
+			$fila = $this->fmt->query->obt_fila($rs);
+			$nombre=$fila["conf_nombre_sitio"];
 			if (empty($nombre)){ $nombre = _VZ; }
 	    }
     }
     return $nombre;
   }
+  
 
-  function get_favicon($cat){
+  
+    function get_favicon($cat){
 
 
 	$cat_tipo = $this->fmt->categoria->categoria_id_tipo($cat);
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
-	
-	$consulta = "SELECT conf_favicon FROM configuracion";
-	$rs = $this->fmt->query->consulta($consulta);
-	$fila = $this->fmt->query->obt_fila($rs);
-	$fav=$fila["conf_favicon"];
-	
+
 
 	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
 		$cat_favicon= $this->fmt->categoria->favicon_categoria($cat);
 		if (!empty($cat_favicon)){
 			return $cat_favicon;
 		} else {
-			if (empty($fav)){
 			return "images/favicon.ico";
-			}else{
-			return $fav;	
-			}
 		}
 	}else{
 		$cat_padre_sitio =  $this->fmt->categoria->categoria_padre_sitio($cat);
 		if (!empty($cat_padre_sitio)){
 			return $this->fmt->categoria->favicon_categoria($cat_padre_sitio);
 		}else{
-	    	if (empty($fav)){
-			return "images/favicon.ico";
-			}else{
-			return $fav;	
-			}
+	    	return "images/favicon.ico";
 	    }
     }
   }

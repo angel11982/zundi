@@ -43,11 +43,12 @@ class USUARIOS{
                 ?>
                 <tr>
                   <td  class="col-nombre"><?php if (!empty($fila_imagen)){
-                      echo '<img class="img-user img-responsive" src="'._RUTA_WEB.$fila_imagen.'" />';
+											$img=$this->fmt->class_modulo->cambiar_tumb($fila_imagen);
+                      echo '<img class="img-user img-responsive" src="'._RUTA_WEB.$img.'" />';
                     } else {
                       echo '<img class="img-user img-responsive" src="'._RUTA_WEB.'images/user/user-default.png" ?>';
                     }
-                      echo '<span class="nombre-user">'.$fila_nombre."</span>";
+                      echo '<span class="nombre-user">'.$fila_nombre." ".$fila_apellido."</span>";
                     ?>
                   </td>
                   <td class="td-user"><?php echo $fila_email; ?></td>
@@ -60,7 +61,7 @@ class USUARIOS{
                   </td>
                   <td class="td-user col-xl-offset-2 acciones">
                     <a  id="btn-editar-modulo" class="btn btn-accion btn-editar <?php echo $aux; ?>" href="usuarios.adm.php?tarea=form_editar&id=<? echo $fila_id; ?>&id_mod=<? echo $this->id_mod; ?>" title="Editar <? echo $fila_id."-".$fila_url; ?>" ><i class="icn-pencil"></i></a>
-                    <a  title="eliminar <? echo $fila_id; ?>" type="button" idEliminar="<? echo $fila_id; ?>" nombreEliminar="<? echo $fila_nombre; ?>"   class="btn btn-eliminar btn-accion <?php echo $aux; ?>"><i class="icn-trash"></i></a>
+                    <a  title="eliminar <? echo $fila_id; ?>" type="button" ide="<? echo $fila_id; ?>" nombre="<? echo $fila_nombre." ".$fila_apellido; ?>" tarea="eliminar"  class="btn btn-eliminar btn-accion <?php echo $aux; ?>"><i class="icn-trash"></i></a>
                   </td>
                 </tr>
                 <?
@@ -72,7 +73,7 @@ class USUARIOS{
     </div>
     </div>
     <?
-		$this->fmt->class_modulo->script_form("modulos/usuarios/usuarios.adm.php",$this->id_mod);
+		$this->fmt->class_modulo->script_form("modulos/usuarios/usuarios.adm.php",$this->id_mod,"desc"); //$ruta,$id_mod,$tipo="asc",$orden=0,$cant=25
   }
 
 	function form_nuevo(){
@@ -241,10 +242,10 @@ class USUARIOS{
 	function eliminar(){
 
 		$this->fmt->get->validar_get( $_GET['id'] );
-		$id= $_GET['id'];
+		echo $id= $_GET['id'];
 		$this->fmt->class_modulo->eliminar_fila($id,"usuarios_roles","usuarios_usu_id");
 		$this->fmt->class_modulo->eliminar_fila($id,"usuarios_grupos","usuarios_usu_id");
-		echo $sql="DELETE FROM usuarios WHERE usu_id='".$id."'";
+		$sql="DELETE FROM usuarios WHERE usu_id='".$id."'";
 		$this->fmt->query->consulta($sql);
 
 		$up_sqr6 = "ALTER TABLE usuarios AUTO_INCREMENT=1";

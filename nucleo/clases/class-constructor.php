@@ -25,7 +25,7 @@ class CONSTRUCTOR{
   var $form;
 
   function __construct() {
-	  
+
 
 
     header('Content-Type: text/html; charset=utf8');
@@ -40,7 +40,7 @@ class CONSTRUCTOR{
 
 
 	array_walk($_POST, 'limpiar_cadena');
-	array_walk($_GET, 'limpiar_cadena');  
+	array_walk($_GET, 'limpiar_cadena');
 
     if(isset($_GET["mod_id"])){
       if (!is_numeric($_GET["mod_id"])){
@@ -133,7 +133,7 @@ class CONSTRUCTOR{
 
 
   }
-  
+
 	function limpiar_cadena($valor){
 		$valor = str_ireplace("SELECT","",$valor);
 		$valor = str_ireplace("COPY","",$valor);

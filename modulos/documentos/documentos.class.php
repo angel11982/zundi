@@ -204,8 +204,19 @@ class DOCUMENTOS{
 						WHERE doc_id='".$_POST['inputId']."'";
 
 			$this->fmt->query->consulta($sql);
+
+			$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"documento_rel","doc_rel_doc_id");
+
+			$ingresar1 ="doc_rel_doc_id, doc_rel_cat_id";
+			$valor_cat= $_POST['inputCat'];
+			$num=count( $valor_cat );
+			for ($i=0; $i<$num;$i++){
+				$valores1 = "'".$_POST['inputId']."','".$valor_cat[$i]."'";
+				$sql1="insert into documento_rel (".$ingresar1.") values (".$valores1.")";
+				$this->fmt->query->consulta($sql1);
+			}
 		}
-			header("location: multimedia.adm.php?id_mod=".$this->id_mod);
+			header("location: documentos.adm.php?id_mod=".$this->id_mod);
 	}
 
 	function activar(){

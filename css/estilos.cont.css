@@ -1,38 +1,115 @@
-.cnt-box-head{
-	padding: 15px;
+.box-publicaciones{
+	float: left;
+	height: 100vh;
+	display: inline-block;
+	position: fixed;
+	top:0px;
+	left: -2px;
+	width: 20%;
+	z-index: 1;
 }
+
+.box-publicaciones label{
+padding: 10px 5px;
+}
+
+.tab-content{
+	padding: 10px !important;
+	margin-top: 2px;
+	display: inline-block;
+	width: 100%;
+	min-height: 83vh;
+	border:thin solid #ddd;
+	border-top: 0px;
+	font-family : "Lato-Light",sans-serif !important;
+	font-weight:normal !important;
+}
+.cnt-publicacion {
+    width: 50%;
+}
+.cnt-box{
+	list-style: none;
+	border: 1px solid #eee;
+	border-radius: 2px;
+	width: 43%;
+	display: inline-block;
+	margin:3%;
+	padding:3%;
+	float: left;
+	font-size: 12px;
+	position: relative;
+	background: #fff;
+}
+
+.box-estructura{
+	float: right;
+	height: 100vh;
+	display:block;
+	position: fixed;
+	top:0px;
+	right: 2;
+	width: 80%;
+	padding: 15px;
+	z-index: 0;
+}
+
+.cnt-box-head{
+	padding: 10px;
+}
+
 .cnt-box-head label{
 	font-family : "Lato-Light",sans-serif !important;
 	font-size: 13px;
 }
 
-.btn-i{
-	color:#eee;
+.box-plantilla{
+	width: 170px;
+	font-size: 12px;
+	display: inline-block;
+	margin-left: 5px;
+	margin-top: 7px;
 }
 
-.btn-i:hover{
+.box-plantilla label{
+	width: 26%;
+	float: left;
+	margin-right: 5px;
+	margin-top: 7px;
 }
 
-.cnt-box{
-	padding: 15px;
+.box-plantilla select{
+	width: 70%;
+	padding: 3px !important;
+	font-size: 13px;
+	height: 30px;
+}
+
+.btn-guardar{
+	margin-right: 60px;
+	margin-top: 7px;
+}
+
+.box-diagrama{
+	width: 95%;
+	background: #fff;
+	border-radius: 2px;
+	height: 90vh;
+	margin-left:5px;
+	border:thin solid #efefef;
+}
+
+.connected{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	border:1px dotted #ddd;
 	background-color: #f7f7f7;
-	border-radius: 4px;
-}
-
-.cnt-publicacion{
-	padding: 7px 15px 7px 5px;
-	border:1px solid #c1dbe7;
-	background-color: #fff;
-	border-radius: 4px;
+	display:inline-block;
+	border-radius: 3px;
+	width: 100%;
 }
 
 
-
-.cnt-publicacion .btn-i{
-	color:#aaa;
-	margin-left:7px;
-}
-
-.cnt-publicacion .btn-i:hover{
-	color:#007AFF;
-}

@@ -177,16 +177,20 @@ class NAV{
         if ( $this->tiene_cat_hijos($fila_id) ){
           $aux .= $this->fmt_li_hijos($fila_id, $fila_nombre);
         } else {
-          $aux .= $this->fmt_li($fila_id,"","",$fila_nombre, $url, $destino, $fila_imagen);
+          $aux .= $this->fmt_li($fila_id,"","",$fila_nombre, $url, $destino, $fila_imagen,$cat);
         }
       }
       return $aux;
     }
   }
 
-  function fmt_li($id, $clase, $icono, $nombre,$url, $destino, $imagen){
+  function fmt_li($id, $clase, $icono, $nombre,$url, $destino, $imagen, $cat){
+
     $nombre_x = $this->convertir_url_amigable($nombre);
-    $url=_RUTA_WEB_temp.$this->fmt->categoria->traer_ruta_amigable_padre($id);
+    $url=_RUTA_WEB_temp.$this->fmt->categoria->traer_ruta_amigable_padre($id, $cat);
+
+    //$url=$this->fmt->categoria->traer_ruta_amigable_padre($id);
+    //echo $url;
     if (empty($imagen)){ $aux_x=""; }else{ $aux_x="<img class='img-m' src='"._RUTA_WEB.$imagen."' border=0>"; }
     $aux  = '<li id="btn-m'.$id.'" class="btn-m'.$id.' '.$clase.' btn-m-'.$nombre_x.'">';
     $aux .= '<a href="'.$url.'" target="'.$destino.'">';

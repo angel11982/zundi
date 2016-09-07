@@ -51,7 +51,7 @@ class CLASSMODULOS{
 		<?php
 	}  // fin script_busqueda()
 
-	function script_form($ruta,$id_mod,$tipo="asc",$orden=0,$cant=25){
+	function script_form($ruta,$id_mod,$tipo="asc",$orden=0,$cant=25,$pag_up=false){
 
 		?>
 			<script language="JavaScript">
@@ -60,6 +60,13 @@ class CLASSMODULOS{
 
 
 				$('#table_id').DataTable({
+					<?php
+						if($pag_up){
+					?>
+					"dom": '<"top"flp<"clear">>rt<"bottom"ip<"clear">>',
+					<?php
+						}
+					?>
 					"language": {
 		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
 		            },
@@ -67,6 +74,14 @@ class CLASSMODULOS{
 		            "order": [[ <?php echo $orden; ?>, '<?php echo $tipo; ?>' ]]
 				});
 				$('#table_id_modal').DataTable({
+					"language": {
+		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
+		            },
+		            "pageLength": <?php echo $cant; ?>,
+		            "order": [[ <?php echo $orden; ?>, '<?php echo $tipo; ?>' ]]
+				});
+
+				$('#table_id_modal_aux').DataTable({
 					"language": {
 		            "url": "<?php echo _RUTA_WEB; ?>js/spanish_datatable.json"
 		            },
@@ -123,6 +138,7 @@ class CLASSMODULOS{
 						    ['font', ['strikethrough', 'superscript', 'subscript']],
 						    ['fontsize', ['fontsize']],
 						    ['color', ['color']],
+						    ['table', ['table']],
 						    ['para', ['ul', 'ol', 'paragraph']],
 						    ['height', ['height']],
 						    ['codeview',['codeview','fullscreen']],
@@ -350,10 +366,10 @@ class CLASSMODULOS{
 	} //Fion nombre usuario
 
   function fila_modulo($id,$fila,$from,$prefijo){
-		$sql="select ".$prefijo.$fila." from ".$from." where ".$prefijo."id=$id";
+		$sql="select ".$fila." from ".$from." where ".$prefijo."id=$id";
     $rs=$this->fmt->query->consulta($sql);
 		$filax=$this->fmt->query->obt_fila($rs);
-		return $filax[$prefijo.$fila];
+		return $filax[$fila];
 	} //Fion nombre usuario
 
   function cambiar_tumb($ruta){
@@ -393,10 +409,8 @@ class CLASSMODULOS{
 	function activar_get_id($from,$prefijo){
 		$this->fmt->get->validar_get ( $_GET['estado'] );
 	    $this->fmt->get->validar_get ( $_GET['id'] );
-	    $estado=$_GET['estado'];
-	    if ($estado=="0"){ $e="1"; }else{ $e="0"; }
 	    $sql="update ".$from." set
-	        ".$prefijo."activar='".$e."' where ".$prefijo."id='".$_GET['id']."'";
+	        ".$prefijo."activar='".$_GET['estado']."' where ".$prefijo."id='".$_GET['id']."'";
 	    $this->fmt->query->consulta($sql);
 	}
 

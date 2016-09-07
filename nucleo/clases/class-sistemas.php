@@ -61,7 +61,7 @@ class CLASSSISTEMAS{
 		return $aux;
 	}
 
-  function get_data($ruta){
+  function get_data_on($ruta){
     $rx = explode ("/",$ruta);
     $con = count($rx);
     $ruta_amig = $rx[$con-2];
@@ -70,6 +70,14 @@ class CLASSSISTEMAS{
     $fila=$this->fmt->query->obt_fila($rs);
     $data = array($fila['cat_id'],$ruta_amig,$fila['cat_id_plantilla']);
     return $data;
+  }
+
+  function get_data_off($ruta){
+    $rx = explode ("/",$ruta);
+    $con = count($rx);
+    $ruta_amig = $rx[$con-2];
+
+    return $ruta_amig;
   }
 
   function get_sub_cat($archivo,$id_cat_recibido,$ruta){
@@ -112,7 +120,10 @@ class CLASSSISTEMAS{
 
   function update_htaccess(){
       $nombre_archivo = _RUTA_HT.".htaccess";
-      $datos = $this->get_data($nombre_archivo);
+      if(_MULTIPLE_SITE=="on")
+      	$datos = $this->get_data_on($nombre_archivo);
+      else
+      	$datos = $this->get_data_off($nombre_archivo);
       //if($this->fmt->archivos->existe_archivo($nombre_archivo)){
       //  $this->fmt->archivos->permitir_escritura($nombre_archivo); }
       if($archivo = fopen($nombre_archivo, "w+") or die(print_r(error_get_last(),true)))
@@ -126,8 +137,21 @@ class CLASSSISTEMAS{
             fwrite($archivo, "RewriteCond %{SCRIPT_FILENAME} !-f".PHP_EOL);
             fwrite($archivo, "#".PHP_EOL);
             fwrite($archivo, "Rewriterule ^dashboard$  nucleo/dashboard.php".PHP_EOL);
-            fwrite($archivo, "Rewriterule ^".$datos[1]."$  index.php?cat=".$datos[0]."&pla=".$datos[2].PHP_EOL);
-            $sql="SELECT cat_id, cat_ruta_amigable, cat_id_plantilla FROM categoria WHERE cat_id_padre=".$datos[0];
+
+            if(_MULTIPLE_SITE=="on"){
+            	fwrite($archivo, "Rewriterule ^".$datos[1]."$  index.php?cat=".$datos[0]."&pla=".$datos[2].PHP_EOL);
+            	fwrite($archivo, "Rewriterule ^buscar/([^/]*)$  index.php?cat=".$datos[0]."&pla=2&q=$1".PHP_EOL);
+				$padre_cat=$datos[0];
+            }
+            else{
+            	fwrite($archivo, "Rewriterule ^".$datos."$  index.php?cat=1&pla=1".PHP_EOL);
+            	fwrite($archivo, "Rewriterule ^buscar/$  index.php?cat=1&pla=2".PHP_EOL);
+            	$datos[0]=0;
+
+            }
+
+
+            $sql="SELECT cat_id, cat_ruta_amigable, cat_id_plantilla FROM categoria WHERE cat_id_padre=".$padre_cat;
             $rs=$this->fmt->query->consulta($sql);
             while ($R = $rs->fetch_array()) {
                    $id_cat=$R["cat_id"];
@@ -141,6 +165,9 @@ class CLASSSISTEMAS{
                      // sitios con paginación
                      fwrite($archivo, "Rewriterule ^".$ruta1."/pag=([0-9]+)$  index.php?cat=".$id_cat."&pla=".$pla."&pag=$1".PHP_EOL);
                      fwrite($archivo, "Rewriterule ^".$ruta1."/([^/]*).html$  index.php?cat=".$id_cat."&pla=3&nota=$1".PHP_EOL);
+                     fwrite($archivo, "Rewriterule ^".$ruta1."/prod=([0-9]+)$  index.php?cat=".$id_cat."&pla=1&prod=$1".PHP_EOL);
+
+                     fwrite($archivo, "Rewriterule ^".$ruta1."/prod=([0-9]+)&ruta=([^/]*)$  index.php?cat=".$id_cat."&pla=1&prod=$1&ruta=$2".PHP_EOL);
 
                      //escribir en htaccess las categorias del producdo
                      $sql2="SELECT mod_prod_id, mod_prod_ruta_amigable FROM mod_productos, mod_productos_rel WHERE mod_prod_id=mod_prod_rel_prod_id and mod_prod_rel_cat_id=".$id_cat;
@@ -155,6 +182,7 @@ class CLASSSISTEMAS{
                          if (!empty($ruta2)) {
                          	fwrite($archivo, "Rewriterule ^".$ruta1."/".$ruta2."$  index.php?cat=".$id_cat."&pla=2&prod=".$id_prod.PHP_EOL);
                             fwrite($archivo, "Rewriterule ^".$ruta1."/".$ruta2."/pag=([0-9]+)$  index.php?cat=".$id_cat."&pla=1&prod=".$id_prod."&pag=$1".PHP_EOL);
+
 
                          }
                         }

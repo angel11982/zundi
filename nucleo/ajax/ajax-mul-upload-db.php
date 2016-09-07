@@ -34,7 +34,7 @@ for($i=0; $i < count($filenames); $i++){
     $ext = explode('.', basename($filenames[$i]));
     $nombre_arc=$fmt->archivos->saber_nombre_archivo($filenames[$i]);
     $nombre_amigable=$fmt->nav->convertir_url_amigable($nombre_arc);
-    $target = $output_dir . $nombre_amigable . "." . array_pop($ext);
+    $target = $output_dir . $nombre_amigable . "." . strtolower(array_pop($ext));
     if(move_uploaded_file($images['tmp_name'][$i], $target)) {
         $success = true;
         $paths[] = $target;

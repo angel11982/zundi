@@ -15,8 +15,9 @@ class PRODUCTOS{
 	function busqueda(){
     $botones = $this->fmt->class_pagina->crear_btn("productos.adm.php?tarea=form_nuevo&id_mod=$this->id_mod","btn btn-primary","icn-plus","Nuevo Producto");  // link, tarea, clase, icono, nombre
     $this->fmt->class_pagina->crear_head( $this->id_mod, $botones); // bd, id modulo, botones
-    $this->fmt->class_modulo->script_form("modulos/productos/productos.adm.php",$this->id_mod);
+    $this->fmt->class_modulo->script_form("modulos/productos/productos.adm.php",$this->id_mod,"asc","0","25",true);
     $this->eliminar_mul("0");
+    $id_rol = $this->fmt->sesion->get_variable("usu_rol");
     ?>
     <div class="body-modulo">
     <div class="table-responsive">
@@ -32,7 +33,34 @@ class PRODUCTOS{
         </thead>
         <tbody>
           <?php
-            $sql="select mod_prod_id, mod_prod_nombre, mod_prod_imagen,  mod_prod_id_dominio, mod_prod_activar from mod_productos	ORDER BY mod_prod_id desc";
+          	if($id_rol==1)
+            	$sql="select mod_prod_id, mod_prod_nombre, mod_prod_imagen,  mod_prod_id_dominio, mod_prod_activar from mod_productos ORDER BY mod_prod_id desc";
+            else{
+            	$aux="";
+            	$or="";
+            	$sql="select rol_rel_cat_id from roles_rel where rol_rel_rol_id=".$id_rol." and rol_rel_cat_id not in (0) ORDER BY rol_rel_cat_id asc";
+			      $rs =$this->fmt->query->consulta($sql);
+				  $num=$this->fmt->query->num_registros($rs);
+				  if($num>0){
+				  	for($i=0;$i<$num;$i++){
+				    	list($fila_id)=$this->fmt->query->obt_fila($rs);
+						$aux.=$or."mod_prod_rel_cat_id=".$fila_id;
+						$or=" or ";
+						if($this->fmt->categoria->tiene_hijos_cat($fila_id)){
+							$ids_cat=array();
+							$this->fmt->categoria->traer_hijos_array($fila_id,$ids_cat);
+							$num_cat=count($ids_cat);
+							if ($num_cat>0){
+								for($j=0;$j<$num_cat;$j++){
+									$aux.=$or."mod_prod_rel_cat_id=".$ids_cat[$j];
+								}
+							}
+						}
+					}
+			      }
+            	$sql="select mod_prod_id, mod_prod_nombre, mod_prod_imagen,  mod_prod_id_dominio, mod_prod_activar from mod_productos, mod_productos_rel where mod_prod_rel_prod_id=mod_prod_id and ($aux) ORDER BY mod_prod_id desc";
+
+            }
             $rs =$this->fmt->query->consulta($sql);
             $num=$this->fmt->query->num_registros($rs);
             if($num>0){
@@ -96,6 +124,7 @@ class PRODUCTOS{
 	function form_editar(){
 		$this->fmt->get->validar_get ( $_GET['id'] );
 		$id = $_GET['id'];
+		$id_rol = $this->fmt->sesion->get_variable("usu_rol");
 		$consulta= "SELECT * FROM mod_productos WHERE mod_prod_id='".$id."'";
 		$rs =$this->fmt->query->consulta($consulta);
 		$fila=$this->fmt->query->obt_fila($rs);
@@ -111,21 +140,22 @@ class PRODUCTOS{
 		$this->fmt->form->input_form("Nombre Amigable:","inputNombreAmigable","",$valor_ra,"","","","");
 		$this->fmt->form->input_hidden_form("inputId",$id);
 		$this->fmt->form->input_form("Tags:","inputTags","",$fila['mod_prod_tags'],"","","");
+		$this->fmt->form->input_hidden_form("inputArchivosEdit",$fila['mod_prod_imagen']);
 		?>
 		<div class="form-group">
 			<label>Imagen (560x400px):</label>
 			<div class="panel panel-default" >
 				<div class="panel-body">
 					<?php
-					$this->fmt->form->file_form_editar('Cargar Archivo (max 8MB)','','form_editar','form-file','','box-file-form','archivos/productos','300x325:300x235px - productos');
+					$this->fmt->form->file_form_nuevo_save_thumb('Cargar Archivo (max 8MB)','','form_editar','form-file','','box-file-form','archivos/productos','350x350',$fila['mod_prod_imagen']); //$nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb,$imagen
 					?>
 					<div class="url-imagen" id="url-imagen"><img src="<?php echo $this->fmt->categoria->traer_dominio_cat_id($fila['mod_prod_id_dominio']).$fila['mod_prod_imagen']; ?>" class="img-responsive"></div>
 				</div>
 			</div>
 		</div>
 		<?php
-		$this->fmt->form->input_form('Url archivo:','inputUrl','',$fila['mod_prod_imagen'],'');
-		$this->fmt->form->input_form('Dominio:','inputDominio','',$this->fmt->categoria->traer_dominio_cat_id($fila['mod_prod_id_dominio']),'');
+		//$this->fmt->form->input_form('Url archivo:','inputUrl','',$fila['mod_prod_imagen'],'');
+		//$this->fmt->form->input_form('Dominio:','inputDominio','',$this->fmt->categoria->traer_dominio_cat_id($fila['mod_prod_id_dominio']),'');
 		$this->fmt->form->input_form("Codigo:","inputCodigo","",$fila['mod_prod_codigo'],"","","");
 		$this->fmt->form->input_form("Modelo:","inputModelo","",$fila['mod_prod_modelo'],"","","");
 		$this->fmt->form->select_form("Marca:","InputMarca","mod_prod_mar_","mod_productos_marcas",$fila["mod_prod_id_marca"]);
@@ -134,12 +164,26 @@ class PRODUCTOS{
 		$this->fmt->form->textarea_form("Especificaciones:","inputEspecificaciones","",$fila['mod_prod_especificaciones'],"summernote","","5","");
 		$this->fmt->form->input_form("Disponibilidad:","inputDisponibilidad","Inmediata, a 30 días, a 15 días, definido por pedido",$fila['mod_prod_disponibilidad'],"","","");
 		$this->fmt->form->input_form("Precio:","inputPrecio","",$fila['mod_prod_precio'],"","","");
-		$this->fmt->form->agregar_documentos("Documentos:","inputDoc",$fila['mod_prod_id'],"","","","mod_productos",$id); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
-		$this->fmt->form->input_form("Id Mul:","inputMul","",$fila['mod_prod_id_mul'],"","","");
+		$this->fmt->form->agregar_documentos("Documentos:","inputDoc",$fila['mod_prod_id'],"","","","mod_productos_rel","mod_prod_rel_prod_id","mod_prod_rel_doc_id"); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
+		$this->fmt->form->agregar_pestana("Pestaña:","inputPestana",$fila['mod_prod_id'],"","","","mod_productos_pestana","mod_pro_pes_pro_id","mod_pro_pes_pes_id"); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
+
 		$this->fmt->form->multimedia_form("Multimedia:","imagenes","archivos/productos/","100x100","mod_productos_mul","mod_pro_mul_id_prod_mul","mod_pro_mul_id_prod","mod_pro_mul_ruta","mod_pro_mul_dominio",$fila['mod_prod_id']);
 		//$this->fmt->form->select_form("Categoría productos:","inputCat","mod_prod_cat_","mod_productos_cat",$this->rel_id_cat($fila['mod_prod_id'])); //$label,$id,$prefijo,$from,$id_s
 		//echo $this->rel_id_cat($fila['mod_prod_id']);
+		if($id_rol==1)
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0",$this->rel_id_cat($fila['mod_prod_id']),"",""); //$$label,$id,$cat_raiz,$cat_valor,$class,$class_div
+		else{
+			$sql="select rol_rel_cat_id from roles_rel where rol_rel_rol_id=".$id_rol." and rol_rel_cat_id not in (0) ORDER BY rol_rel_cat_id asc";
+			      $rs =$this->fmt->query->consulta($sql);
+				  $num=$this->fmt->query->num_registros($rs);
+				  if($num>0){
+				  	for($i=0;$i<$num;$i++){
+				    	list($fila_id)=$this->fmt->query->obt_fila($rs);
+				    	$nombre_cat=$this->fmt->categoria->nombre_categoria($fila_id);
+						$this->fmt->form->categoria_form('Categoria - '.$nombre_cat,'inputCat',$fila_id,$this->rel_id_cat($fila['mod_prod_id']),"","");
+					}
+			      }
+		}
 
 		$this->fmt->form->radio_activar_form($fila['mod_prod_activar']);
 		$this->fmt->form->botones_editar($id,$fila['mod_prod_nombre'],'Producto');//$fila_id,$fila_nombre,$nombre
@@ -169,6 +213,7 @@ class PRODUCTOS{
 	}
 
 	function form_nuevo(){
+		$id_rol = $this->fmt->sesion->get_variable("usu_rol");
 		$botones = $this->fmt->class_pagina->crear_btn("productos.adm.php?tarea=busqueda&id_mod=$this->id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
 		$this->fmt->class_pagina->crear_head_form("Nuevo Producto", $botones,"");// nombre, botones-left, botones-right
 		?>
@@ -193,7 +238,7 @@ class PRODUCTOS{
 				<div class="panel panel-default" >
 					<div class="panel-body">
 				<?php
-				$this->fmt->form->file_form_nuevo('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','archivos/productos',"300x325:300x235px - productos");
+				$this->fmt->form->file_form_nuevo_save_thumb('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','archivos/productos',"350x350");
 				?>
 					</div>
 				</div>
@@ -233,15 +278,26 @@ class PRODUCTOS{
 				</div>
 				<?php
 					$this->fmt->form->agregar_documentos("Documentos:","inputDoc","","","","","",""); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
+					$this->fmt->form->agregar_pestana("Pestaña:","inputPestana","","","","","",""); //$label,$id,$valor,$class,$class_div,$mensaje,$from,$id_item
 				?>
-				<div class="form-group">
-					<label>Id Mul:</label>
-					<input class="form-control" id="inputMul" name="inputMul" placeholder="" />
-				</div>
+
 
 				<?php
 				$this->fmt->form->multimedia_form("Multimedia:","imagenes","archivos/productos/","100x100","mod_productos_mul","mod_pro_mul_id_prod_mul","mod_pro_mul_id_prod","mod_pro_mul_ruta","mod_pro_mul_dominio"); //$label,$input,$ruta,$thumb,$table,$col_id_extra,$col_id,$col_ruta,$col_dom,$id_mul
-				$this->fmt->form->categoria_form('Categoria','inputCat',"0","","",""); //$$label,$id,$cat_raiz,$cat_valor,$class,$class_div
+				if($id_rol==1)
+					$this->fmt->form->categoria_form('Categoria','inputCat',"0","","",""); //$$label,$id,$cat_raiz,$cat_valor,$class,$class_div
+				else{
+					$sql="select rol_rel_cat_id from roles_rel where rol_rel_rol_id=".$id_rol." and rol_rel_cat_id not in (0) ORDER BY rol_rel_cat_id asc";
+				      $rs =$this->fmt->query->consulta($sql);
+					  $num=$this->fmt->query->num_registros($rs);
+					  if($num>0){
+					  	for($i=0;$i<$num;$i++){
+					    	list($fila_id)=$this->fmt->query->obt_fila($rs);
+					    	$nombre_cat=$this->fmt->categoria->nombre_categoria($fila_id);
+							$this->fmt->form->categoria_form('Categoria - '.$nombre_cat,'inputCat',$fila_id,"","","");
+						}
+				      }
+				}
 				?>
 
 				<div class="form-group form-botones">
@@ -292,7 +348,7 @@ class PRODUCTOS{
 										 $_POST['inputDetalles']."','".
 										 $_POST['inputEspecificaciones']."','".
 										 $_POST['inputDisponibilidad']."','".
-										 $_POST['inputUrlArchivo']."','".
+										 $_POST['inputUrl']."','".
 										 $_POST['inputPrecio']."','".
 										 $_POST['InputMarca']."','".
 										 $_POST['inputDoc']."','".
@@ -331,6 +387,19 @@ class PRODUCTOS{
 				$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";
 				$this->fmt->query->consulta($sql2);
 			}
+
+			$ingresar3 = "mod_pro_pes_pro_id,mod_pro_pes_pes_id,mod_pro_pes_contenido,mod_pro_pes_orden";
+			$valor_cat=$_POST['inputPestana'];
+			$num_cat=count( $valor_cat );
+			//var_dump($valor_cat);
+
+			for ($i=0; $i<$num_cat;$i++){
+				$id_pes=$valor_cat[$i];
+				$valores3 = "'".$id."','".$id_pes."','".$_POST["contenido".$id_pes]."','".$_POST["orden_pest".$id_pes]."'";
+				$sql1="insert into mod_productos_pestana
+  (".$ingresar3.") values (".$valores3.")";
+				$this->fmt->query->consulta($sql1);
+			}
 		}
 		header("location: productos.adm.php?id_mod=".$this->id_mod);
 	}
@@ -352,12 +421,12 @@ class PRODUCTOS{
 							mod_prod_imagen='".$_POST['inputUrl']."',
 							mod_prod_precio='".$_POST['inputPrecio']."',
 							mod_prod_id_marca='".$_POST['InputMarca']."',
-							mod_prod_id_dominio='".$this->fmt->categoria->traer_id_cat_dominio($_POST['inputDominio'])."',
+							mod_prod_id_dominio='".$_POST['inputDominio']."',
 							mod_prod_id_doc='".$_POST['inputDoc']."',
 							mod_prod_id_mul='".$_POST['inputMul']."',
 							mod_prod_activar='".$_POST['inputActivar']."'
 							WHERE mod_prod_id='".$_POST['inputId']."'";
-
+				//echo $sql;
 				$this->fmt->query->consulta($sql);
 
 				$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"mod_productos_rel","mod_prod_rel_prod_id");  //$valor,$from,$fila
@@ -382,6 +451,21 @@ class PRODUCTOS{
 					$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";
 					$this->fmt->query->consulta($sql2);
 				}
+
+				$this->fmt->class_modulo->eliminar_fila($_POST['inputId'],"mod_productos_pestana","mod_pro_pes_pro_id");
+
+				$ingresar3 = "mod_pro_pes_pro_id,mod_pro_pes_pes_id,mod_pro_pes_contenido,mod_pro_pes_orden";
+				$valor_cat=$_POST['inputPestana'];
+				$num_cat=count( $valor_cat );
+				//var_dump($valor_cat);
+
+				for ($i=0; $i<$num_cat;$i++){
+					$id_pes=$valor_cat[$i];
+					$valores3 = "'".$_POST['inputId']."','".$id_pes."','".$_POST["contenido".$id_pes]."','".$_POST["orden_pest".$id_pes]."'";
+					$sql1="insert into mod_productos_pestana
+	  (".$ingresar3.") values (".$valores3.")";
+					$this->fmt->query->consulta($sql1);
+				}
 			}
 		}
 		header("location: productos.adm.php?id_mod=".$this->id_mod);
@@ -395,6 +479,9 @@ class PRODUCTOS{
 		$this->fmt->query->consulta($sql);
 
 		$sql="DELETE FROM mod_productos_rel WHERE mod_prod_rel_prod_id='".$id."'";
+		$this->fmt->query->consulta($sql);
+
+		$sql="DELETE FROM mod_productos_pestana WHERE mod_pro_pes_pro_id='".$id."'";
 		$this->fmt->query->consulta($sql);
 
 		$this->eliminar_mul($id);
