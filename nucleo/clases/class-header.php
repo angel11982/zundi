@@ -41,7 +41,7 @@ class HEADER{
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
 	$cat_nombre= $this->fmt->categoria->nombre_categoria($cat);
 
-	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
+	if ( ($cat_padre=='0')&&($cat_tipo=='2')&&($cat!='1')) {
 		$nombre = $cat_nombre;
 	}else{
 		$cat_padre_sitio =  $this->fmt->categoria->categoria_padre_sitio($cat);
@@ -57,9 +57,9 @@ class HEADER{
     }
     return $nombre;
   }
-  
 
-  
+
+
     function get_favicon($cat){
 
 
@@ -117,6 +117,7 @@ class HEADER{
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/estilos.adm.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/theme.adm.css" rel="stylesheet" type="text/css">'."\n";
     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/fileinput.min.css" rel="stylesheet" type="text/css">'."\n";
+     $aux .= '       <link rel="stylesheet" href="'._RUTA_WEB.'css/cropper.min.css" rel="stylesheet" type="text/css">'."\n";
 
     return $aux;
   }
@@ -133,6 +134,7 @@ class HEADER{
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.mixitup-pagination.min.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/fileinput.min.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/fileinput.es.js"></script>'."\n";
+	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/cropper.min.js"></script>'."\n";
 
     return $aux;
   }

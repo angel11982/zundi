@@ -21,7 +21,8 @@ class PUBLICACIONES{
 				<table class="table table-hover" id="table_id">
 				  <thead>
 				    <tr>
-				      <th>Nombre Publicación</th>
+					  <th class="col-id">ID</th>
+				      <th  >Nombre Publicación</th>
 				      <th>Ruta</th>
 				      <th>Publicación</th>
 				      <th class="col-xl-offset-2">Acciones</th>
@@ -37,9 +38,10 @@ class PUBLICACIONES{
 						    list($fila_id,$fila_nombre,$fila_url,$fila_activar)=$this->fmt->query->obt_fila($rs);
 						  ?>
 						  <tr>
-						    <td class="col-nombre"><?php echo $fila_nombre; ?></td>
+							<td ><?php echo $fila_id; ?></td>
+						    <td class="col-nombre" ><?php echo $fila_nombre; ?></td>
 						    <td class=""><?php echo $fila_url; ?></td>
-						    <td class="estado">
+						    <td >
 						      <?php
 						        $this->fmt->class_modulo->estado_publicacion($fila_activar,"publicaciones/config/publicaciones.adm.php", $this->id_mod,$aux, $fila_id ); // query, id item, ruta, id modulo, aux disabled
 									?>
@@ -59,7 +61,7 @@ class PUBLICACIONES{
 			</div>
 		</div>
 		<?php
-				$this->fmt->class_modulo->script_form("modulos/config/publicaciones.adm.php",$this->id_mod);
+				$this->fmt->class_modulo->script_form("modulos/config/publicaciones.adm.php",$this->id_mod,"desc");
   }
 
 	function form_nuevo(){

@@ -28,6 +28,8 @@ class KARDEX_CONF{
 					<li role="presentation" class="<?php if ($clase_activa=="cargos"){ echo "active"; }?>"><a href="#cargos" aria-controls="cargos" role="tab" data-toggle="tab"><i class="icn-credential-o color-text-naranja"></i> Cargos</a></li>
 					<li role="presentation" class="<?php if ($clase_activa=="divisiones"){ echo "active"; }?>"><a href="#divisiones" aria-controls="divisiones" role="tab" data-toggle="tab"><i class="icn-division color-text-verde"></i> Divisiones</a></li>
 					<li role="presentation" class="<?php if ($clase_activa=="departamentos"){ echo "active"; }?>"><a href="#departamentos" aria-controls="departamentos" role="tab" data-toggle="tab"><i class="icn-category-v color-text-rojo"></i> Departamentos</a></li>
+
+					<li role="presentation" class="<?php if ($clase_activa=="cats"){ echo "active"; }?>"><a href="#cats" aria-controls="cats" role="tab" data-toggle="tab"><i class="icn-category-v color-text-azul"></i> CATs</a></li>
 				</ul>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane <?php if ($clase_activa=="empresas"){ echo "active"; }?>" id="empresas">
@@ -164,6 +166,47 @@ class KARDEX_CONF{
 							});
 						</script>
 					</div>
+
+					<div role="tabpanel" class="tab-pane <?php if ($clase_activa=="cats"){ echo "active"; }?>" id="cats">
+						<label><h4>CATs</h4></label>
+						<a href="kardex-config.adm.php?tarea=form_nuevo_cat" class='btn btn-primary pull-right'><i class="icn-plus"></i> Nuevo Cat</a>
+						<div class="box-tabla">
+							<?php
+							$this->fmt->form->head_table('table_id_modal');
+							$this->fmt->form->thead_table('ID:Nombre:Nombre del Cargo:Zona:Dirección:Celular:Estado:Acciones','td-id::td-acciones');
+							$this->fmt->form->tbody_table_open();
+							$sql="SELECT cts_id,cts_nombre,cts_encargado,cts_zona,cts_direccion,cts_celular,cts_activar FROM cats ORDER BY cts_id asc";
+							$rs =$this->fmt->query->consulta($sql);
+							$num=$this->fmt->query->num_registros($rs);
+							if($num>0){
+								for($i=0;$i<$num;$i++){
+									list($fila_id,$fila_nombre,$fila_encargado,$fila_zona,$fila_direccion,$fila_celular,$fila_activar)=$this->fmt->query->obt_fila($rs);
+									echo "<tr>";
+									echo '<td class="">'.$fila_id.'</td>';
+									echo '<td class=""><strong>'.$fila_nombre.'</strong></td>';
+									echo '<td class="">'.$fila_encargado.'</td>';
+									echo '<td class="">'.$fila_zona.'</td>';
+									echo '<td class="">'.$fila_direccion.'</td>';
+									echo '<td class="">'.$fila_celular.'</td>';
+									echo '<td class="">';
+										$this->fmt->class_modulo->estado_activar($fila_activar,"modulos/rrhh/kardex-config.adm.php?tarea=activar_cat","","",$fila_id );
+									echo '</td>';
+
+									echo '<td class="">';
+									$url_editar= "kardex-config.adm.php?tarea=form_editar_cat&id=".$fila_id;
+									$this->fmt->form->botones_acciones("btn-editar-modulo","btn btn-accion btn-editar",$url_editar,"Editar","icn-pencil","editar_cat",'editar',$fila_id); //$id,$class,$href,$title,$icono,$tarea,$nom,$ide
+									$this->fmt->form->botones_acciones("btn-eliminar","btn btn-eliminar btn-accion","","Eliminar -".$fila_id,"icn-trash","eliminar_cat",$fila_nombre,$fila_id);
+									//$id,$class,$href,$title,$icono,$tarea,$nom,$ide
+									echo '</td>';
+									echo "</tr>";
+								}
+							}
+							$this->fmt->form->tbody_table_close();
+							$this->fmt->form->footer_table();
+							?>
+						</div>
+					</div>
+
 				</div>
     <?php
 		$this->fmt->class_modulo->script_form($this->ruta_modulo,"");
@@ -267,6 +310,34 @@ class KARDEX_CONF{
     $this->fmt->form->footer_page();
   }
 
+  function form_nuevo_cat(){
+    $botones .= $this->fmt->class_pagina->crear_btn("kardex-config.adm.php?tarea=busqueda&p=cats","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
+    $this->fmt->class_pagina->crear_head_mod( "", "Nuevo Cat",'',$botones,'col-xs-6 col-xs-offset-4');
+    ?>
+    <div class="body-modulo col-xs-6 col-xs-offset-3">
+      <form class="form form-modulo" action="kardex-config.adm.php?tarea=ingresar_cat"  enctype="multipart/form-data" method="POST" id="form_nuevo">
+        <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
+        <?php
+        $this->fmt->form->input_form('Nombre:','inputNombre','','','requerido requerido-texto input-lg','',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+        $this->fmt->form->input_mail('Correo:','inputCorreo','','','requerido requerido-texto input-lg','','');
+        $this->fmt->form->input_form('Nombre Encargado:','inputEncargado','','','requerido requerido-texto input-lg','','');
+        $this->fmt->form->input_form('Zona:','inputZona','','','input-lg','','');
+        $this->fmt->form->textarea_form('Dirección:','inputDireccion','','','','','3','','');
+        $this->fmt->form->input_form('Telefono Fijo:','inputtelefono','','','input-lg','','');
+		$this->fmt->form->input_form('Celular:','inputCelular','','','input-lg','','');
+		$usuario = $this->fmt->sesion->get_variable('usu_id');
+		$usuario_n =  $this->fmt->usuario->nombre_usuario( $usuario );
+		$this->fmt->form->input_form_sololectura('Usuario:','','',$usuario_n,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+		$this->fmt->form->input_hidden_form("inputUsuario",$usuario);
+        $this->fmt->form->botones_nuevo();
+        ?>
+      </form>
+    </div>
+    <?php
+    $this->fmt->class_modulo->script_form($this->ruta_modulo,"");
+    $this->fmt->form->footer_page();
+  }
+
   function form_editar_empresa(){
     $botones .= $this->fmt->class_pagina->crear_btn("kardex-config.adm.php?tarea=busqueda&p=empresas","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
     $this->fmt->class_pagina->crear_head_mod( "", "Editar Empresa",'',$botones,'col-xs-6 col-xs-offset-4');
@@ -339,6 +410,47 @@ class KARDEX_CONF{
 
 				$this->fmt->form->radio_activar_form($fila_activar);
 				$this->fmt->form->botones_editar($fila_id,$fila_nombre,'cargo','eliminar_cargo');
+        ?>
+      </div>
+    </div>
+    <?php
+    $this->fmt->class_modulo->script_form("modulos/rrhh/kardex-config.adm.php","");
+    $this->fmt->form->footer_page();
+  }
+
+  function form_editar_cat(){
+	  $botones .= $this->fmt->class_pagina->crear_btn("kardex-config.adm.php?tarea=busqueda&p=cats","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
+    $this->fmt->class_pagina->crear_head_mod( "", "Editar Cat",'',$botones,'col-xs-6 col-xs-offset-4');
+		$this->fmt->get->validar_get ( $_GET['id'] );
+		$id = $_GET['id'];
+		$sql="SELECT cts_id,cts_nombre,cts_email,cts_encargado,cts_zona,cts_direccion,cts_telefono,cts_celular,cts_activar,cts_id_usuario from cats where cts_id='".$id."'";
+		$rs=$this->fmt->query->consulta($sql);
+		$num=$this->fmt->query->num_registros($rs);
+			if($num>0){
+				for($i=0;$i<$num;$i++){
+					list($fila_id,$fila_nombre,$fila_correo,$fila_encargado,$fila_zona,$fila_direccion,$fila_telefono,$fila_celular,$fila_activar,$fila_usuario)=$this->fmt->query->obt_fila($rs);
+				}
+			}
+    ?>
+    <div class="body-modulo col-xs-6 col-xs-offset-3">
+      <form class="form form-modulo" action="kardex-config.adm.php?tarea=modificar_cat"  enctype="multipart/form-data" method="POST" id="form_editar">
+        <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
+        <?php
+        $this->fmt->form->input_form('Nombre:','inputNombre','',$fila_nombre,'requerido requerido-texto input-lg','',''); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+		$this->fmt->form->input_hidden_form("inputId",$fila_id);
+
+        $this->fmt->form->input_mail('Correo:','inputCorreo','',$fila_correo,'requerido requerido-texto input-lg','','');
+        $this->fmt->form->input_form('Nombre Encargado:','inputEncargado','',$fila_encargado,'requerido requerido-texto input-lg','','');
+        $this->fmt->form->input_form('Zona:','inputZona','',$fila_zona,'input-lg','','');
+        $this->fmt->form->textarea_form('Dirección:','inputDireccion','',$fila_direccion,'','','3','','');
+        $this->fmt->form->input_form('Telefono Fijo:','inputtelefono','',$fila_telefono,'input-lg','','');
+		$this->fmt->form->input_form('Celular:','inputCelular','',$fila_celular,'input-lg','','');
+		$usuario = $this->fmt->sesion->get_variable('usu_id');
+		$usuario_n =  $this->fmt->usuario->nombre_usuario( $usuario );
+		$this->fmt->form->input_form_sololectura('Usuario:','','',$usuario_n,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+		$this->fmt->form->input_hidden_form("inputUsuario",$usuario);
+		$this->fmt->form->radio_activar_form($fila_activar);
+		$this->fmt->form->botones_editar($fila_id,$fila_nombre,'cat','eliminar_cat');
         ?>
       </div>
     </div>
@@ -444,6 +556,36 @@ class KARDEX_CONF{
     header("location: kardex-config.adm.php?tarea=busqueda&p=cargos");
   }
 
+  function ingresar_cat(){
+	if ($_POST["btn-accion"]=="activar"){
+      $activar=1;
+    }
+    if ($_POST["btn-accion"]=="guardar"){
+      $activar=0;
+    }
+    $ingresar ="cts_nombre,
+				cts_email,
+				cts_encargado,
+				cts_zona,
+				cts_direccion,
+				cts_telefono,
+				cts_celular,
+				cts_id_usuario,
+				cts_activar";
+    $valores_post  ="inputNombre,
+				inputCorreo,
+				inputEncargado,
+				inputZona,
+				inputDireccion,
+				inputtelefono,
+				inputCelular,
+				inputUsuario,inputActivar=".$activar;
+
+    $this->fmt->class_modulo->ingresar_tabla('cats',$ingresar,$valores_post);
+		//$from,$filas,$valores_post
+    header("location: kardex-config.adm.php?tarea=busqueda&p=cats");
+  }
+
 	function ingresar_division(){
     if ($_POST["btn-accion"]=="activar"){
       $activar=1;
@@ -546,6 +688,35 @@ class KARDEX_CONF{
 		}
 	}
 
+	function modificar_cat(){
+		if ($_POST["btn-accion"]=="eliminar"){}
+		if ($_POST["btn-accion"]=="actualizar"){
+
+			$filas='cts_id,
+					cts_nombre,
+					cts_email,
+					cts_encargado,
+					cts_zona,
+					cts_direccion,
+					cts_telefono,
+					cts_celular,
+					cts_id_usuario,
+					cts_activar';
+			$valores_post='inputId,
+					inputNombre,
+					inputCorreo,
+					inputEncargado,
+					inputZona,
+					inputDireccion,
+					inputtelefono,
+					inputCelular,
+					inputUsuario,
+					inputActivar';
+			$this->fmt->class_modulo->actualizar_tabla('cats',$filas,$valores_post); //$from,$filas,$valores_post
+		header("location: kardex-config.adm.php?tarea=busqueda&p=cats");
+		}
+	}
+
 	function modificar_division(){
 		if ($_POST["btn-accion"]=="eliminar"){}
 		if ($_POST["btn-accion"]=="actualizar"){
@@ -573,7 +744,12 @@ class KARDEX_CONF{
       header("location: kardex-config.adm.php?tarea=busqueda&p=empresas");
   }
 
-	function eliminar_cargo(){
+	function eliminar_cat(){
+      $this->fmt->class_modulo->eliminar_get_id("cats","cts_");
+      header("location: kardex-config.adm.php?tarea=busqueda&p=cats");
+    }
+
+    function eliminar_cargo(){
       $this->fmt->class_modulo->eliminar_get_id("mod_kardex_cargo","mod_kdx_car_");
       header("location: kardex-config.adm.php?tarea=busqueda&p=cargos");
     }

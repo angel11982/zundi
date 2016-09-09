@@ -377,6 +377,10 @@ padding-left: 0px;
 	padding : 0px;
 }
 
+.col-id{
+	width: 20px;
+}
+
 .head-botones {
 	display    : inline-block;
 	margin-top : 0px;
@@ -518,10 +522,11 @@ input[type="file"] {
 	position : relative;
 	width    : 200px;
 	margin   : 15px auto 25px auto;
+	text-align: center !important;
 }
 
 .login .brand-login img {
-	display   : block;
+	display   : inline-block;
 	max-width : 200px;
 }
 
@@ -714,7 +719,11 @@ input[type="file"] {
 	clear: both;
 
 }
-
+.top .dataTables_paginate {
+    position: relative;
+    width: 100%;
+    padding-bottom: 10px;
+}
 .dataTables_paginate{
 	float: right;
 }
@@ -847,7 +856,7 @@ input[type="file"] {
 
 .box-pest-agregado{
 	width: 100%;
-	height: 120px;
+	height: 290px;
 	padding: 10px 20px 7px 20px;
 	margin:10px 0;
 	position:relative;

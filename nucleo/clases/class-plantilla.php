@@ -86,7 +86,9 @@ class PLANTILLA{
 				echo $this->fmt->header->header_html($cat);
 				
 				$id_p=$this->fmt->categoria->traer_id_cat_dominio(_RUTA_WEB);
-				$meta=$this->fmt->categoria->traer_meta_cat($id_p);
+				if (!empty($id_p)){
+					$meta=$this->fmt->categoria->traer_meta_cat($id_p);
+				}
 				if (!empty($meta)){
 					require_once (_RUTA_HOST.$meta);
 				}

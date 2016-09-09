@@ -61,6 +61,7 @@ class CONFIG{
 			 </form>
 		</div>
 		<?php
+			
 	}
 	
 	function modificar(){

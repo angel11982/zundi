@@ -15,8 +15,13 @@ $j=0;
 <?php
 
 if($fila["mod_prod_imagen"]!=""){
-	$archivo=_RUTA_WEB.$fila["mod_prod_imagen"];
+	$img_ax=$fila["mod_prod_imagen"];
+	//if(!file_exists($img_ax)){
+		$img_ax=$this->fmt->archivos->convertir_url_extension($img_ax,"png");
+	//}
+	$archivo=_RUTA_WEB.$img_ax;
 	$imagenFile	= $this->fmt->archivos->convertir_nombre_thumb($archivo);
+
 	$thumb[$j]= "<a class='mul-prod gal_".$j."' nvl='".$j."' tipo='imagen' arch='$archivo' >";
 	$thumb[$j].= "<div class='mul-thumb' style='background:url(".$imagenFile.")'>";
 	// $thumb[$j].= '<img class="img-responsive" src="'.$imagenFile.'">';
@@ -53,10 +58,15 @@ $sql="SELECT DISTINCT mod_pro_mul_ruta, mod_pro_mul_dominio FROM mod_productos_m
 									$type="music";
 							        break;
 							    default:
+							    	//if(!file_exists($fila_archivo)){
+									     $fila_archivo=$this->fmt->archivos->convertir_url_extension($fila_archivo,"png");
+									//}
 							        $imagenFile= $aux. $this->fmt->archivos->convertir_nombre_thumb($fila_archivo);
 									$type="imagen";
 							        break;
 							}
+
+
 
 							$thumb[$j]= "<a class='mul-prod m-$type gal_".$j."' nvl='".$j."' tipo='$type' arch='$archivo' >";
 							$thumb[$j].= "<div class='$type mul-thumb' style='background:url(".$imagenFile.")'>";

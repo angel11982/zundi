@@ -435,7 +435,7 @@ class CATEGORIAS{
 									 $_POST['inputRutasitio']."','".
 									 $activar."'";
 
-		echo $sql="insert into categoria (".$ingresar.") values (".$valores.")";
+		$sql="insert into categoria (".$ingresar.") values (".$valores.")";
 
 		$this->fmt->query->consulta($sql);
 

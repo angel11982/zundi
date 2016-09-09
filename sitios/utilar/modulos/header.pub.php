@@ -9,7 +9,7 @@ $fmt = new CONSTRUCTOR;
 	<div class="datos pull-left">
 		<span class="text">Parte de la Familia :</span>
 		<a href="http://landicorp.com.bo" target="_blank">
-			<img class="brand-top" src="<?php echo _RUTA_WEB; ?>sitios/landicorp/images/logo-landicorp-small.png" />
+			<img class="brand-top" src="<?php echo _RUTA_WEB; ?>sitios/utilar/images/logo-landicorp-small.png" />
 		</a>
 	</div>
 	<div class="pull-right rs-top">
@@ -49,13 +49,10 @@ $fmt = new CONSTRUCTOR;
 
 <script type="text/javascript" >
 	 $( window ).load(function() {
-		var contenido = $("#btn-m14 span").html();
-		var element = $("#btn-m14").text().split(' ');
-		$( "#btn-m14 span" ).html( element[0] + " <b>" + element[1] +"</b>");
-
-		var contenido = $("#btn-m15 span").html();
-		var element = $("#btn-m15").text().split(' ');
-		$( "#btn-m15 span" ).html( element[0] + " <b>" + element[1] +"</b>");
-
+		 //var contenido = $(".btn-m14 span").html();
+		 var e = $(".btn-m14 span").text().split(' ');
+		 $( ".btn-m14 span" ).html( e[0] + " <b>" + e[1] +"</b>");
+		 var e = $(".btn-m15 span").text().split(' ');
+		 $( ".btn-m15 span" ).html( e[0] + " <b>" + e[1] +"</b>");
 	});
 </script>

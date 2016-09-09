@@ -619,7 +619,7 @@ class CLASSMODULOS{
         $campo_id=$filas1[0];
         $f=$valores_post1[0];
         $id= $_POST[$f];
-    		$sql="UPDATE $from SET ".$valores." WHERE ".$campo_id."='".$id."'";
+    		echo $sql="UPDATE $from SET ".$valores." WHERE ".$campo_id."='".$id."'";
   			$this->fmt->query->consulta($sql);
   }
 
@@ -654,6 +654,31 @@ class CLASSMODULOS{
 
         $sql="insert into $from (".$filas.") values (".$valores.")";
         $this->fmt->query->consulta($sql);
+  }
+
+  function traer_clima($lugar){
+	$BASE_URL = "http://query.yahooapis.com/v1/public/yql";
+	$yql_query = 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="'.$lugar.'")';
+	$yql_query_url = $BASE_URL . "?q=" . urlencode($yql_query) . "&u=c&format=json";
+			    // Make call with cURL
+	$session = curl_init($yql_query_url);
+	curl_setopt($session, CURLOPT_RETURNTRANSFER,true);
+	$json = curl_exec($session);
+	    // Convert JSON to PHP object
+	$phpObj =  json_decode($json);
+
+    $temp=$phpObj->query->results->channel->item->condition->temp;
+    $temp_max=$phpObj->query->results->channel->item->forecast[0]->high;
+    if($temp_max==0)
+    	$temp_max = $temp;
+    $temp_min=$phpObj->query->results->channel->item->forecast[0]->low;
+	$data["code"]=$phpObj->query->results->channel->item->condition->code;
+	$data["actual"]=round(($temp-32)/1.8000);
+	$data["max"]=round(($temp_max-32)/1.8000);
+	$data["min"]=round(($temp_min-32)/1.8000);
+	$data["humedad"]=$phpObj->query->results->channel->atmosphere->humidity;
+	$data["fecha"]=$phpObj->query->results->channel->item->forecast[0]->date;
+	return $data;
   }
 
 }

@@ -194,6 +194,13 @@ class ARCHIVOS{
     return $ruta_x.$this->convertir_nombre_thumb($nombre);
   }
 
+  function convertir_url_extension($url,$ext){
+    $ruta = explode("/", $url);
+    $nombre = end($ruta);
+    $ruta_x = str_replace($nombre,'',$url);
+    return $ruta_x.$this->convertir_extension($nombre,$ext);
+  }
+
   function convertir_nombre_thumb($archivo){
     $extencion=$this->saber_extension_archivo($archivo);
     $nombre = $this->saber_nombre_archivo($archivo);
@@ -203,6 +210,11 @@ class ARCHIVOS{
     }else{
         return 'error no es una imagen';
     }
+  }
+
+  function convertir_extension($archivo,$ext){
+	  $nombre = $this->saber_nombre_archivo($archivo);
+	  return $nombre.".".$ext;
   }
 
   function saber_extension_archivo($archivo){

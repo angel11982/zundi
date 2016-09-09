@@ -68,13 +68,21 @@ class PRODUCTOS{
               list($fila_id,$fila_nombre,$fila_imagen,$fila_dominio,$fila_activar)=$this->fmt->query->obt_fila($rs);
 							if (empty($fila_dominio)){ $aux=_RUTA_WEB_temp; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila_dominio); }
 							$img=$this->fmt->archivos->convertir_url_thumb( $fila_imagen );
+							$id_dom = $this->fmt->categoria->traer_id_cat_dominio($aux);
+							$rut_a = $this->fmt->categoria->ruta_amigable($id_dom);
+
+							//if(!file_exists("../../../".$rut_a."/".$img)){
+							     $img=$this->fmt->archivos->convertir_url_extension($img,"png");
+							//}
+
+
 							$url ="productos.adm.php?tarea=form_editar&id=".$fila_id."&id_mod=".$this->id_mod;
             ?>
             <tr>
               <td><img class="img-responsive" width="60px" src="<?php echo $aux.$img; ?>" alt="" /></td>
               <td><strong><a href="<? echo $url; ?>" ><?php echo $fila_nombre; ?></a></strong></td>
               <td><?php	$this->traer_rel_cat_nombres($fila_id); ?> </td>
-              <td><?php $this->fmt->class_modulo->estado_publicacion($fila_activar,"modulos/modulos/modulos.adm.php", $this->id_mod,$aux, $fila_id ); ?></td>
+              <td><?php $this->fmt->class_modulo->estado_publicacion($fila_activar,"modulos/productos/productos.adm.php", $this->id_mod,$aux, $fila_id ); ?></td>
               <td>
 
                 <a  id="btn-editar-modulo" class="btn btn-accion btn-editar" href="<? echo $url; ?>" title="Editar <? echo $fila_id."-".$fila_url; ?>" ><i class="icn-pencil"></i></a>
@@ -147,9 +155,9 @@ class PRODUCTOS{
 			<div class="panel panel-default" >
 				<div class="panel-body">
 					<?php
-					$this->fmt->form->file_form_nuevo_save_thumb('Cargar Archivo (max 8MB)','','form_editar','form-file','','box-file-form','archivos/productos','350x350',$fila['mod_prod_imagen']); //$nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb,$imagen
+					$this->fmt->form->file_form_nuevo_croppie_thumb('Cargar Archivo (max 8MB)','','form_editar','form-file','','box-file-form','archivos/productos','350x350',$fila['mod_prod_imagen']); //$nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb,$imagen
 					?>
-					<div class="url-imagen" id="url-imagen"><img src="<?php echo $this->fmt->categoria->traer_dominio_cat_id($fila['mod_prod_id_dominio']).$fila['mod_prod_imagen']; ?>" class="img-responsive"></div>
+
 				</div>
 			</div>
 		</div>
@@ -237,8 +245,11 @@ class PRODUCTOS{
 				<label>Imagen (560x400px):</label>
 				<div class="panel panel-default" >
 					<div class="panel-body">
+
+
+
 				<?php
-				$this->fmt->form->file_form_nuevo_save_thumb('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','archivos/productos',"350x350");
+				$this->fmt->form->file_form_nuevo_croppie_thumb('Cargar Archivo (max 8MB)','','form_nuevo','form-file','','box-file-form','archivos/productos',"350x350");
 				?>
 					</div>
 				</div>
@@ -468,6 +479,11 @@ class PRODUCTOS{
 				}
 			}
 		}
+		header("location: productos.adm.php?id_mod=".$this->id_mod);
+	}
+
+	function activar(){
+		$this->fmt->class_modulo->activar_get_id("mod_productos","mod_prod_");
 		header("location: productos.adm.php?id_mod=".$this->id_mod);
 	}
 

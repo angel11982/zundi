@@ -35,7 +35,7 @@ if($num>0){
         if ($i==0){$aux ='active'; } else { $aux =""; }
         list($fila_id,$fila_url,$fila_descripcion,$fila_leyenda, $fila_texto,$fila_orden)=$this->fmt->query->obt_fila($rs);
     ?>
-    <div class="item <?php echo $aux; ?>">
+    <div class="item <?php echo $aux; ?> item_<?php echo $i; ?>">
       <div class="caption">
         <h1><?php echo $fila_leyenda; ?></h1>
         <p><?php echo $fila_texto; ?></p>

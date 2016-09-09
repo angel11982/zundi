@@ -321,6 +321,36 @@ class CATEGORIA{
       }
     }
   }
+  
+  function hijos_cat_a($cat,$nivel){
+    $consulta = "SELECT cat_id,cat_nombre,cat_ruta_amigable  FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_orden";
+    $rs = $this->fmt->query->consulta($consulta);
+    $num=$this->fmt->query->num_registros($rs);
+
+    if ($num>0){
+	   $nivel++;
+      for($i=0;$i<$num;$i++){
+        list($fila_id,$fila_nombre,$fila_ra)=$this->fmt->query->obt_fila($rs);
+
+
+        $aux_nivel = $this->img_nodo("linea",$nivel);
+        echo "<div class='nodo cat-".$cat." nodo-".$nivel."'> ";
+        //$this->accion($fila_id,$from,$prefijo_activar);
+        $nombre_x = $this->fmt->nav->convertir_url_amigable($fila_nombre);
+		$url= _RUTA_WEB.$fila_ra;
+    
+        echo '<a class="btn-'.$nombre_x.'" href="'.$url.'">'.$fila_nombre.'</a>';
+        if ( $this->tiene_hijos_cat($fila_id) ){
+
+          $this->hijos_cat_a($fila_id, $nivel);
+        }
+        echo "</div>";
+      }
+    }
+  }
+
+  
+  
   function hijos_cat_check($id,$cat,$nivel){
     $consulta = "SELECT cat_id,cat_nombre  FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_orden";
     $rs = $this->fmt->query->consulta($consulta);

@@ -220,6 +220,29 @@ a { color:#0075BD; cursor: pointer; }
   position: absolute;
 }
 
+#carousel-m1 .carousel-inner .item_0 .imagen{
+  background-size: auto 65vh !important;
+  background-position: center top;
+  background-repeat: repeat-x;
+}
+
+
+#carousel-m1 .carousel-inner .item_1 .imagen{
+  background-size: 100% !important;
+  background-position: center top;
+  background-repeat: repeat-x;
+}
+
+#carousel-m1 .carousel-inner .item_2 .imagen{
+  background-position: center bottom;
+}
+
+#carousel-m1 .carousel-inner .item_3 .imagen{
+  background-position:  center 140%;
+  background-repeat: no-repeat;
+  background-size: 140%;
+}
+
 #carousel-m1 .caption{
   width:500px;
   height: auto !important;
@@ -233,15 +256,20 @@ a { color:#0075BD; cursor: pointer; }
 #carousel-m1 .caption h1{
   font-family: "sf_ui_bold",helvetica,arial !important;
   color:#fff;
-  font-size: 3.5em;
-  line-height: 0.9;
+  font-size: 2.8em;
+  line-height: 1;
+  margin-top: 20px;
+  display: inline-block;
   text-transform: uppercase;
+   margin-bottom: 0px;
 }
 
 #carousel-m1 .caption p{
   color:#fff;
   font-family  : "sf_ui_thin",helvetica,arial !important;
   font-size: 1.2em;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 #carousel-m1 .carousel-control{
@@ -389,23 +417,87 @@ h1{
 
 .productos .titulo{
 	margin-bottom: 30px;
+  width: 100%;
+  text-align: left;
+  display: inline-block;
 }
 
 .productos .box-productos{
 	margin-bottom: 30px;
+  position: relative;
+  margin: 0px 5px;
+
+  display: block;
+  margin-bottom: 20px;
 }
 
-.productos .item .texto{
-	text-align: left;
-	margin-top: 10px;
+.box-productos .texto{
+text-align: left;
+position: relative;
+display: inline-table;
+min-height:180px;
+box-sizing: content-box;
 }
 
-.productos .item .imagen img{
+.box-productos .texto p{
+  vertical-align: middle !important;
+  position: relative;
+  display: table-cell;
+  text-align: justify;
+
+}
+
+.box-productos .item{
+  margin: 0px;
+  padding:0px;
+  display: inline-block;
+
+  width: 100%;
+}
+.box-productos  .texto strong{
+text-transform: uppercase;
+}
+.box-productos   .imagen{
+  margin-bottom: 15px;
+  text-align: center;
+}
+.box-productos   .imagen img{
 	border:1px solid #ccc;
 	padding: 0px;
 	font-size: 0px;
 	cursor: pointer;
 }
+
+.nav > li > a span{
+
+}
+
+.btn-distribuidor{
+  border: 1px solid #6EA4D6 !important;
+  padding: 6px 10px;
+  color:#fff;
+  background-color: #3e7bcc;
+  display:block;
+  position: relative;
+  margin-top: 5px;
+  font-size: 12px;
+  clear: both;
+  text-align: center;
+  width: 200px;
+  cursor: pointer;
+  position: relative;
+  z-index: 12;
+  text-decoration: none;
+}
+
+.btn-distribuidor:hover,.btn-distribuidor:active,.btn-distribuidor:focus {
+  background-color: #ED922C;
+  border:1px solid orange !important;
+  color: #fff;
+  text-decoration: none;
+}
+
+
 
 /* movil */
 @media screen and (max-width: 570px) {
@@ -460,9 +552,6 @@ h1{
     top:10%;
   }
 
-  #carousel-m1 .caption h1{
-    font-size: 2em;
-  }
 
   #carousel-m1 .caption p{
     font-size: 1em;
@@ -487,7 +576,7 @@ h1{
 	}
 
 	.footer{
-  border-top:1px solid #ccc;
+    width: 60%;
   }
 
   .box-form{
@@ -507,4 +596,28 @@ h1{
 		padding: 20px 10px !important;
 	}
 
+  .btn-distribuidor{
+    width: 100%;
+  }
+
+  #carousel-m1 .caption{
+    position: absolute;
+    margin-top:40%;
+    left:83%;
+    width:90% !important;
+    height: 150px !important;
+    display: block;
+  }
+
+  #carousel-m1 .caption h1{
+    font-size: 1.5em;
+  }
+
+  #carousel-m1 .carousel-inner .item_1 .imagen{
+    background-size: cover !important;
+  }
+
+  #carousel-m1 .carousel-inner .item_3 .imagen{
+    background-size: cover !important;
+  }
 }

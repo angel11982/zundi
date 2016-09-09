@@ -1,0 +1,182 @@
+@import "fonts.css";
+
+*{}
+html{}
+body{
+	/*font-family: 'aileron-bold';
+	font-family: 'aileron-thin';
+	font-family: 'aileron-light';*/
+	font-family: 'aileron-regular', tahoma, serif;
+	font-size: 13px;
+}
+
+/* portada  */
+.box-portada{
+	padding: 0px;
+}
+.seccion-intro{
+	width: 100%;
+	display: inline-block;
+	min-height: 1200px;
+		
+	background: #59d4dd;
+	background: url(../images/bg-intro.jpg) repeat-x; 
+	z-index:0;
+	position: relative;
+
+}
+
+/*   menu    */
+.box-n-nav{
+	position: fixed;
+	z-index:10;
+	height: 100px;
+	width: 100%;
+}
+.box-n-nav .brand{
+	float: left;
+	margin:20px 25px;
+}
+.box-n-nav .brand img{
+	width: 130px;
+	
+}
+
+.box-n-nav .menu-e{
+	width: 80%;
+	float: right;
+	text-align: right;
+	margin-top: 20px;
+	margin-right: 20px;
+}
+
+
+.box-n-nav .menu-e a{
+	padding: 13px 15px;
+	margin: 5px 0px;
+	display: inline-block;
+	font-size: 13px;
+	font-family: 'aileron-regular', tahoma, serif;
+	color: #fff;
+	text-decoration: none;
+	border:1px solid transparent;
+	border-radius: 10px;
+	text-transform: uppercase;
+}
+.box-n-nav .menu-e a:hover{
+	background: #fff;
+	color:#777;
+	border:1px solid #fff;
+	transition: all ease 0.5s;
+}
+
+.box-n-nav .menu-e .btn-registrate{
+	background: #1ABC9C;
+	border:1px solid #7AD9E5;
+	margin-left: 7px;
+	padding: 13px 25px;
+}
+
+.box-n-nav .menu-e .btn-registrate:hover{
+	background:#189E84;
+	border:1px solid #7AD9E5;
+	color: #fff;
+	padding: 13px 25px;
+}
+
+.box-n-nav .menu-e .btn-inicia-s{
+	border:1px solid #7AD9E5;
+	padding: 13px 25px;
+}
+
+
+/*   intro   */
+
+.b-intro{
+	position: relative;
+	margin-top: 100px;
+	padding: 0px;
+	width: 100%;
+	z-index: 10;
+}
+.img-intro{
+	width: 50%;
+	height: 600px;
+	position: relative;
+	z-index: 10;	
+	float: left;
+}
+.img-intro img{
+	position: absolute;
+	right: -10px;
+	top:10%;
+	z-index: 10;
+}
+
+.texto-intro{
+	float: right;
+	width: 45%;
+	margin-top: 100px;
+	color: #fff;
+	padding-right: 5%;
+}
+
+.resumen-intro{
+	font-size: 17px;
+	margin:15px 0;
+	font-family: 'aileron-thin', tahoma, serif;
+}
+
+.pre-intro{
+	font-size: 15px;
+	font-family: 'aileron-regular', tahoma, serif;
+	text-transform: uppercase;
+	width: 100%;
+	display: block;
+	margin-bottom: 20px;
+	clear: both;
+	margin-left: 5px;
+}
+
+.texto-intro label{
+	font-size: 4em;
+	font-family: 'aileron-thin', tahoma, serif;
+	line-height: 45px;
+}
+.texto-intro label strong{
+	clear: both;
+	display: block;
+}
+
+.botones {
+	margin-top:15px; 
+}
+
+.botones .btn-info-c, .botones .btn-comprar{
+	border:1px solid #7AD9E5;
+	padding: 15px 30px;
+	margin: 5px 0px;
+	display: inline-block;
+	font-size: 13px;
+	font-family: 'aileron-regular', tahoma, serif;
+	color: #fff;
+	text-decoration: none;
+	border-radius:10px;
+	text-transform: uppercase;
+}
+
+.botones .btn-comprar{
+	background-color: #fff;
+	border:1px solid  #fff;
+	margin-right: 15px;
+	color:#054993;
+}
+
+.bg-blanco{ 
+	width: 100%;
+	z-index: 2;
+	left:0px;
+	height: 300px;
+	background: url(../images/bg-blanco.png) no-repeat center;
+	margin-top:550px;
+}

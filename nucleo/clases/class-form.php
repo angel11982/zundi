@@ -248,6 +248,124 @@ class FORM{
     </script>
     <?php
   }
+
+  function file_form_nuevo_croppie_thumb($nom,$ruta,$id_form,$class,$class_div,$id_div,$directorio_p,$sizethumb,$imagen){
+  	//echo $ruta;
+    ?>
+    <div class="form-group <?php echo $class_div; ?>" id="<?php echo $id_div; ?>" >
+      <label>Seleccionar ruta url para subir : </label>
+      <?php $this->fmt->archivos->select_archivos($ruta,$directorio_p); ?>
+			<br/><label>Seleccionar tamaño thumb (ancho x alto):</label>
+			<?php $this->sizes_thumb($sizethumb); ?>
+      <br/>
+			<label><? echo $nom; ?> :</label>
+      <input type="file" ruta="<?php echo _RUTA_WEB; ?>" class="form-control <?php echo $class; ?>" id="inputArchivos" name="inputArchivos"  accept="image/*" />
+			<div id='prog'></div>
+      <div id="respuesta"></div>
+    </div>
+		<script>
+      $(function(){
+        $(".<?php echo $class; ?>").on("change", function(){
+        var formData = new FormData($("#<?php echo $id_form; ?>")[0]);
+        var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-upload-mul-tumb-cropp.php";
+        $("#respuesta").toggleClass('respuesta-form');
+        $.ajax({
+            url: ruta,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+						xhr: function() {
+			        var xhr = $.ajaxSettings.xhr();
+			        xhr.upload.onprogress = function(e) {
+								var dat = Math.floor(e.loaded / e.total *100);
+			          //console.log(Math.floor(e.loaded / e.total *100) + '%');
+								$("#prog").html('<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="'+ dat +'" aria-valuemin="0" aria-valuemax="100" style="width: '+ dat +'%;">'+ dat +'%</div></div>');
+			        };
+			        return xhr;
+				    },
+            success: function(datos){
+              	$("#respuesta").html(datos);
+            }
+          });
+        });
+
+      });
+
+	  function CargarCrop(){
+		 var formData = new FormData($("#<?php echo $id_form; ?>")[0]);
+
+        var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-upload-mul-tumb-cropp.php";
+        $("#respuesta").toggleClass('respuesta-form');
+        $.ajax({
+            url: ruta,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+						xhr: function() {
+			        var xhr = $.ajaxSettings.xhr();
+			        xhr.upload.onprogress = function(e) {
+								var dat = Math.floor(e.loaded / e.total *100);
+			          //console.log(Math.floor(e.loaded / e.total *100) + '%');
+
+			        };
+			        return xhr;
+				    },
+            success: function(datos){
+              	$("#respuesta").html(datos);
+            }
+          });
+	  }
+
+
+			function guardar_thumb(){
+				var ext = $("#inputTipo").val();
+				var dim = $("#inputThumb").val();
+				var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-save-thumb-mul-cropp.php";
+				var ruta_url = $("#inputUrl").val();
+				var nombre = $("#inputNombreArchivo").val();
+
+				var thm = dim.split("x");
+				var ext_crop=ext;
+				if(ext=="jpg"){
+					ext_crop="jpeg";
+				}
+				 $('#image-cropp').cropper("getCroppedCanvas", { width: thm[0], height: thm[1] }).toBlob(function (blob) {
+	           		var formData = new FormData();
+
+			   		formData.append('croppedImage', blob);
+			   		formData.append('dir', ruta_url);
+			   		formData.append('nombre', nombre);
+			   		formData.append('ext', ext);
+
+			   		 $.ajax(ruta, {
+				        method: "POST",
+				        data: formData,
+				        processData: false,
+				        contentType: false,
+				        success: function (data) {
+				          $("#respuesta-thumb").html('<p class="text-success">El thumb se guardo correctamente.</p>');
+
+				        },
+				        error: function (data) {
+				            console.log(data);
+				        }
+				    });
+
+
+
+				});
+
+
+			}
+			<?php
+				if($imagen!="")
+				echo "CargarCrop();";
+			?>
+    </script>
+    <?php
+  }
   function multimedia_form($label,$input,$ruta,$thumb,$table,$col_id_extra,$col_id,$col_ruta,$col_dom,$id_mul=0){
 
   		$dom=0;

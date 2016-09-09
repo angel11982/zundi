@@ -187,7 +187,11 @@ class NAV{
   function fmt_li($id, $clase, $icono, $nombre,$url, $destino, $imagen, $cat){
 
     $nombre_x = $this->convertir_url_amigable($nombre);
-    $url=_RUTA_WEB_temp.$this->fmt->categoria->traer_ruta_amigable_padre($id, $cat);
+    if(_MULTIPLE_SITE=="on"){
+    	$url=_RUTA_WEB_temp.$this->fmt->categoria->traer_ruta_amigable_padre($id, $cat);
+    }else{
+	    $url=_RUTA_WEB.$this->fmt->categoria->traer_ruta_amigable_padre($id, $cat);
+    }
 
     //$url=$this->fmt->categoria->traer_ruta_amigable_padre($id);
     //echo $url;
@@ -213,7 +217,8 @@ class NAV{
   }
 
   function fmt_li_hijos($id, $nombre){
-    $aux  = '<li class="dropdown">';
+	$nombre_x = $this->convertir_url_amigable($nombre);
+    $aux  = '<li class="dropdown dropdown-'.$nombre_x.'">';
     $aux .= ' <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.$nombre.'<span class="fa fa-angle-down"></span></a>';
     $aux .=   '<ul class="dropdown-menu animated fadeIn">';
     $aux .=     $this->traer_cat_hijos_menu($id);
@@ -242,6 +247,7 @@ class NAV{
 
     return $cadena;
   }
+    
 
 }
 
