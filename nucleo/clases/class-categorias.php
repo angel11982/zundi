@@ -625,6 +625,21 @@ class CATEGORIA{
 	  return $ruta;
 
   }
+  
+    function traer_ruta_amigable_padre_url($cat, $padre, $cat_activo){
+	  $ruta=$this->ruta_amigable($cat);
+	  $cat_padre=$this->categoria_id_padre($cat);
+	  if($cat_padre!=$padre){
+		  if($cat_padre!=0){
+			  $ruta= $this->traer_ruta_amigable_padre_url($cat_padre, $padre, $cat_activo)."/".$ruta;
+			  echo "<li>";
+			  echo "<a>".$ruta."</a>";
+			  echo "</li>";
+		  }
+	  }
+	  return $ruta;
+
+  }
 
 
   function traer_id_cat_producto($prod){

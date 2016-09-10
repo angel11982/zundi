@@ -135,6 +135,8 @@ class HEADER{
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/fileinput.min.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/fileinput.es.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/cropper.min.js"></script>'."\n";
+	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.social.stream.wall.1.3.js"></script>'."\n";
+
 
     return $aux;
   }

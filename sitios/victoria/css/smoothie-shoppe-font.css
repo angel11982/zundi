@@ -1,0 +1,7 @@
+@font-face {
+	font-family: 'smoothie_shopperegular';
+	src: url('../fonts/smoothie-shoppe-font/Smoothie Shoppe.eot');
+	src: local('☺'), url('../fonts/smoothie-shoppe-font/Smoothie Shoppe.woff') format('woff'), url('../fonts/smoothie-shoppe-font/Smoothie Shoppe.ttf') format('truetype'), url('../fonts/smoothie-shoppe-font/Smoothie Shoppe.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}

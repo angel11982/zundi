@@ -160,12 +160,14 @@ class NAV{
     return $aux;
   }
 
-  function traer_cat_hijos_menu($cat){
+  function traer_cat_hijos_menu($cat,$nivel,$nivel_tope){
     $sql="SELECT cat_id, cat_nombre, cat_id_padre, cat_icono, cat_imagen, cat_url, cat_destino, cat_ruta_amigable FROM categoria WHERE cat_id_padre='$cat' and cat_activar='1' ORDER BY cat_orden ASC";
     $rs = $this->fmt->query->consulta($sql);
     $num = $this->fmt->query->num_registros($rs);
     if ($num>0){
-      for ($i=0; $i<$num; $i++){
+	   $nivel++;
+	   //echo $nivel."</br>";      
+	   for ($i=0; $i<$num; $i++){
 
         list($fila_id, $fila_nombre, $fila_id_padre,$fila_icono, $fila_imagen, $fila_url, $fila_destino, $fila_ruta_amigable) =  $this->fmt->query->obt_fila($rs);
 
@@ -174,10 +176,15 @@ class NAV{
         }else{
           $url= $fila_ruta_amigable; $destino="";
         }
-        if ( $this->tiene_cat_hijos($fila_id) ){
-          $aux .= $this->fmt_li_hijos($fila_id, $fila_nombre);
-        } else {
-          $aux .= $this->fmt_li($fila_id,"","",$fila_nombre, $url, $destino, $fila_imagen,$cat);
+        
+        if ($nivel < $nivel_tope){
+	        if ( $this->tiene_cat_hijos($fila_id) ){
+	          $aux .= $this->fmt_li_hijos($fila_id, $fila_nombre,$nivel);
+	        } else {
+	          $aux .= $this->fmt_li($fila_id,"","",$fila_nombre, $url, $destino, $fila_imagen,$cat);
+	        }
+        }else{
+	        $aux .= $this->fmt_li($fila_id,"","",$fila_nombre, $url, $destino, $fila_imagen,$cat);
         }
       }
       return $aux;
@@ -218,6 +225,7 @@ class NAV{
 
   function fmt_li_hijos($id, $nombre){
 	$nombre_x = $this->convertir_url_amigable($nombre);
+	
     $aux  = '<li class="dropdown dropdown-'.$nombre_x.'">';
     $aux .= ' <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">'.$nombre.'<span class="fa fa-angle-down"></span></a>';
     $aux .=   '<ul class="dropdown-menu animated fadeIn">';
