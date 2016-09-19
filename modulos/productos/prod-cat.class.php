@@ -95,6 +95,19 @@ class PROD_CAT{
 
         </div>
 
+		<div class="form-group">
+          <label>Categoria padre:</label>
+          <select class="form-control" id="inputPadre" name="inputPadre">
+            <?php $this->fmt->categoria->traer_opciones_cat($fila['cat_id']); ?>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Orden:</label>
+          <input class="form-control" id="inputOrden" name="inputOrden" placeholder="" value="<?php echo $fila["cat_orden"]; ?>" />
+
+        </div>
+
         <div class="form-group">
           <label class="radio-inline">
             <input type="radio" name="inputActivar" id="inputActivar" value="0" <?php if ($fila['cat_activar']==0){ echo "checked"; } ?> > Desactivar
@@ -169,6 +182,18 @@ class PROD_CAT{
           <input type="hidden" id="inputPlantilla" name="inputPlantilla" value="<?echo $fila_plant; ?>">
         </div>
 
+        <div class="form-group">
+          <label>Categoria padre:</label>
+          <input class="form-control" disabled  placeholder="<?php echo $this->fmt->categoria->nombre_categoria($id_padre); ?>" />
+          <input type="hidden" id="inputPadre" name="inputPadre" value="<?echo $id_padre; ?>">
+        </div>
+
+        <div class="form-group">
+          <label>Orden:</label>
+          <input class="form-control" id="inputOrden" name="inputOrden" placeholder="" value="" />
+
+        </div>
+
         <div class="form-group form-botones">
           <button type="submit" class="btn btn-info  btn-guardar color-bg-celecte-b btn-lg" name="btn-accion" id="btn-guardar" value="guardar"><i class="icn-save" ></i> Guardar</button>
           <button type="submit" class="btn btn-success color-bg-verde btn-activar btn-lg" name="btn-accion" id="btn-activar" value="activar"><i class="icn-eye-open" ></i> Activar</button>
@@ -218,13 +243,15 @@ class PROD_CAT{
     if ($_POST["btn-accion"]=="guardar"){
       $activar=0;
     }
-    $ingresar ="cat_nombre, cat_descripcion, cat_ruta_amigable, cat_theme, cat_id_padre, cat_id_plantilla, cat_activar";
+    $ingresar ="cat_nombre, cat_descripcion, cat_ruta_amigable, cat_theme, cat_id_padre, cat_id_plantilla, cat_id_padre, cat_orden, cat_activar";
 	$valores  ="'".$_POST['inputNombre']."','".
 				   $_POST['inputDescripcion']."','".
                    $_POST['inputRutaamigable']."','".
                    $_POST['inputTheme']."','".
                    $_POST['inputPadre']."','".
                    $_POST['inputPlantilla']."','".
+                   $_POST['inputPadre']."','".
+                   $_POST['inputOrden']."','".
                    $activar."'";
 
 	$sql="insert into categoria (".$ingresar.") values (".$valores.")";
@@ -241,6 +268,8 @@ class PROD_CAT{
             cat_nombre='".$_POST['inputNombre']."',
             cat_descripcion='".$_POST['inputDescripcion']."',
             cat_ruta_amigable='".$_POST['inputRutaamigable']."',
+            cat_orden = '".$_POST['inputOrden']."',
+            cat_id_padre = '".$_POST['inputPadre']."',
             cat_activar='".$_POST['inputActivar']."'
             WHERE cat_id='".$_POST['inputId']."'";
       $this->fmt->query->consulta($sql);

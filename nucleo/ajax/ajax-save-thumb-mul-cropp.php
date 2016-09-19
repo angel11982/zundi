@@ -13,11 +13,11 @@
 	$ruta.= $dato[$i]."/";
  }
 
-
-$nombre_archivo = _RUTA_HT.$ruta.$nombre."_thumb.png";
+$nombre_thumb = $ruta.$nombre."_thumb.png";
+$nombre_archivo = _RUTA_HT.$nombre_thumb;
 
 move_uploaded_file($blob['tmp_name'], $nombre_archivo);
 
-//echo $dir.$nombre."_thumb.".$ext;
+echo $nombre_thumb;
 
 ?>

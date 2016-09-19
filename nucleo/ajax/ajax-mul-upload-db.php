@@ -25,7 +25,8 @@ $success = null;
 
 // file paths to store
 $paths= [];
-
+$widths= [];
+$heigths= [];
 // get file names
 $filenames = $images['name'];
 
@@ -34,11 +35,16 @@ for($i=0; $i < count($filenames); $i++){
     $ext = explode('.', basename($filenames[$i]));
     $nombre_arc=$fmt->archivos->saber_nombre_archivo($filenames[$i]);
     $nombre_amigable=$fmt->nav->convertir_url_amigable($nombre_arc);
-    $target = $output_dir . $nombre_amigable . "." . strtolower(array_pop($ext));
-    if(move_uploaded_file($images['tmp_name'][$i], $target)) {
-        $success = true;
-        $paths[] = $target;
+    $target_aux = $output_dir . $nombre_amigable . "_original." . strtolower(array_pop($ext));
+    $dimensiones = getimagesize($images['tmp_name'][$i]);
+	$width = $dimensiones[0];
+	$heigth = $dimensiones[1];
 
+    if(move_uploaded_file($images['tmp_name'][$i], $target_aux)) {
+    	$paths[] = $target_aux;
+    	$widths[] = $width;
+    	$heigths[] = $heigth;
+		$success = true;
     } else {
         $success = false;
         break;
@@ -49,8 +55,15 @@ for($i=0; $i < count($filenames); $i++){
 if ($success === true) {
 	$nom="";
 	for($i=0; $i < count($paths); $i++){
-		$nombre_t=$fmt->archivos->convertir_nombre_thumb($paths[$i]);
-
+		$nombre_aux=$fmt->archivos->convertir_nombre_thumb($paths[$i]);
+		$nombre_t=str_replace("_original", "", $nombre_aux);
+		$nombre_normal = str_replace("_original", "", $paths[$i]);
+		if($widths[$i]>960){
+			$fmt->archivos->crear_thumb($paths[$i],$nombre_normal,"960","720",1);
+		}
+		else{
+			$fmt->archivos->crear_thumb($paths[$i],$nombre_normal,$widths[$i],$heigths[$i],1);
+		}
         $fmt->archivos->crear_thumb($paths[$i],$nombre_t,$thumb_s[0],$thumb_s[1],1);
 		$nombre_arc=$fmt->archivos->saber_nombre_archivo($paths[$i]);
 		$ext= $fmt->archivos->saber_extension_archivo($paths[$i]);
@@ -66,6 +79,9 @@ if ($success === true) {
 	        $second = 5;
 	        $cmd = "$ffmpeg -i $videoFile -an -ss $second -s $size $imagenFile";
 	        shell_exec($cmd);
+        }
+        else if($ext!="mp3"){
+	        $paths[$i]=$nombre_normal;
         }
 
         $ruta_bd=$dato_1.$_POST["ruta"];

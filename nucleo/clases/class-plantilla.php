@@ -78,13 +78,13 @@ class PLANTILLA{
 			    return false;
 			}
 		}
-		
-	
+
+
 
 		function dibujar_cabecera($cat,$pla){
-				
+
 				echo $this->fmt->header->header_html($cat);
-				
+
 				$id_p=$this->fmt->categoria->traer_id_cat_dominio(_RUTA_WEB);
 				if (!empty($id_p)){
 					$meta=$this->fmt->categoria->traer_meta_cat($id_p);
@@ -120,8 +120,8 @@ class PLANTILLA{
 				}
 
 				echo $this->scripts_head();
-				
-				
+
+
 
 				echo "	<!-- fin js plantilla contenedores  -->"."\n";
 				?>
@@ -173,7 +173,7 @@ class PLANTILLA{
 								$this->cargar_pub($fila_aux["pub_archivo"],$fila_aux["pub_id"],$cat);
 							}
 						}
-						$this->dibujar_hijos($fila["pub_id"],$cat,$pla);
+						$this->dibujar_hijos($cont_id,$cat,$pla);
 						echo $cont_codigos."\n\n";
 					echo "	</div>"."\n\n";   //fin publicicion
 				} // query padres
@@ -187,18 +187,20 @@ class PLANTILLA{
 		}
 
 		function dibujar_hijos($id_hijo,$cat,$pla){
+
 			$rs=$this->tiene_hijos($id_hijo);
 			$res= $this->obtener_publicaciones($id_hijo,$idcategoria,$id_plantilla);
 			while ($fila = $this->fmt->query->obt_fila($rs)){
-				echo '	<div class="cont_'.$id_hijo.' '.$fila["pub_clase"].'" id="'.$fila["pub_nombre"].'">'."\n\n";//inicio publicacion
-  				$res = $this->obtener_publicaciones($fila["id"],$cat,$pla);
-					$cant = $this->cnx->num_registros($res);
+
+				echo '	<div class="cont_'.$fila["cont_id"].' '.$fila["cont_clase"].'" id="'.$fila["cont_nombre"].'">'."\n\n";//inicio publicacion
+  				$res = $this->obtener_publicaciones($fila["cont_id"],$cat,$pla);
+					$cant = $this->fmt->query->num_registros($res);
 					if ($cant > 0){
 						while ($fila_aux = $this->fmt->query->obt_fila($res)){
 							$this->cargar_pub($fila_aux["pub_archivo"],$fila_aux["pub_id"],$cat);
 						}
 					}
-				$this->dibujar_hijos($fila["pub_id"],$cat,$pla);
+				$this->dibujar_hijos($fila["cont_id"],$cat,$pla);
 				echo "	</div>"."\n\n";   //fin publicicion
 				echo $cont_codigos."\n\n";
 			}
@@ -228,7 +230,7 @@ class PLANTILLA{
 									FROM
 									    contenedor
 									WHERE
-										(cont_id = '".$id_hijo."')
+										(cont_id_padre = '".$id_hijo."')
 									ORDER BY cont_orden asc";
 					//echo $consulta;
 					return $this->fmt->query->consulta($consulta);

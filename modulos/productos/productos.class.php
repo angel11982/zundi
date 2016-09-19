@@ -67,14 +67,12 @@ class PRODUCTOS{
             for($i=0;$i<$num;$i++){
               list($fila_id,$fila_nombre,$fila_imagen,$fila_dominio,$fila_activar)=$this->fmt->query->obt_fila($rs);
 							if (empty($fila_dominio)){ $aux=_RUTA_WEB_temp; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila_dominio); }
-							$img=$this->fmt->archivos->convertir_url_thumb( $fila_imagen );
-							$id_dom = $this->fmt->categoria->traer_id_cat_dominio($aux);
-							$rut_a = $this->fmt->categoria->ruta_amigable($id_dom);
-
-							//if(!file_exists("../../../".$rut_a."/".$img)){
-							     $img=$this->fmt->archivos->convertir_url_extension($img,"png");
-							//}
-
+							$img=$this->fmt->archivos->convertir_url_mini( $fila_imagen );
+							$id_cat = $this->fmt->categoria->traer_id_cat_dominio($aux);
+							$sit_cat = $this->fmt->categoria->ruta_amigable($id_cat);
+							if(!file_exists(_RUTA_SERVER.$sit_cat."/".$img)){
+								$img=$this->fmt->archivos->convertir_url_thumb( $fila_imagen );
+							}
 
 							$url ="productos.adm.php?tarea=form_editar&id=".$fila_id."&id_mod=".$this->id_mod;
             ?>
@@ -148,7 +146,7 @@ class PRODUCTOS{
 		$this->fmt->form->input_form("Nombre Amigable:","inputNombreAmigable","",$valor_ra,"","","","");
 		$this->fmt->form->input_hidden_form("inputId",$id);
 		$this->fmt->form->input_form("Tags:","inputTags","",$fila['mod_prod_tags'],"","","");
-		$this->fmt->form->input_hidden_form("inputArchivosEdit",$fila['mod_prod_imagen']);
+		//$this->fmt->form->input_hidden_form("inputArchivosEdit",$fila['mod_prod_imagen']);
 		?>
 		<div class="form-group">
 			<label>Imagen (560x400px):</label>
@@ -192,7 +190,11 @@ class PRODUCTOS{
 					}
 			      }
 		}
-
+		$label[0]="Mostrar Categoria";
+		$nombreinput[0]="inputActCat";
+		$valor_in[0]="1";
+		$campo_in[0]=$fila['mod_prod_activar_cat'];
+		$this->fmt->form->input_check_form($label,$nombreinput,$valor_in,$campo_in);
 		$this->fmt->form->radio_activar_form($fila['mod_prod_activar']);
 		$this->fmt->form->botones_editar($id,$fila['mod_prod_nombre'],'Producto');//$fila_id,$fila_nombre,$nombre
 		?>
@@ -309,6 +311,11 @@ class PRODUCTOS{
 						}
 				      }
 				}
+				$label[0]="Mostrar Categoria";
+				$nombreinput[0]="inputActCat";
+				$valor_in[0]="1";
+				$campo_in[0]="1";
+				$this->fmt->form->input_check_form($label,$nombreinput,$valor_in,$campo_in);
 				?>
 
 				<div class="form-group form-botones">
@@ -348,8 +355,15 @@ class PRODUCTOS{
 		if ($_POST["btn-accion"]=="guardar"){
 			$activar=0;
 		}
+
+		if($_POST['inputActCat']=="1"){
+			$activar_cat=1;
+		}
+		else{
+			$activar_cat=0;
+		}
 		if($_POST["inputNombre"]!=""){
-			$ingresar ="mod_prod_nombre, mod_prod_ruta_amigable, mod_prod_tags, mod_prod_codigo, mod_prod_modelo,mod_prod_resumen, mod_prod_detalles, mod_prod_especificaciones, mod_prod_disponibilidad, mod_prod_imagen,mod_prod_precio, mod_prod_id_marca, mod_prod_id_doc, mod_prod_id_mul, mod_prod_id_dominio, mod_prod_activar";
+			$ingresar ="mod_prod_nombre, mod_prod_ruta_amigable, mod_prod_tags, mod_prod_codigo, mod_prod_modelo,mod_prod_resumen, mod_prod_detalles, mod_prod_especificaciones, mod_prod_disponibilidad, mod_prod_imagen,mod_prod_precio, mod_prod_id_marca, mod_prod_id_doc, mod_prod_id_mul, mod_prod_id_dominio, mod_prod_activar_cat, mod_prod_activar";
 			$valores  ="'".$_POST['inputNombre']."','".
 										 $_POST['inputNombreAmigable']."','".
 										 $_POST['inputTags']."','".
@@ -365,6 +379,7 @@ class PRODUCTOS{
 										 $_POST['inputDoc']."','".
 										 $_POST['inputMul']."','".
 										 $_POST['inputDominio']."','".
+										 $activar_cat."','".
 										 $activar."'";
 
 			$sql="insert into mod_productos (".$ingresar.") values (".$valores.")";
@@ -417,6 +432,12 @@ class PRODUCTOS{
 
 	function modificar(){
 		if ($_POST["btn-accion"]=="eliminar"){}
+		if($_POST['inputActCat']=="1"){
+			$activar_cat=1;
+		}
+		else{
+			$activar_cat=0;
+		}
 		if ($_POST["btn-accion"]=="actualizar"){
 			if($_POST["inputNombre"]!=""){
 				$sql="UPDATE mod_productos SET
@@ -435,6 +456,7 @@ class PRODUCTOS{
 							mod_prod_id_dominio='".$_POST['inputDominio']."',
 							mod_prod_id_doc='".$_POST['inputDoc']."',
 							mod_prod_id_mul='".$_POST['inputMul']."',
+							mod_prod_activar_cat='".$activar_cat."',
 							mod_prod_activar='".$_POST['inputActivar']."'
 							WHERE mod_prod_id='".$_POST['inputId']."'";
 				//echo $sql;

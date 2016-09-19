@@ -619,9 +619,9 @@ class CLASSMODULOS{
         $campo_id=$filas1[0];
         $f=$valores_post1[0];
         $id= $_POST[$f];
-    		echo $sql="UPDATE $from SET ".$valores." WHERE ".$campo_id."='".$id."'";
+    		$sql="UPDATE $from SET ".$valores." WHERE ".$campo_id."='".$id."'";
   			$this->fmt->query->consulta($sql);
-  }
+  	}
 
   function ingresar_tabla($from,$filas,$valores_post){
     $filas = str_replace("[\n|\r|\n\r|\t| ]","",$filas);

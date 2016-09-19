@@ -194,6 +194,13 @@ class ARCHIVOS{
     return $ruta_x.$this->convertir_nombre_thumb($nombre);
   }
 
+  function convertir_url_mini($url){
+	  $ruta = explode("/", $url);
+    $nombre = end($ruta);
+    $ruta_x = str_replace($nombre,'',$url);
+    return $ruta_x.$this->convertir_nombre_thumb("mini-".$nombre);
+  }
+
   function convertir_url_extension($url,$ext){
     $ruta = explode("/", $url);
     $nombre = end($ruta);

@@ -8,7 +8,8 @@
   	$inputDominio = _RUTA_WEB;
   	$ruta_provisional = $inputDominio.$inputUrl;
   	$dato = pathinfo($ruta_provisional);
-  	$thumb_s= explode("x",$_POST["inputThumb"]);
+  	$inputThumbs = $_POST["inputThumb"];
+  	$thumb_s= explode("x",$inputThumbs);
     $inputNombre = $fmt->get->convertir_url_amigable($dato["filename"]);
 	$inputTipo = $dato["extension"];
 
@@ -18,13 +19,14 @@
 	$width = $dimensiones[0];
     $height = $dimensiones[1];
     $dimension = $width." x ".$height;
-
+	$img_crop=$fmt->archivos->convertir_url_thumb( $inputUrl );
+	$imagen_png=$fmt->archivos->convertir_url_extension($img_crop,"png");
 	 echo '<div class="contenedor-imagen">';
           echo "<img id='image-cropp' width='100%' src='".$inputDominio.$inputUrl."'>";
           echo '</div></br></br>';
 
           echo "</div>";
-          echo '<div id="respuesta-thumb"></div>';
+          echo '<div id="respuesta-thumb"><img src="'.$inputDominio.$imagen_png.'" width="350"></div>';
           echo '<div class="contenedor-button">';
           echo '<a class="ration btn btn-info" rt="1.7777777777777777"><font><font>16:9</font></font></a>';
           echo '<a class="ration btn btn-info" rt="1.3333333333333333"><font><font>4:3</font></font></a>';
@@ -50,6 +52,7 @@
 
       $file = $_FILES["inputArchivos"];
       $nombre = strtolower ( $file["name"]);
+
       $nombre_url= $fmt->get->convertir_url_amigable($nombre);
       $var = array ('.jpg','.gif','.png','.mp3','.mp4','quicktime');
       $inputNombre = str_replace($var,'',$fmt->get->convertir_url_amigable($nombre));
@@ -63,8 +66,8 @@
       $width = $dimensiones[0];
       $height = $dimensiones[1];
       $dimension = $width." x ".$height;
-
-      $thumb_s= explode("x",$_POST["inputThumb"]);
+	  $inputThumbs = $_POST["inputThumb"];
+      $thumb_s= explode("x",$inputThumbs);
       if ($tipo != 'image/jpg' && $tipo != 'image/jpeg' && $tipo != 'image/png' && $tipo != 'image/gif' && $tipo != 'audio/mp3' && $tipo != 'video/mp4' && $tipo != 'audio/quicktime'){
         echo "Error, el archivo no es valido (jpg,jpeg,png,gif)";
       }else if ($size > 1024*1024*8){
@@ -74,14 +77,17 @@
       }else if($width < 60 || $height < 60){
         echo "Error la anchura y la altura mínima permitida es 60px";
       }else{
+
       	$ext_arch=$fmt->archivos->saber_extension_archivo($nombre_url);
 	  	$nombre_arch = $fmt->archivos->saber_nombre_archivo($nombre_url);
 	  	$nombre_original = $nombre_arch."_original.".$ext_arch;
+
         move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_original);
         if($width>960)
         	$fmt->archivos->crear_thumb(_RUTA_SERVER.$_POST["inputRutaArchivos"]."/".$nombre_original,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_url,"960","720",1);
         else
-        	move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
+        	//move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
+        	$fmt->archivos->crear_thumb(_RUTA_SERVER.$_POST["inputRutaArchivos"]."/".$nombre_original,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_url,$width,$height,1);
 
         $src = $_POST["inputRutaArchivos"]."/".$nombre_original;
         $nombre_t=$fmt->archivos->convertir_nombre_thumb($nombre_url);
@@ -149,6 +155,10 @@
 			.contenedor-button a {
 			    margin-left: 5px;
 			}
+			#respuesta-thumb {
+			    text-align: center;
+			    margin-bottom: 10px;
+			}
           </style>
 
             <script>
@@ -171,7 +181,12 @@
 					$(this).addClass("active");
 				});
               $("#btn-save-thumb").click(function(){
-	          		guardar_thumb();
+	          		$('#image-cropp').cropper("getCroppedCanvas"<?php if($inputThumbs!=""){ ?>, { width: <?php echo $thumb_s[0]; ?>, height: <?php echo $thumb_s[1]; ?> }<?php } ?>).toBlob(function (blob) {
+	           			 blobURL = URL.createObjectURL(blob);
+	           			 $("#ImagePrev").attr("src",blobURL);
+	           			 $("#ImagenPreview").modal("show");
+				    });
+
 			   });
             });
             </script>

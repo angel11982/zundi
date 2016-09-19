@@ -13,42 +13,42 @@ class CATEGORIAS{
 	}
 
 	function busqueda(){
-    $this->fmt->class_pagina->crear_head( $this->id_mod,""); // id modulo, botones
-    ?>
-    <div class="body-modulo">
-      <?php $this->fmt->categoria->arbol_editable('categoria','cat_','modulos/categorias/categorias.adm.php?id_mod='.$this->id_mod.'&tarea=form_nuevo'); //$select,$from,$where,$orderby,$ruta_modulo,$prefijo
-			?>
-    </div>
-    <script>
-      $(".btn-activar-i").click(function(e){
-        var cat = $( this ).attr("cat");
-        var estado = $( this ).attr("estado");
-        url="categorias.adm.php?tarea=activar&id="+cat+"&estado="+estado+"&id_mod=<?php echo $this->id_mod; ?>";
-        //alert(url);
-        window.location=(url);
-      });
-      $(".btn-editar-i").click(function(e){
-        var cat = $( this ).attr("cat");
-        url="categorias.adm.php?tarea=form_editar&id="+cat+"&id_mod=<?php echo $this->id_mod; ?>";
-        //alert(url);
-        window.location=(url);
-      });
-      $(".btn-nuevo-i").click(function(e){
-        var cat = $( this ).attr("cat");
-        url="categorias.adm.php?tarea=form_nuevo&id_padre="+cat+"&id_mod=<?php echo $this->id_mod; ?>";
-        //alert(url);
-        window.location=(url);
-      });
-			$(".btn-contenedores").click(function(e){
-				var cat = $( this ).attr("cat");
-				url="contenedor.adm.php?tarea=editar_contenidos&cat="+cat;
-				//alert(url);
-				window.location=(url);
-			});
-    </script>
-    <?php
-      $this->fmt->class_modulo->script_form("modulos/categorias/categorias.adm.php",$this->id_mod);
-  }
+	    $this->fmt->class_pagina->crear_head( $this->id_mod,""); // id modulo, botones
+	    ?>
+	    <div class="body-modulo">
+	      <?php $this->fmt->categoria->arbol_editable('categoria','cat_','modulos/categorias/categorias.adm.php?id_mod='.$this->id_mod.'&tarea=form_nuevo'); //$select,$from,$where,$orderby,$ruta_modulo,$prefijo
+				?>
+	    </div>
+	    <script>
+	      $(".btn-activar-i").click(function(e){
+	        var cat = $( this ).attr("cat");
+	        var estado = $( this ).attr("estado");
+	        url="categorias.adm.php?tarea=activar&id="+cat+"&estado="+estado+"&id_mod=<?php echo $this->id_mod; ?>";
+	        //alert(url);
+	        window.location=(url);
+	      });
+	      $(".btn-editar-i").click(function(e){
+	        var cat = $( this ).attr("cat");
+	        url="categorias.adm.php?tarea=form_editar&id="+cat+"&id_mod=<?php echo $this->id_mod; ?>";
+	        //alert(url);
+	        window.location=(url);
+	      });
+	      $(".btn-nuevo-i").click(function(e){
+	        var cat = $( this ).attr("cat");
+	        url="categorias.adm.php?tarea=form_nuevo&id_padre="+cat+"&id_mod=<?php echo $this->id_mod; ?>";
+	        //alert(url);
+	        window.location=(url);
+	      });
+				$(".btn-contenedores").click(function(e){
+					var cat = $( this ).attr("cat");
+					url="contenedor.adm.php?tarea=editar_contenidos&cat="+cat;
+					//alert(url);
+					window.location=(url);
+				});
+	    </script>
+	    <?php
+	      $this->fmt->class_modulo->script_form("modulos/categorias/categorias.adm.php",$this->id_mod);
+	}
 
   function form_editar(){
     $botones = $this->fmt->class_pagina->crear_btn("categorias.adm.php?id_mod=$this->id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
@@ -450,17 +450,21 @@ class CATEGORIAS{
       $sql="update categoria set
         cat_activar='".$estado."' where cat_id='".$_GET['id']."'";
     $this->fmt->query->consulta($sql);
+    
     header("location: categorias.adm.php?id_mod=".$this->id_mod);
   }
 
   function eliminar(){
-		$this->fmt->get->validar_get ( $_GET['id'] );
+		/*
+$this->fmt->get->validar_get ( $_GET['id'] );
 		$id= $_GET['id'];
 		$sql="DELETE FROM categoria WHERE cat_id='".$id."'";
 		$this->fmt->query->consulta($sql);
 		$up_sqr6 = "ALTER TABLE categoria AUTO_INCREMENT=1";
 		$this->fmt->query->consulta($up_sqr6);
-		header("location: categorias.adm.php?id_mod=".$this->id_mod);
+*/
+		 echo "categorias.adm.php?id_mod=".$this->id_mod;
+		//header("location: categorias.adm.php?id_mod=".$this->id_mod);
 	}
 }
 

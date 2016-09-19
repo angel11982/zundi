@@ -146,13 +146,13 @@ class CLASSSISTEMAS{
             }
             else{
             	fwrite($archivo, "Rewriterule ^".$datos."$  index.php?cat=1&pla=1".PHP_EOL);
-            	fwrite($archivo, "Rewriterule ^buscar/$  index.php?cat=1&pla=2".PHP_EOL);
+            	fwrite($archivo, "Rewriterule ^buscar/([^/]*)$  index.php?cat=1&pla=2&q=$1".PHP_EOL);
             	$datos[0]=0;
 				$sql="SELECT cat_id, cat_ruta_amigable, cat_id_plantilla FROM categoria WHERE cat_activar=1";
             }
 
 
-            
+
             $rs=$this->fmt->query->consulta($sql);
             while ($R = $rs->fetch_array()) {
                    $id_cat=$R["cat_id"];

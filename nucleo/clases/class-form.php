@@ -263,6 +263,24 @@ class FORM{
 			<div id='prog'></div>
       <div id="respuesta"></div>
     </div>
+    <div id="ImagenPreview" class="modal fade" role="dialog">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title">Vista Previa</h4>
+	      </div>
+	      <div class="modal-body" style="text-align: center;">
+	        <img id="ImagePrev" src="">
+	        <div id="prog_modal"></div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+	        <button type="button" id="GuardarImg" class="btn btn-primary">Guardar</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 		<script>
       $(function(){
         $(".<?php echo $class; ?>").on("change", function(){
@@ -290,11 +308,14 @@ class FORM{
           });
         });
 
+		$("#GuardarImg").on("click", function(){
+			guardar_thumb();
+		})
       });
 
 	  function CargarCrop(){
 		 var formData = new FormData($("#<?php echo $id_form; ?>")[0]);
-
+		 formData.append("inputArchivosEdit", "<?php echo $imagen; ?>");
         var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-upload-mul-tumb-cropp.php";
         $("#respuesta").toggleClass('respuesta-form');
         $.ajax({
@@ -303,15 +324,7 @@ class FORM{
             data: formData,
             contentType: false,
             processData: false,
-						xhr: function() {
-			        var xhr = $.ajaxSettings.xhr();
-			        xhr.upload.onprogress = function(e) {
-								var dat = Math.floor(e.loaded / e.total *100);
-			          //console.log(Math.floor(e.loaded / e.total *100) + '%');
 
-			        };
-			        return xhr;
-				    },
             success: function(datos){
               	$("#respuesta").html(datos);
             }
@@ -331,7 +344,7 @@ class FORM{
 				if(ext=="jpg"){
 					ext_crop="jpeg";
 				}
-				 $('#image-cropp').cropper("getCroppedCanvas", { width: thm[0], height: thm[1] }).toBlob(function (blob) {
+				 $('#image-cropp').cropper("getCroppedCanvas"<?php if($sizethumb!=""){ ?>, { width: thm[0], height: thm[1] }<?php } ?>).toBlob(function (blob) {
 	           		var formData = new FormData();
 
 			   		formData.append('croppedImage', blob);
@@ -344,9 +357,18 @@ class FORM{
 				        data: formData,
 				        processData: false,
 				        contentType: false,
+				        xhr: function() {
+				        var xhr = $.ajaxSettings.xhr();
+				        xhr.upload.onprogress = function(e) {
+									var dat = Math.floor(e.loaded / e.total *100);
+				          //console.log(Math.floor(e.loaded / e.total *100) + '%');
+									$("#prog_modal").html('<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="'+ dat +'" aria-valuemin="0" aria-valuemax="100" style="width: '+ dat +'%;">'+ dat +'%</div></div>');
+				        };
+				        return xhr;
+					    },
 				        success: function (data) {
-				          $("#respuesta-thumb").html('<p class="text-success">El thumb se guardo correctamente.</p>');
-
+				          $("#respuesta-thumb").html('<p class="text-success">El thumb se guardo correctamente.</p><img src="../../'+data+'" width="350">');
+						  $("#ImagenPreview").modal("hide");
 				        },
 				        error: function (data) {
 				            console.log(data);

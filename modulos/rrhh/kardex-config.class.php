@@ -712,7 +712,7 @@ class KARDEX_CONF{
 					inputCelular,
 					inputUsuario,
 					inputActivar';
-			$this->fmt->class_modulo->actualizar_tabla('cats',$filas,$valores_post); //$from,$filas,$valores_post
+		$this->fmt->class_modulo->actualizar_tabla('cats',$filas,$valores_post); //$from,$filas,$valores_post
 		header("location: kardex-config.adm.php?tarea=busqueda&p=cats");
 		}
 	}

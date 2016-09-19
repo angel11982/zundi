@@ -27,7 +27,7 @@ class BRAND{
       $fila = $this->fmt->query -> obt_fila($rs);
       $img_conf = $fila["conf_imagen"];
       if ($img_conf){
-        return "<img class='".$tipo."' src='"._RUTA_WEB.$img_conf."' />";
+        return "<img class='img-responsive ".$tipo."' src='"._RUTA_WEB.$img_conf."' />";
       }else{
         return '<div class="logo-zundi"><i class="icn-zundi color-text-rojo-a"></i><span class="color-text-gris">zundi</span></div>';
       }

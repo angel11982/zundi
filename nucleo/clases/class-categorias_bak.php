@@ -56,13 +56,13 @@ class CATEGORIA{
     $nombre=$fila["cat_nombre"];
     return $nombre;
   }
-
+  
   	function metas($cat){
 	  	$consulta="SELECT cat_meta FROM categoria WHERE cat_id=$cat ";
 	  	$rs = $this->fmt->query->consulta($consulta);
 	  	$fila = $this->fmt->query->obt_fila($rs);
 	  	$meta=$fila["cat_meta"];
-
+	  	
 	  	if (!empty($meta)){
 	      	return $meta;
       	}else{
@@ -74,13 +74,13 @@ class CATEGORIA{
 		      	return false;
 	      	}
 	      	//echo $this->nombre_categoria($cat);
-
+	  
 	  	}
-
+		    
 	}
-
+	
 	function padre_sitio($cat){
-
+		
 	}
 
 	function tiene_padre_sitio($cat,&$est){
@@ -89,7 +89,7 @@ class CATEGORIA{
 	    $num = $this->fmt->query->num_registros($rs);
 	    if ($num > 0){
 		  $fila = $this->fmt->query->obt_fila($rs);
-
+		   
 	      if ($fila["cat_tipo"]=="2"){
 		    $est =  $cat;
 	      }else{
@@ -188,7 +188,7 @@ class CATEGORIA{
     echo "<div class='arbol'>";
 	if (empty($raiz))
 		$raiz=0;
-    $consulta = "SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from." WHERE ".$prefijo."id='".$raiz."' ORDER BY ".$prefijo."orden asc";
+    $consulta = "SELECT ".$prefijo."id, ".$prefijo."nombre FROM ".$from." WHERE ".$prefijo."id='".$raiz."' ORDER BY ".$prefijo."orden";
     $rs = $this->fmt->query->consulta($consulta);
     $num=$this->fmt->query->num_registros($rs);
 
@@ -321,36 +321,6 @@ class CATEGORIA{
       }
     }
   }
-
-  function hijos_cat_a($cat,$nivel){
-    $consulta = "SELECT cat_id,cat_nombre,cat_ruta_amigable  FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_orden";
-    $rs = $this->fmt->query->consulta($consulta);
-    $num=$this->fmt->query->num_registros($rs);
-
-    if ($num>0){
-	   $nivel++;
-      for($i=0;$i<$num;$i++){
-        list($fila_id,$fila_nombre,$fila_ra)=$this->fmt->query->obt_fila($rs);
-
-
-        $aux_nivel = $this->img_nodo("linea",$nivel);
-        echo "<div class='nodo cat-".$cat." nodo-".$nivel."'> ";
-        //$this->accion($fila_id,$from,$prefijo_activar);
-        $nombre_x = $this->fmt->nav->convertir_url_amigable($fila_nombre);
-		$url= _RUTA_WEB.$fila_ra;
-
-        echo '<a class="btn-'.$nombre_x.'" href="'.$url.'">'.$fila_nombre.'</a>';
-        if ( $this->tiene_hijos_cat($fila_id) ){
-
-          $this->hijos_cat_a($fila_id, $nivel);
-        }
-        echo "</div>";
-      }
-    }
-  }
-
-
-
   function hijos_cat_check($id,$cat,$nivel){
     $consulta = "SELECT cat_id,cat_nombre  FROM categoria WHERE cat_id_padre='$cat' ORDER BY cat_orden";
     $rs = $this->fmt->query->consulta($consulta);
@@ -600,7 +570,7 @@ class CATEGORIA{
     $fila=$this->fmt->query->obt_fila($rs);
     return $fila["cat_dominio"];
   }
-
+  
    function traer_meta_cat($cat){
     $consulta = "SELECT cat_meta FROM categoria WHERE cat_id=".$cat;
     $rs = $this->fmt->query->consulta($consulta);
@@ -620,21 +590,6 @@ class CATEGORIA{
 	  if($cat_padre!=$padre){
 		  if($cat_padre!=0){
 			  $ruta=$this->traer_ruta_amigable_padre($cat_padre, $padre)."/".$ruta;
-		  }
-	  }
-	  return $ruta;
-
-  }
-
-    function traer_ruta_amigable_padre_url($cat, $padre, $cat_activo){
-	  $ruta=$this->ruta_amigable($cat);
-	  $cat_padre=$this->categoria_id_padre($cat);
-	  if($cat_padre!=$padre){
-		  if($cat_padre!=0){
-			  $ruta= $this->traer_ruta_amigable_padre_url($cat_padre, $padre, $cat_activo)."/".$ruta;
-			  echo "<li>";
-			  echo "<a>".$ruta."</a>";
-			  echo "</li>";
 		  }
 	  }
 	  return $ruta;

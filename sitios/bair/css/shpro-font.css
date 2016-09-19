@@ -1,0 +1,41 @@
+@font-face{
+font-family:shpro-regular;
+src:url(../fonts/shpro-font/shpro-regular.eot);
+src:url(../fonts/shpro-font/shpro-regular.eot?#iefix) 
+format("embedded-opentype"),url(../fonts/shpro-font/shpro-regular.woff) format("woff"),url(../fonts/shpro-font/shpro-regular.ttf) format("truetype"),url(../fonts/shpro-font/shpro-regular.svg#shpro-regular) format("svg");font-weight:400;font-style:normal
+}
+
+@font-face{
+font-family:shpro-thin;
+src:url(../fonts/shpro-font/shpro-thin.eot);
+src:url(../fonts/shpro-font/shpro-thin.eot?#iefix) 
+format("embedded-opentype"),url(../fonts/shpro-font/shpro-thin.woff) format("woff"),url(../fonts/shpro-font/shpro-thin.ttf) format("truetype"),url(../fonts/shpro-font/shpro-thin.svg#shpro-thin) format("svg"); font-style: normal
+}
+
+@font-face{
+font-family:shpro-light;
+src:url(../fonts/shpro-font/shpro-light.eot);
+src:url(../fonts/shpro-font/shpro-light.eot?#iefix) 
+format("embedded-opentype"),url(../fonts/shpro-font/shpro-light.woff) format("woff"),url(../fonts/shpro-font/shpro-light.ttf) format("truetype"),url(../fonts/shpro-font/shpro-light.svg#shpro-light) format("svg"); font-style: normal
+}
+
+@font-face{
+font-family:shpro-lightitalic;
+src:url(../fonts/shpro-font/shpro-lightitalic.eot);
+src:url(../fonts/shpro-font/shpro-lightitalic.eot?#iefix) 
+format("embedded-opentype"),url(../fonts/shpro-font/shpro-lightitalic.woff) format("woff"),url(../fonts/shpro-font/shpro-lightitalic.ttf) format("truetype"),url(../fonts/shpro-font/shpro-lightitalic.svg#shpro-lightitalic) format("svg"); font-style: normal
+}
+
+@font-face{
+font-family:shpro-bold;
+src:url(../fonts/shpro-font/shpro-bold.eot);
+src:url(../fonts/shpro-font/shpro-bold.eot?#iefix) 
+format("embedded-opentype"),url(../fonts/shpro-font/shpro-bold.woff) format("woff"),url(../fonts/shpro-font/shpro-bold.ttf) format("truetype"),url(../fonts/shpro-font/shpro-bold.svg#shpro-bold) format("svg");font-weight:400;font-style:normal
+}
+
+@font-face{
+font-family:shpro-bolditalic;
+src:url(../fonts/shpro-font/shpro-bolditalic.eot);
+src:url(../fonts/shpro-font/shpro-bolditalic.eot?#iefix) 
+format("embedded-opentype"),url(../fonts/shpro-font/shpro-bolditalic.woff) format("woff"),url(../fonts/shpro-font/shpro-bolditalic.ttf) format("truetype"),url(../fonts/shpro-font/shpro-bolditalic.svg#shpro-bolditalic) format("svg");font-weight:400;font-style:normal
+}

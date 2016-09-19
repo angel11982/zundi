@@ -9,19 +9,16 @@ $rs =$fmt->query->consulta($sql);
 $fila=$fmt->query->obt_fila($rs);
 $j=0;
 
-?>
-
-
-<?php
-
 if($fila["mod_prod_imagen"]!=""){
 	$img_ax=$fila["mod_prod_imagen"];
-	//if(!file_exists($img_ax)){
-		$img_ax=$this->fmt->archivos->convertir_url_extension($img_ax,"png");
-	//}
-	$archivo=_RUTA_WEB.$img_ax;
-	$imagenFile	= $this->fmt->archivos->convertir_nombre_thumb($archivo);
 
+	$archivo=_RUTA_WEB.$img_ax;
+	$archivo_ax=$this->fmt->archivos->convertir_url_extension($img_ax,"png");
+	$imagenFile	= $this->fmt->archivos->convertir_nombre_thumb($archivo);
+	$filepng = $this->fmt->archivos->convertir_nombre_thumb($archivo_ax);
+	$ruta = _RUTA_HT.$filepng;
+	if(file_exists($ruta))
+		$imagenFile=_RUTA_WEB.$filepng;
 	$thumb[$j]= "<a class='mul-prod gal_".$j."' nvl='".$j."' tipo='imagen' arch='$archivo' >";
 	$thumb[$j].= "<div class='mul-thumb' style='background:url(".$imagenFile.")'>";
 	// $thumb[$j].= '<img class="img-responsive" src="'.$imagenFile.'">';
@@ -58,9 +55,7 @@ $sql="SELECT DISTINCT mod_pro_mul_ruta, mod_pro_mul_dominio FROM mod_productos_m
 									$type="music";
 							        break;
 							    default:
-							    	//if(!file_exists($fila_archivo)){
-									     $fila_archivo=$this->fmt->archivos->convertir_url_extension($fila_archivo,"png");
-									//}
+
 							        $imagenFile= $aux. $this->fmt->archivos->convertir_nombre_thumb($fila_archivo);
 									$type="imagen";
 							        break;
@@ -80,15 +75,14 @@ $sql="SELECT DISTINCT mod_pro_mul_ruta, mod_pro_mul_dominio FROM mod_productos_m
 							echo $thumb[$i];
 						}
 						echo "</div>";
+						echo "</div>";
 					}
-					echo "</div>";
+
 
 					?>
 <div class="gallerie-overlay" style="display: none;">
 	<div class="close-mul"><i class="fa fa-close"></i></div>
-	<div class="gallerie-imagebox">
-
-	</div>
+	<div class="gallerie-imagebox"></div>
 	<div class="gallerie-captionbox">
 		<div class="gallerie-control gallerie-control-previous"><i class="fa fa-chevron-circle-left"></i></div>
 		<div class="gallerie-control gallerie-control-next"><i class="fa fa-chevron-circle-right"></i></div>
@@ -121,8 +115,9 @@ $(document).ready(function(){
 		$(".gallerie-overlay").css("display","none");
 	});
 	$(".gallerie-control-previous").click(function(){
-		var cls=$(".Activo-gal").attr("nvl");
+		var cls=$(".active").attr("nvl");
 		var numItems = $('li .mul-prod').length;
+
 		if(cls!=0){
 			cls--;
 			cargarmul($(".gal_"+cls));
@@ -132,7 +127,7 @@ $(document).ready(function(){
 		}
 	});
 	$(".gallerie-control-next").click(function(){
-		var cls=$(".Activo-gal").attr("nvl");
+		var cls=$(".active").attr("nvl");
 		var numItems = $('li .mul-prod').length;
 		if(cls<(numItems-1)){
 			cls++;
@@ -156,19 +151,19 @@ function cargarmul(gal){
 
 		switch (tipo){
 			case "imagen":
-				$(".gallerie-imagebox").html('<img class="gallerie-image" src="'+arch+'" title="" style="width: 900px; height: auto;">');
+				$(".gallerie-imagebox").html('<img class="gallerie-image" src="'+arch+'" title=""  >');
 				break;
 			case "video":
-				$(".gallerie-imagebox").html('<video width="900" controls><source src="'+arch+'" type="video/mp4">tu navegador no soporta este formato.</video>');
+				$(".gallerie-imagebox").html('<video  controls><source src="'+arch+'" type="video/mp4">tu navegador no soporta este formato.</video>');
 				break;
 			case "music":
 				$(".gallerie-imagebox").html('<audio controls><source src="'+arch+'" type="audio/mpeg">tu navegador no soporta este formato</audio>');
 				break;
 		}
 		$(".tmbact").html("");
-		$(".mul-prod").removeClass("Activo-gal");
+		$(".mul-prod").removeClass("active");
 		$("li .thumb-"+cls).html("En curso");
-		$("li .gal_"+cls).addClass("Activo-gal");
+		$("li .gal_"+cls).addClass("active");
 }
 </script>
 <style>

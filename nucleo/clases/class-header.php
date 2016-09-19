@@ -41,7 +41,7 @@ class HEADER{
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
 	$cat_nombre= $this->fmt->categoria->nombre_categoria($cat);
 
-	if ( ($cat_padre=='0')&&($cat_tipo=='2')&&($cat!='1')) {
+	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
 		$nombre = $cat_nombre;
 	}else{
 		$cat_padre_sitio =  $this->fmt->categoria->categoria_padre_sitio($cat);
@@ -124,6 +124,8 @@ class HEADER{
 
   function js(){
     $aux  = '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.js"></script>'."\n";
+   // $aux  = '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery-ui.min.js"></script>'."\n";
+
     $aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/bootstrap.js"></script>'."\n";
     $aux .= '<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.dataTables.min.js"></script>'."\n";
 	//$aux .= '       <script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/dataTables.bootstrap.js"></script>'."\n";
@@ -135,8 +137,6 @@ class HEADER{
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/fileinput.min.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/fileinput.es.js"></script>'."\n";
 	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/cropper.min.js"></script>'."\n";
-	$aux .= '		<script type="text/javascript" language="javascript" src="'._RUTA_WEB.'js/jquery.social.stream.wall.1.3.js"></script>'."\n";
-
 
     return $aux;
   }

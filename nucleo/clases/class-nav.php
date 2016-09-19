@@ -203,7 +203,7 @@ class NAV{
     //$url=$this->fmt->categoria->traer_ruta_amigable_padre($id);
     //echo $url;
     if (empty($imagen)){ $aux_x=""; }else{ $aux_x="<img class='img-m' src='"._RUTA_WEB.$imagen."' border=0>"; }
-    $aux  = '<li id="btn-m'.$id.'" class="btn-m'.$id.' '.$clase.' btn-m-'.$nombre_x.'">';
+    $aux  = '<li id="btn-m'.$id.'" class="item-m btn-m'.$id.' '.$clase.' btn-m-'.$nombre_x.'">';
     $aux .= '<a href="'.$url.'" target="'.$destino.'">';
     $aux .= $aux_x;
     $aux .= '<i class="'.$icono.'"></i>';
