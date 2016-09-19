@@ -1,0 +1,9 @@
+
+@font-face {
+    font-family: 'Ubuntu Condensed';
+    src: url('../fonts/ubuntu-c-font/ubuntu-c-webfont.woff2') format('woff2'),
+         url('../fonts/ubuntu-c-font/ubuntu-c-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}

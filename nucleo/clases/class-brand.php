@@ -20,7 +20,7 @@ class BRAND{
     $img_cat = $fila["cat_imagen"];
 
     if ($img_cat){
-      return "<img class=' $tipo' src='"._RUTA_WEB.$img."' />";
+      return "<img class='img-responsive $tipo' src='"._RUTA_WEB.$img."' />";
     }else{
       $sql ="SELECT conf_imagen FROM configuracion";
       $rs = $this->fmt->query -> consulta($sql);

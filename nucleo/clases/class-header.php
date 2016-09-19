@@ -41,7 +41,7 @@ class HEADER{
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
 	$cat_nombre= $this->fmt->categoria->nombre_categoria($cat);
 
-	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
+	if ( ($cat_padre=='0')&&($cat_tipo=='2')&&($cat!='1')) {
 		$nombre = $cat_nombre;
 	}else{
 		$cat_padre_sitio =  $this->fmt->categoria->categoria_padre_sitio($cat);
@@ -67,7 +67,7 @@ class HEADER{
 	$cat_padre= $this->fmt->categoria->categoria_id_padre($cat);
 
 
-	if ( ($cat_padre=='0')&&($cat_tipo=='2')||($cat=='1')) {
+	if ( ($cat_padre=='0')&&($cat_tipo=='2')&&($cat!='1')) {
 		$cat_favicon= $this->fmt->categoria->favicon_categoria($cat);
 		if (!empty($cat_favicon)){
 			return $cat_favicon;
@@ -79,7 +79,15 @@ class HEADER{
 		if (!empty($cat_padre_sitio)){
 			return $this->fmt->categoria->favicon_categoria($cat_padre_sitio);
 		}else{
-	    	return "images/favicon.ico";
+			$consulta = "SELECT conf_favicon FROM configuracion";
+			$rs = $this->fmt->query->consulta($consulta);
+			$fila = $this->fmt->query->obt_fila($rs);
+			$icon=$fila["conf_favicon"];
+			if (empty($icon)){  
+	    		return "images/favicon.ico";
+	    	}else{
+		    	return $icon;
+	    	}
 	    }
     }
   }
