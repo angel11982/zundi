@@ -29,7 +29,7 @@ class HEADER{
           <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
           <script src="js/respond.min.js"></script>
           <![endif]-->'."\n";
-    $aux .= $this->ruta_analitica()." \n";
+    //$aux .= $this->ruta_analitica()." \n";
     $aux .= $this->css()." \n";
     $aux .= $this->js()." \n";
 
@@ -83,7 +83,7 @@ class HEADER{
 			$rs = $this->fmt->query->consulta($consulta);
 			$fila = $this->fmt->query->obt_fila($rs);
 			$icon=$fila["conf_favicon"];
-			if (empty($icon)){  
+			if (empty($icon)){
 	    		return "images/favicon.ico";
 	    	}else{
 		    	return $icon;
@@ -107,8 +107,7 @@ class HEADER{
       $consulta = "SELECT conf_ruta_analitica FROM configuracion";
       $rs = $this->fmt->query->consulta($consulta);
       $fila = $this->fmt->query->obt_fila($rs);
-      $ruta=$fila["conf_ruta_analitica"];
-      return "        <meta ".$ruta." ej:analitica />"."\n";
+      return $fila["conf_ruta_analitica"];
 
   }
 

@@ -85,14 +85,18 @@ class PLANTILLA{
 
 				echo $this->fmt->header->header_html($cat);
 
+				echo "	<!-- inicio meta - ruta analitica  -->"."\n";
+
 				$id_p=$this->fmt->categoria->traer_id_cat_dominio(_RUTA_WEB);
 				if (!empty($id_p)){
 					$meta=$this->fmt->categoria->traer_meta_cat($id_p);
+				}else{
+					$meta=$this->fmt->header->ruta_analitica();
 				}
 				if (!empty($meta)){
 					require_once (_RUTA_HOST.$meta);
 				}
-
+				echo "	<!-- fin meta - ruta analitica  -->"."\n\n";
 				echo "	<!-- inicio css plantilla contenedores  -->"."\n";
 
 				if(!empty($this->pla_css)){
@@ -108,7 +112,7 @@ class PLANTILLA{
 					echo '	<link rel="stylesheet" href="'._RUTA_WEB.$this->cat_theme.'" rel="stylesheet" type="text/css">'."\n";
 				}
 
-				echo "	<!-- fin css plantilla contenedores  -->"."\n";
+				echo "	<!-- fin css plantilla contenedores  -->"."\n\n";
 
 				echo "	<!-- inicio js plantilla contenedores  -->"."\n";
 
@@ -123,7 +127,7 @@ class PLANTILLA{
 
 
 
-				echo "	<!-- fin js plantilla contenedores  -->"."\n";
+				echo "	<!-- fin js plantilla contenedores  -->"."\n\n";
 				?>
 
 				<?php
