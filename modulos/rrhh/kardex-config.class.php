@@ -521,7 +521,8 @@ class KARDEX_CONF{
 
     $this->fmt->class_modulo->ingresar_tabla('mod_kardex_empresa',$ingresar,$valores_post);
 		//$from,$filas,$valores_post
-    header("location: kardex-config.adm.php?tarea=busqueda&p=empresas");
+    $url="kardex-config.adm.php?tarea=busqueda&p=empresas";
+    $this->fmt->class_modulo->script_location($url);
   }
 
   function ingresar_cargo(){
@@ -553,7 +554,8 @@ class KARDEX_CONF{
 
     $this->fmt->class_modulo->ingresar_tabla('mod_kardex_cargo',$ingresar,$valores_post);
 		//$from,$filas,$valores_post
-    header("location: kardex-config.adm.php?tarea=busqueda&p=cargos");
+    $url="kardex-config.adm.php?tarea=busqueda&p=cargos";
+    $this->fmt->class_modulo->script_location($url);
   }
 
   function ingresar_cat(){
@@ -583,7 +585,8 @@ class KARDEX_CONF{
 
     $this->fmt->class_modulo->ingresar_tabla('cats',$ingresar,$valores_post);
 		//$from,$filas,$valores_post
-    header("location: kardex-config.adm.php?tarea=busqueda&p=cats");
+    $url="kardex-config.adm.php?tarea=busqueda&p=cats";
+    $this->fmt->class_modulo->script_location($url);
   }
 
 	function ingresar_division(){
@@ -601,7 +604,8 @@ class KARDEX_CONF{
 
     $this->fmt->class_modulo->ingresar_tabla('mod_kardex_division',$ingresar,$valores_post);
 		//$from,$filas,$valores_post
-    header("location: kardex-config.adm.php?tarea=busqueda&p=divisiones");
+    $url="kardex-config.adm.php?tarea=busqueda&p=divisiones";
+    $this->fmt->class_modulo->script_location($url);
   }
 
 	function ingresar_departamento(){
@@ -622,7 +626,8 @@ class KARDEX_CONF{
 
     $this->fmt->class_modulo->ingresar_tabla('mod_kardex_departamento',$ingresar,$valores_post);
 		//$from,$filas,$valores_post
-    header("location: kardex-config.adm.php?tarea=busqueda&p=departamentos");
+    $url="kardex-config.adm.php?tarea=busqueda&p=departamentos";
+    $this->fmt->class_modulo->script_location($url);
   }
 
 	function modificar_empresa(){
@@ -653,7 +658,8 @@ class KARDEX_CONF{
 										inputWeb,
 										inputActivar';
 			$this->fmt->class_modulo->actualizar_tabla('mod_kardex_empresa',$filas,$valores_post); //$from,$filas,$valores_post
-			header("location: kardex-config.adm.php?tarea=busqueda?p=empresas");
+			$url="kardex-config.adm.php?tarea=busqueda?p=empresas";
+			$this->fmt->class_modulo->script_location($url);
 		}
 	}
 
@@ -684,7 +690,8 @@ class KARDEX_CONF{
 										inputRequisitos,
 										inputActivar';
 			$this->fmt->class_modulo->actualizar_tabla('mod_kardex_cargo',$filas,$valores_post); //$from,$filas,$valores_post
-			header("location: kardex-config.adm.php?tarea=busqueda&p=cargos");
+			$url="kardex-config.adm.php?tarea=busqueda&p=cargos";
+			$this->fmt->class_modulo->script_location($url);
 		}
 	}
 
@@ -713,7 +720,8 @@ class KARDEX_CONF{
 					inputUsuario,
 					inputActivar';
 		$this->fmt->class_modulo->actualizar_tabla('cats',$filas,$valores_post); //$from,$filas,$valores_post
-		header("location: kardex-config.adm.php?tarea=busqueda&p=cats");
+		$url="kardex-config.adm.php?tarea=busqueda&p=cats";
+		$this->fmt->class_modulo->script_location($url);
 		}
 	}
 
@@ -730,53 +738,63 @@ class KARDEX_CONF{
 										inputDescripcion,
 										inputActivar';
 			$this->fmt->class_modulo->actualizar_tabla('mod_kardex_division',$filas,$valores_post); //$from,$filas,$valores_post
-			header("location: kardex-config.adm.php?tarea=busqueda&p=divisiones");
+			$url="kardex-config.adm.php?tarea=busqueda&p=divisiones";
+			$this->fmt->class_modulo->script_location($url);
 		}
 	}
 
   function eliminar_empresa(){
       $this->fmt->class_modulo->eliminar_get_id("mod_kardex_empresa","mod_kdx_emp_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=empresas");
+      $url="kardex-config.adm.php?tarea=busqueda&p=empresas";
+      $this->fmt->class_modulo->script_location($url);
     }
 
   function activar_empresa(){
       $this->fmt->class_modulo->activar_get_id("mod_kardex_empresa","mod_kdx_emp_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=empresas");
+      $url="kardex-config.adm.php?tarea=busqueda&p=empresas";
+      $this->fmt->class_modulo->script_location($url);
   }
 
 	function eliminar_cat(){
       $this->fmt->class_modulo->eliminar_get_id("cats","cts_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=cats");
+      $url="kardex-config.adm.php?tarea=busqueda&p=cats";
+      $this->fmt->class_modulo->script_location($url);
     }
 
     function eliminar_cargo(){
       $this->fmt->class_modulo->eliminar_get_id("mod_kardex_cargo","mod_kdx_car_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=cargos");
+      $url="kardex-config.adm.php?tarea=busqueda&p=cargos";
+      $this->fmt->class_modulo->script_location($url);
     }
 
   function activar_cargo(){
       $this->fmt->class_modulo->activar_get_id("mod_kardex_cargo","mod_kdx_car_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=cargos");
+      $url="kardex-config.adm.php?tarea=busqueda&p=cargos";
+      $this->fmt->class_modulo->script_location($url);
   }
 
 	function eliminar_division(){
       $this->fmt->class_modulo->eliminar_get_id("mod_kardex_division","mod_kdx_div_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=divisiones");
+      $url="kardex-config.adm.php?tarea=busqueda&p=divisiones";
+      $this->fmt->class_modulo->script_location($url);
     }
 
   function activar_division(){
       $this->fmt->class_modulo->activar_get_id("mod_kardex_division","mod_kdx_div_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=divisiones");
+      $url="kardex-config.adm.php?tarea=busqueda&p=divisiones";
+      $this->fmt->class_modulo->script_location($url);
   }
 
 	function eliminar_departamento(){
       $this->fmt->class_modulo->eliminar_get_id("mod_kardex_departamento","mod_kdx_dep_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=departamentos");
+      $url="kardex-config.adm.php?tarea=busqueda&p=departamentos";
+      $this->fmt->class_modulo->script_location($url);
     }
 
   function activar_departamento(){
       $this->fmt->class_modulo->activar_get_id("mod_kardex_departamento","mod_kdx_dep_");
-      header("location: kardex-config.adm.php?tarea=busqueda&p=departamentos");
+      $url="kardex-config.adm.php?tarea=busqueda&p=departamentos";
+      $this->fmt->class_modulo->script_location($url);
   }
 
 }

@@ -154,6 +154,15 @@ class CLASSMODULOS{
 			</script>
 		<?php
 	}
+
+	function script_location($url){
+  	?>
+  		<script language="JavaScript">
+  			location=('<?php echo $url; ?>');
+  		</script>
+  	<?php
+	}
+
 	function fecha_zona($zona){
 	date_default_timezone_set($zona);
 	setlocale(LC_TIME, "es_ES");
