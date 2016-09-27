@@ -115,7 +115,7 @@ function MostrarOcultarElemento(Id){
 								}
 								else
 								{
-									alert('Ingrese el C�digo de Acceso');
+									alert('Ingrese el Código de Acceso');
 									return false;
 								}
 							}

@@ -7,7 +7,7 @@ $fmt = new CONSTRUCTOR;
     <div id="loader" class="parpadea">&nbsp;</div>
 </div>
 
-<div class="box-n-nav container-fluid">
+<div class="box-n-nav container-fluid" >
 	<div class="brand"><a href="<?php echo _RUTA_WEB; ?>"><img src="<?php echo _RUTA_WEB; ?>sitios/victoria/images/victoria.svg"></a></div>
 		<!--
 <a href="#" target="_blank"> INICIO </a>
@@ -30,20 +30,22 @@ $fmt = new CONSTRUCTOR;
 		</div><!-- /.navbar-collapse -->
 </div>
 <script>
+
 $(document).ready(function () {
 	$(window).scroll(function(){
 	    window_y = $(window).scrollTop();
 	    scroll_critical = "150";
 	    scroll_menu ="340";
-	    s1 = parseInt($("#portada").height());
+	    s1 = parseInt($(".box-body").height());
 	    if (window_y > scroll_critical){
-	      $(".navbar-collapse").addClass('on');
+	      $(".box-n-nav").addClass('on');
 	    }
 	    if (window_y < scroll_critical){
-		  $(".navbar-collapse").removeClass('on'); 
+		  $(".box-n-nav").removeClass('on'); 
 	    }
 	});	
 });
+
 
 $(window).load(function() {
     $('#preloader').fadeOut('slow');

@@ -5,7 +5,7 @@ html{
 }
 body{
 	font-family:"shpro-light",arial, serif;
-	display: none;
+	background-color: #2F2B27;
 }
 
 a:hover, a{ transition:all 0.3s ease; }
@@ -14,8 +14,8 @@ a:hover, a{ transition:all 0.3s ease; }
     position: fixed;
     top:0; left:0;
     right:0; bottom:0;
-    background: #fff;
     z-index: 100;
+    background-color: #fff;
 }
 
 #loader {
@@ -28,7 +28,6 @@ a:hover, a{ transition:all 0.3s ease; }
 }
 
 .parpadea {
-  
   animation-name: parpadeo;
   animation-duration: 1s;
   animation-timing-function: linear;
@@ -64,26 +63,29 @@ a:hover, a{ transition:all 0.3s ease; }
 	width: 100%;
 	position: fixed;
 	z-index: 10;
+	background-color: transparent;
+	height: 100px;
 }
 
 .box-n-nav .brand{
 	width: 180px;
 	margin:10px;
 	float: left;
+	transition:all 0.3s ease;
 }
 
 .box-n-nav .navbar-collapse{
 	width: 75%;
 	display: inline-block;
 	float: right;
-	margin-top: 50px;
+	margin-top: 40px;
 	margin-right: 10px;
 	text-align: right;
 	z-index: 10;
 	opacity: 1;
 }
 .box-n-nav .navbar-nav li > a{
-	padding: 7px 25px;
+	padding: 7px 20px;
 	color:#f9f9f9;
 	font-size: 14px;
 	font-family:"shpro-regular",arial, serif;
@@ -94,7 +96,6 @@ a:hover, a{ transition:all 0.3s ease; }
 	border-radius: 35px;
 	text-transform: uppercase;
 	margin-left: 5px;
-	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
 }
 
 .box-n-nav .navbar-nav li > a:hover{
@@ -120,14 +121,20 @@ a:hover, a{ transition:all 0.3s ease; }
 	border-bottom-right-radius: 0px;
 	border-top-right-radius: 13px;
 	border-top-left-radius: 13px;
+-webkit-box-shadow: 0px 0px 1px 0px rgba(133,133,133,0.46);
+-moz-box-shadow: 0px 0px 1px 0px rgba(133,133,133,0.46);
+box-shadow: 0px 0px 1px 0px rgba(133,133,133,0.46);
 }
 
 .box-n-nav .dropdown-menu{
-	min-width: 153px;
+	min-width: 143px;
 	border: 0px;
 	border-bottom-left-radius:13px;
 	border-bottom-right-radius:13px;
 	margin-left: 5px;
+	-webkit-box-shadow: 0px 0px 1px 0px rgba(133,133,133,0.46);
+-moz-box-shadow: 0px 0px 1px 0px rgba(133,133,133,0.46);
+box-shadow: 0px 0px 1px 0px rgba(133,133,133,0.46);
 }
 
 .box-n-nav .dropdown-menu li > a{
@@ -155,31 +162,38 @@ a:hover, a{ transition:all 0.3s ease; }
 	color: #fff;
 }
 
-.menu-collapse{
-	top:40px;
-	right: 50px;
-	position: absolute;
-	font-size: 20px;
-	border-radius: 85px;
-	padding: 8px 17px 12px 17px;
-	background-color: rgba(255,255,255,0.7) !important;
-	display: inline-block;
-	color:#333;
-}
 
-.menu-collapse, .navbar-collapse.on .box-social-top, .navbar-collapse.on .navbar-nav{
+.box-n-nav.on{
 	transition:all 0.3s ease;
-	opacity: 0;
-	z-index: 0;
+	background-color: rgba(255, 255, 255, 0.95);
+	-webkit-box-shadow: 0px 0px 9px 0px rgba(133,133,133,0.46);
+-moz-box-shadow: 0px 0px 9px 0px rgba(133,133,133,0.46);
+box-shadow: 0px 0px 9px 0px rgba(133,133,133,0.46);
+height: 60px;
 }
 
-.navbar-collapse.on .menu-collapse{
-	opacity: 1;
-	z-index: 10;
+.box-n-nav.on .brand{
 	transition:all 0.3s ease;
+	width: 100px;
+	margin:0px;
 }
 
+.box-n-nav.on .navbar-nav li > a{
+	color:#555;
+	text-shadow: none;
+}
 
+.box-n-nav.on .box-social-top a{
+	color:#555;
+}
+
+.box-n-nav.on .box-social-top a:hover{
+	color:#222;
+}
+
+.box-n-nav.on .navbar-collapse {
+	margin-top: 12px;
+}
 
 /*    body    */
 .box-body{
@@ -193,6 +207,10 @@ a:hover, a{ transition:all 0.3s ease; }
 .box-portada{
 	min-height: 97vh;
 	z-index: 1;
+}
+
+.videoBG{
+	position: fixed;
 }
 
 .box-portada .mensaje{
@@ -237,6 +255,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2e2625', end
 	height: 200px;
 	background: url("../images/hoja.png") #2F2B27 103% 113% no-repeat;
 	position: relative;
+	z-index: 5;
 }
 
 .footer .box-menu-bottom{
@@ -467,7 +486,7 @@ font-size: 12px;
 	background-size: cover !important;
 	background-position-y: top;
 	background-position-x: center;
-	border-radius: 3px;
+	border-radius: 5px;
 	float: left;
 }
 

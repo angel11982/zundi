@@ -11,6 +11,7 @@
 @color-texto-a:#A0A1A5;
 @color-texto-negrillas-a:#fff;
 @font-general: "PT Sans Narrow",sans-serif;
+@font-secundario : "Ubuntu Condensed";
 
 @import "ubuntu-c-font.css";
 
@@ -26,6 +27,15 @@ body{
 	min-height: 570px;
 	width: 100%;
 }
+
+p{
+	font-size: 14px;
+}
+h3 strong{
+	    font-size: 20px;
+			color:@color-texto-negrillas-a;
+		font-family:@font-secundario;
+}
 .header, .header .header-inner .nav ul li:hover > ul {
     background-color:@color-negro-a;
 }
@@ -40,7 +50,7 @@ body{
 /*    header    */
 
 .signin_wrap {
-    font-family: "Ubuntu Condensed";
+    font-family:@font-secundario;
     color: @color-texto-negrillas-a;
     font-size: 15px;
     background-color: @color-rojo-a;
@@ -447,3 +457,96 @@ section img, img {
 .cols-3 .recent-post p{}
 .recent-post.last{ border-bottom:none; margin-bottom:0; padding-bottom:0;}
 .content-area .recent-post h6{ color:#454545;}
+
+
+/* Nosotros  */
+
+.innerbanner {
+    text-align: center;
+}
+
+
+/* --------- Pages ------- */
+.entry-header{
+	padding: 50px 0 0 0;
+	display: inline-block;
+	width: 100%;
+}
+.box-contenido{
+	margin-bottom: 30px;
+}
+
+.box-contenido .entry-title {
+	padding-bottom: 20px;
+	line-height: 30px;
+	width: 100%;
+	border-bottom: solid 1px #e8e8e8 ;
+	color: @color-texto-negrillas-a;
+	font-size: 39px;
+	font-family: @font-secundario;
+}
+
+#sidebar {
+  width: 360px;
+  float: right;
+	margin-top:40px;
+	display: inline-block;
+}
+
+h3.widget-title {
+	background-color: @color-gris-c;
+	color: @color-negro-b;
+	padding: 12px 15px;
+	margin-bottom: 1px;
+}
+
+#sidebar form{
+background-color:@color-negro-b;
+margin-bottom: 30px;
+padding: 20px;
+}
+#sidebar #contactform_main input[type=text], #sidebar #contactform_main input[type=email], #sidebar #contactform_main input[type=tel], #sidebar #contactform_main input[type=url], #sidebar #contactform_main textarea {
+    width: 100%;
+}
+
+#contactform_main input[type=text], #contactform_main input[type=email], #contactform_main input[type=tel], #contactform_main input[type=url], #contactform_main textarea, .wpcf7 form input[type="text"], .wpcf7 form input[type="email"], .wpcf7 form input[type="tel"], .wpcf7 form textarea {
+    width: 40%;
+    border: 1px solid #eee;
+    padding: 15px;
+    float: left;
+    margin: 0 8px 8px 0;
+    -moz-box-shadow: inset 0 0 5px #f1f1f1;
+    -webkit-box-shadow: inset 0 0 5px #f1f1f1;
+    box-shadow: inset 0 0 5px #f1f1f1;
+		font-family:@font-general !important;
+}
+
+#contactform_main span.capcode {
+    float: left;
+    padding: 13px;
+    margin: 0 5px 0 0;
+    border: 1px solid #eee;
+    padding: 13px;
+    float: left;
+    margin: 0 8px 8px 0;
+    -moz-box-shadow: inset 0 0 5px #f1f1f1;
+    -webkit-box-shadow: inset 0 0 5px #f1f1f1;
+    box-shadow: inset 0 0 5px #f1f1f1;
+}
+
+#contactform_main input[type="submit"], .wpcf7 form input[type="submit"] {
+    border: none;
+    font: 400 20px/24px 'Open Sans', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 8px 15px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.button, #commentform input#submit, input.search-submit, .post-password-form input[type=submit], p.read-more a, .accordion-box h2:before, .pagination ul li span, .pagination ul li a, #contactform_main input[type=submit], .wpcf7 form input[type=submit] {
+    background-color: #323232 !important;
+    color: #ffffff !important;
+    border-bottom: 4px solid #292929 !important;
+}
