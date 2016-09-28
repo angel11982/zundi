@@ -46,16 +46,16 @@
 
         if (!isset($_POST["inputId"])){
           echo '<div><i class="icn-checkmark-circle color-text-verde" /> Archivo subido satisfactoriamente.</div><br/>';
-          $fmt->form->input_form('<span class="obligatorio">*</span> Nombre archivo:','inputNombre','',$inputNombre,'','','');
+          $fmt->form->input_form('<span class="obligatorio">*</span> Nombre archivo:','inputNombreDoc','',$inputNombre,'','','');
           $fmt->form->input_form('Tags:','inputTags','','','');
-          $fmt->form->textarea_form('Descripción:','inputDescripcion','','','','3',''); //$label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
-          $fmt->form->input_form('Nombre amigable:','inputNombreAmigable','',$nombre_url,'','','');
-          $fmt->form->input_form('Url archivo:','inputUrl','',$inputUrl,'');
-          $fmt->form->input_form('Tipo de Archivo:','inputTipo','',$extension,'');
-          $fmt->form->input_form('Imagen:','inputImagen','','','','','');
-          $fmt->form->input_form('Tamaño:','inputTamano','',$inputSize,'','','');
+          $fmt->form->textarea_form('Descripción:','inputDescripcionDoc','','','','3',''); //$label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
+          $fmt->form->input_form('Nombre amigable:','inputNombreAmigableDoc','',$nombre_url,'','','');
+          $fmt->form->input_form('Url archivo:','inputUrlDoc','',$inputUrl,'');
+          $fmt->form->input_form('Tipo de Archivo:','inputTipoDoc','',$extension,'');
+          $fmt->form->input_form('Imagen:','inputImagenDoc','','','','','');
+          $fmt->form->input_form('Tamaño:','inputTamanoDoc','',$inputSize,'','','');
           $fmt->form->input_form('Dominio:','','',$inputDominio,'','','');
-          $fmt->form->input_hidden_form('inputDominio',$fmt->categoria->traer_id_cat_dominio($inputDominio));
+          $fmt->form->input_hidden_form('inputDominioDoc',$fmt->categoria->traer_id_cat_dominio($inputDominio));
         }else{
           $url =$inputUrl;
           $rt .= "editar";
@@ -68,7 +68,7 @@
           $rt .= ',inputDominio^'.$inputDominio;
           $rt .= ',inputNombreusuario^'.$usuario_n;
           $rt .= ',inputUsuario^'.$usuario;
-          echo $rt;
+          //echo $rt;
         }
       }
 

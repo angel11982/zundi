@@ -150,6 +150,55 @@ class CLASSMODULOS{
 						    imagen: adicionarImagen
 						  }
 				});
+
+				$('#select_all').click(function(event) {
+				  if(this.checked) {
+				      // Iterate each checkbox
+				      $(':checkbox').each(function() {
+				          this.checked = true;
+				      });
+				  }
+				  else {
+				    $(':checkbox').each(function() {
+				          this.checked = false;
+				      });
+				  }
+				});
+
+				$("#restaurar_all").click(function(){
+					var link = $(this).attr("link");
+					var sw = false;
+					$(':checkbox').each(function() {
+						if(this.checked)
+							sw=true;
+					});
+					if(sw){
+						$("#form_papelera").attr("action",link);
+						$("#form_papelera").submit();
+					}
+					else{
+						alert("Seleccione por lo menos una fila");
+					}
+				});
+
+				$("#vaciar_all").click(function(){
+					var link = $(this).attr("link");
+					var sw = false;
+					$(':checkbox').each(function() {
+						if(this.checked)
+							sw=true;
+					});
+					if(sw){
+						if(confirm('¿Estas seguro de ELIMINAR todo lo seleccionado?')){
+							$("#form_papelera").attr("action",link);
+							$("#form_papelera").submit();
+						}
+					}
+					else{
+						alert("Seleccione por lo menos una fila");
+					}
+				});
+
 			} );
 			</script>
 		<?php

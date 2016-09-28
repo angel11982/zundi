@@ -74,20 +74,20 @@ class DOCUMENTOS{
 		$rs =$this->fmt->query->consulta($consulta);
 		$fila=$this->fmt->query->obt_fila($rs);
 		$this->fmt->form->head_editar('Editar archivo','documentos',$this->id_mod,'','form_editar'); //$label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar
-		$this->fmt->form->input_hidden_form("inputId",$id);
+		$this->fmt->form->input_hidden_form("inputIdDoc",$id);
 		$this->fmt->form->file_form_doc("<span class='obligatorio'>*</span> Cargar archivo para reemplazar (pdf, doc/x, pptx, xls/x, zip):","","form_editar","input-form-doc","","","docs"); //
-		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Nombre archivo actual:","inputNombre","",$fila['doc_nombre'],"","","");
-		$this->fmt->form->input_form('Nombre amigable:','inputNombreAmigable','',$fila['doc_ruta_amigable'],'disabled','','');
+		$this->fmt->form->input_form("<span class='obligatorio'>*</span> Nombre archivo actual:","inputNombreDoc","",$fila['doc_nombre'],"","","");
+		$this->fmt->form->input_form('Nombre amigable:','inputNombreAmigableDoc','',$fila['doc_ruta_amigable'],'disabled','','');
 		$this->fmt->form->input_form('Tags:','inputTags','',$fila['doc_tags'],'');
-		$this->fmt->form->textarea_form('Descripción:','inputDescripcion','',$fila['doc_descripcion'],'','3',''); //$label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
+		$this->fmt->form->textarea_form('Descripción:','inputDescripcionDoc','',$fila['doc_descripcion'],'','3',''); //$label,$id,$placeholder,$valor,$class,$class_div,$rows,$mensaje
 
-		$this->fmt->form->input_form('Url archivo:','inputUrl','',$fila['doc_url'],'');
+		$this->fmt->form->input_form('Url archivo:','inputUrlDoc','',$fila['doc_url'],'');
 
-		$this->fmt->form->input_form('Tipo de Archivo:','inputTipo','',$fila['doc_tipo_archivo'],'');
-		$this->fmt->form->input_form('Imagen:','inputImagen','',$fila['doc_imagen'],'','','');
-		$this->fmt->form->input_form('Tamaño:','inputTamano','',$fila['doc_tamano'],'','','');
+		$this->fmt->form->input_form('Tipo de Archivo:','inputTipoDoc','',$fila['doc_tipo_archivo'],'');
+		$this->fmt->form->input_form('Imagen:','inputImagenDoc','',$fila['doc_imagen'],'','','');
+		$this->fmt->form->input_form('Tamaño:','inputTamanoDoc','',$fila['doc_tamano'],'','','');
 		$this->fmt->form->input_form('Dominio:','','',$this->fmt->categoria->traer_dominio_cat_id($fila['doc_id_dominio']),'','','');
-		$this->fmt->form->input_hidden_form('inputDominio',$fila['doc_id_dominio']);
+		$this->fmt->form->input_hidden_form('inputDominioDoc',$fila['doc_id_dominio']);
 		$cats_id = $this->fmt->categoria->traer_rel_cat_id($id,'documento_rel','doc_rel_cat_id','doc_rel_doc_id'); //$fila_id,$from,$prefijo_cat,$prefijo_rel
 		$this->fmt->form->categoria_form('Categoria','inputCat',"0",$cats_id,"","");
 
@@ -144,17 +144,17 @@ class DOCUMENTOS{
                 doc_id_dominio,
                 doc_orden,
                 doc_activar";
-		$valores  ="'".$_POST['inputNombre']."','".
-					$_POST['inputNombreAmigable']."','".
-					$_POST['inputDescripcion']."','".
-					$_POST['inputUrl']."','".
-					$_POST['inputImagen']."','".
-					$_POST['inputTipo']."','".
-					$_POST['inputTamano']."','".
+		$valores  ="'".$_POST['inputNombreDoc']."','".
+					$_POST['inputNombreAmigableDoc']."','".
+					$_POST['inputDescripcionDoc']."','".
+					$_POST['inputUrlDoc']."','".
+					$_POST['inputImagenDoc']."','".
+					$_POST['inputTipoDoc']."','".
+					$_POST['inputTamanoDoc']."','".
 					$_POST['inputTags']."','".
 					$_POST['inputFecha']."','".
 					$_POST['inputUsuario']."','".
-					$_POST['inputDominio']."','".
+					$_POST['inputDominioDoc']."','".
 					$_POST['inputOrden']."','".
 					$activar."'";
 
@@ -188,20 +188,20 @@ class DOCUMENTOS{
 		if ($_POST["btn-accion"]=="actualizar"){
 
 			$sql="UPDATE documento SET
-						doc_nombre='".$_POST['inputNombre']."',
-						doc_url ='".$_POST['inputUrl']."',
+						doc_nombre='".$_POST['inputNombreDoc']."',
+						doc_url ='".$_POST['inputUrlDoc']."',
 						doc_tags ='".$_POST['inputTags']."',
-						doc_imagen ='".$_POST['inputImagen']."',
-						doc_tipo_archivo='".$_POST['inputTipo']."',
-						doc_ruta_amigable='".$_POST['inputRutaAmigable']."',
-						doc_descripcion='".$_POST['inputDescripcion']."',
-						doc_tamano='".$_POST['inputTamano']."',
+						doc_imagen ='".$_POST['inputImagenDoc']."',
+						doc_tipo_archivo='".$_POST['inputTipoDoc']."',
+						doc_ruta_amigable='".$_POST['inputRutaAmigableDoc']."',
+						doc_descripcion='".$_POST['inputDescripcionDoc']."',
+						doc_tamano='".$_POST['inputTamanoDoc']."',
 						doc_id_dominio='".$this->fmt->categoria->traer_id_cat_dominio($_POST['inputDominio'])."',
 						doc_fecha='".$_POST['inputFecha']."',
 						doc_usuario='".$_POST['inputUsuario']."',
 						doc_orden='".$_POST['inputOrden']."',
 						doc_activar='".$_POST['inputActivar']."'
-						WHERE doc_id='".$_POST['inputId']."'";
+						WHERE doc_id='".$_POST['inputIdDoc']."'";
 
 			$this->fmt->query->consulta($sql);
 
