@@ -121,6 +121,47 @@ class INVENTARIO{
 
   }
 
+	function busqueda_seleccion($modo,$valor){
+		$this->fmt->form->head_modal('Busqueda Inventario',$modo);  //$nom,$archivo,$id_mod,$botones,$id_form,$class,$modo)
+		$this->fmt->form->head_table('table_id_modal_aux');
+		$this->fmt->form->thead_table('Nombre:Categoria:Acciones');
+		$this->fmt->form->tbody_table_open();
+
+			$sql="select alm_id, alm_nombre, cat_alm_nombre from almacen, categoria_almacen where alm_id_categoria=cat_alm_id and alm_activar=1 ORDER BY alm_id desc";
+		$rs =$this->fmt->query->consulta($sql);
+		$num=$this->fmt->query->num_registros($rs);
+		if($num>0){
+			for($i=0;$i<$num;$i++){
+
+				list($fila_id,$fila_nombre,$fila_cat_nombre)=$this->fmt->query->obt_fila($rs);
+			$class_a ='';
+			$class_do ='';
+				if (!empty($valor)){
+				$num_v = count($valor);
+
+				for ($j=0; $j<$num_v;$j++){
+					if ( $fila_id ==$valor[$j]){
+						$class_a ="on";
+						$class_do ="on";
+					}
+				}
+			}
+
+
+
+				//var_dump($fila);
+					echo "<tr>";
+				echo '<td class="fila-url"><strong>'.$fila_nombre.'</strong></td>';
+				echo '<td class="fila-url"><strong>'.$fila_cat_nombre.'</strong></td>';
+				echo "<td class='acciones' id='dp-".$fila_id."'><a class='btn btn-agregar-ped ".$class_a."' value='".$fila_id."' id='bp-".$fila_id."' nombre='".$fila_nombre."' ><i class='icn-plus'></i> Agregar</a> <span class='agregado btp-".$fila_id." ".$class_do."'>Agregado</span></td>";
+				echo "</tr>";
+				}
+		}
+
+		$this->fmt->form->tbody_table_close();
+		$this->fmt->form->footer_table();
+		$this->fmt->form->footer_page($modo);
+	}
 
   function form_nuevo_cat(){
   	$id_cat=$_GET["cat_id"];

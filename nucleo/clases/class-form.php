@@ -862,7 +862,116 @@ $.ajax({
 	<?php
    }
 
+	 function agregar_pedidos($label,$id,$valor,$class,$class_div,$mensaje){
+ 	$idx=$id;
+ 	  ?>
+ 	<div class="form-group <?php echo $class_div; ?>">
+       <label><?php echo $label; ?></label>
+       <?php if (!empty($mensaje)){ ?>
+ 	  <p class="help-block"><?php echo $mensaje; ?></p>
+ 	  <? } ?>
+		<div class="box-pedt-head box-pedt-head">
+			<div class="form-group box-md-4">
+				<label>Articulo:</label>
+			</div>
+			<div class="form-group box-md-1">
+				<label>Cant.:</label>
+			</div>
+			<div class="form-group box-md-2">
+				<label>Unidad:</label>
+			</div>
+			<div class="form-group box-md-3">
+				<label>Observaciones:</label>
+			</div>
+			<div class="form-group box-md-1">
+				<label>Quitar</label>
+			</div>
+		</div>
+ 	  <div class="" id="box-adiciones_pedt">
+ 		  <?php
+ 			  $orden_pedt=0;
+ 			if (!empty($valor)){
+ 				$sql="SELECT DISTINCT alm_id, alm_nombre, ped_alm_cantidad, ped_alm_unidad, ped_alm_observaciones FROM almacen, pedido_almacen WHERE ped_alm_id_almacen=alm_id and ped_alm_id_pedido=$valor order by alm_id asc ";
+ 				$rs=$this->fmt->query->consulta($sql);
+ 				$num =$this->fmt->query->num_registros($rs);
+ 				if ($num>0){
 
+ 					for($i=0;$i<$num;$i++){
+ 						$filax=$this->fmt->query->obt_fila($rs);
+ 						echo '<div class="box-pedt-agregado box-pedt-'.$filax["alm_id"].'"><div class="form-group box-md-4"><input class="form-control " id="" name="" placeholder="" value="'.$filax["alm_nombre"].'" readonly=""><input type="hidden" name="'.$idx.'[]" id="'.$idx.'[]" value="'.$filax["alm_id"].'"/></div><div class="form-group box-md-1"><input class="form-control " id="cant'.$filax["alm_id"].'" name="cant'.$filax["alm_id"].'" value="'.$filax["ped_alm_cantidad"].'" ></div><div class="form-group box-md-2"><input class="form-control " id="unidad'.$filax["alm_id"].'" name="unidad'.$filax["alm_id"].'" placeholder="caja,bolsas,litros" value="'.$filax["ped_alm_unidad"].'" ></div><div class="form-group box-md-3"><input class="form-control " id="observacion'.$filax["alm_id"].'" name="observacion'.$filax["alm_id"].'" placeholder="" value="'.$filax["ped_alm_observaciones"].'" ></div><div class="form-group box-md-1"><a class="btn quitarpedt" value="'.$filax["alm_id"].'" id="e-'.$filax["alm_id"].'" nombre="'.$filax["alm_nombre"].'"><i class="icn-close"></i></a></div></div>';
+
+ 						$valor_ids[$i] = $filax["alm_id"];
+ 					}
+
+ 				}
+ 			}
+ 		  ?>
+ 	  </div>
+ 	  <div class="box-modal" id="box-modal-apedt">
+ 		  <?php
+ 			  require_once(_RUTA_HOST."modulos/rrhh/inventario.class.php");
+ 			  $form_e =new INVENTARIO($this->fmt);
+ 			  $form_e->busqueda_seleccion('modal',$valor_ids);
+ 		   ?>
+ 	  </div>
+ 	  <script>
+ 		  	$(document).ready( function (){
+ 		  		var orden_pst = <?php echo $orden_pedt; ?>;
+ 			  	$(".btn-nuevo-pedt").click( function(){
+ 				  $("#box-modal-pedt").toggle();
+ 				  $(".btn-nuevo-pedt").toggleClass("on");
+ 			  	});
+
+ 			  	$(".btn-agregar-pedt").click( function(){
+ 				  $("#box-modal-apedt").toggle();
+ 				  $(".btn-agregar-pedt").toggleClass("on");
+ 				});
+
+ 				$( "#box-modal-apedt" ).on( "click", ".btn-agregar-ped", function(){
+ 					orden_pst++;
+ 				  var idv = $( this ).attr("value");
+ 				  var nom = $( this ).attr("nombre");
+ 				  $('#bp-' + idv).toggleClass("on");
+ 				  $('.btp-' + idv).toggleClass("on");
+ 				  $('#box-adiciones_pedt').append('<div class="box-pedt-agregado box-pedt-'+idv+'"><div class="form-group box-md-4"><input class="form-control " id="" name="" placeholder="" value="'+nom+'" readonly=""><input type="hidden" name="<?php echo $idx; ?>[]" id="<?php echo $idx; ?>[]" value="'+idv+'"/></div><div class="form-group box-md-1"><input class="form-control " id="cant'+idv+'" name="cant'+idv+'" value="" ></div><div class="form-group box-md-2"><input class="form-control " id="unidad'+idv+'" name="unidad'+idv+'" placeholder="caja,bolsas,litros" value="" ></div><div class="form-group box-md-3"><input class="form-control " id="observacion'+idv+'" name="observacion'+idv+'" placeholder="" value="" ></div><div class="form-group box-md-1"><a class="btn quitarpedt" value="'+idv+'" id="e-'+idv+'" nombre="'+nom+'"><i class="icn-close"></i></a></div></div>');
+
+ 				  $(".quitarpedt").off('click');
+     			$(".quitarpedt").on('click', function() {
+ 	    				var ide = $( this ).attr("value");
+ 	    				var nom = $( this ).attr("nombre");
+ 	    				$('#bp-' + ide).toggleClass("on");
+ 	    				$('.btp-' + ide).toggleClass("on");
+ 	    				$('.box-pedt-' + ide ).remove();
+ 					});
+				});
+				
+ 				$(".quitarpedt").click(function() {
+ 	    				var ide = $( this ).attr("value");
+ 	    				$('#bp-' + ide).toggleClass("on");
+ 	    				$('.btp-' + ide).toggleClass("on");
+ 	    				$('.box-pedt-' + ide ).remove();
+ 				});
+
+ 				$( "#box-modal-apedt" ).on( "click", ".btn-actualizar-modal", function() {
+ 					  $("#box-modal-apedt").html("cargando..");
+ 					 var ruta = "<?php echo _RUTA_WEB; ?>nucleo/ajax/ajax-act-seccion.php";
+ 					 var dato = [{name:"action", value:"pestana"},{name:"valor", value:"<?php echo $valor; ?>"}];
+ 					 $.ajax({
+ 					          url: ruta,
+ 					          type: "POST",
+ 					          data: dato,
+ 							  success: function(datos){
+ 							  	$("#box-modal-apedt").html(datos);
+ 							  }
+ 					});
+ 				});
+
+ 			});
+
+        </script>
+     </div>
+ 	<?php
+   }
 
   function head_table($id_tabla){
     ?><div class="table-responsive">
@@ -992,7 +1101,7 @@ $.ajax({
 			</div>
 			<script type="text/javascript">
 					$(function () {
-							$('.dp').datetimepicker({
+							$('.dp').datetimepicker({agra
 								format: 'DD/MM/YYYY',
 								locale: 'es'
 							});

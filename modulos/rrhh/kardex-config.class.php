@@ -324,11 +324,12 @@ class KARDEX_CONF{
         $this->fmt->form->input_form('Zona:','inputZona','','','input-lg','','');
         $this->fmt->form->textarea_form('Dirección:','inputDireccion','','','','','3','','');
         $this->fmt->form->input_form('Telefono Fijo:','inputtelefono','','','input-lg','','');
-		$this->fmt->form->input_form('Celular:','inputCelular','','','input-lg','','');
-		$usuario = $this->fmt->sesion->get_variable('usu_id');
-		$usuario_n =  $this->fmt->usuario->nombre_usuario( $usuario );
-		$this->fmt->form->input_form_sololectura('Usuario:','','',$usuario_n,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
-		$this->fmt->form->input_hidden_form("inputUsuario",$usuario);
+				$this->fmt->form->input_form('Celular:','inputCelular','','','input-lg','','');
+				$this->fmt->form->select_form("Roles","InputRol","rol_","roles","","","");
+				$usuario = $this->fmt->sesion->get_variable('usu_id');
+				$usuario_n =  $this->fmt->usuario->nombre_usuario( $usuario );
+				$this->fmt->form->input_form_sololectura('Usuario:','','',$usuario_n,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+				$this->fmt->form->input_hidden_form("inputUsuario",$usuario);
         $this->fmt->form->botones_nuevo();
         ?>
       </form>
@@ -423,12 +424,12 @@ class KARDEX_CONF{
     $this->fmt->class_pagina->crear_head_mod( "", "Editar Cat",'',$botones,'col-xs-6 col-xs-offset-4');
 		$this->fmt->get->validar_get ( $_GET['id'] );
 		$id = $_GET['id'];
-		$sql="SELECT cts_id,cts_nombre,cts_email,cts_encargado,cts_zona,cts_direccion,cts_telefono,cts_celular,cts_activar,cts_id_usuario from cats where cts_id='".$id."'";
+		$sql="SELECT cts_id,cts_nombre,cts_email,cts_encargado,cts_zona,cts_direccion,cts_telefono,cts_celular,cts_activar,cts_id_usuario, cts_id_roles from cats where cts_id='".$id."'";
 		$rs=$this->fmt->query->consulta($sql);
 		$num=$this->fmt->query->num_registros($rs);
 			if($num>0){
 				for($i=0;$i<$num;$i++){
-					list($fila_id,$fila_nombre,$fila_correo,$fila_encargado,$fila_zona,$fila_direccion,$fila_telefono,$fila_celular,$fila_activar,$fila_usuario)=$this->fmt->query->obt_fila($rs);
+					list($fila_id,$fila_nombre,$fila_correo,$fila_encargado,$fila_zona,$fila_direccion,$fila_telefono,$fila_celular,$fila_activar,$fila_usuario,$fila_rol)=$this->fmt->query->obt_fila($rs);
 				}
 			}
     ?>
@@ -444,13 +445,14 @@ class KARDEX_CONF{
         $this->fmt->form->input_form('Zona:','inputZona','',$fila_zona,'input-lg','','');
         $this->fmt->form->textarea_form('Dirección:','inputDireccion','',$fila_direccion,'','','3','','');
         $this->fmt->form->input_form('Telefono Fijo:','inputtelefono','',$fila_telefono,'input-lg','','');
-		$this->fmt->form->input_form('Celular:','inputCelular','',$fila_celular,'input-lg','','');
-		$usuario = $this->fmt->sesion->get_variable('usu_id');
-		$usuario_n =  $this->fmt->usuario->nombre_usuario( $usuario );
-		$this->fmt->form->input_form_sololectura('Usuario:','','',$usuario_n,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
-		$this->fmt->form->input_hidden_form("inputUsuario",$usuario);
-		$this->fmt->form->radio_activar_form($fila_activar);
-		$this->fmt->form->botones_editar($fila_id,$fila_nombre,'cat','eliminar_cat');
+				$this->fmt->form->input_form('Celular:','inputCelular','',$fila_celular,'input-lg','','');
+				$this->fmt->form->select_form("Roles","InputRol","rol_","roles",$fila_rol,"","");
+				$usuario = $this->fmt->sesion->get_variable('usu_id');
+				$usuario_n =  $this->fmt->usuario->nombre_usuario( $usuario );
+				$this->fmt->form->input_form_sololectura('Usuario:','','',$usuario_n,'','','');//$label,$id,$placeholder,$valor,$class,$class_div,$mensaje
+				$this->fmt->form->input_hidden_form("inputUsuario",$usuario);
+				$this->fmt->form->radio_activar_form($fila_activar);
+				$this->fmt->form->botones_editar($fila_id,$fila_nombre,'cat','eliminar_cat');
         ?>
       </div>
     </div>
@@ -573,6 +575,7 @@ class KARDEX_CONF{
 				cts_telefono,
 				cts_celular,
 				cts_id_usuario,
+				cts_id_roles,
 				cts_activar";
     $valores_post  ="inputNombre,
 				inputCorreo,
@@ -581,7 +584,8 @@ class KARDEX_CONF{
 				inputDireccion,
 				inputtelefono,
 				inputCelular,
-				inputUsuario,inputActivar=".$activar;
+				inputUsuario,
+				InputRol,inputActivar=".$activar;
 
     $this->fmt->class_modulo->ingresar_tabla('cats',$ingresar,$valores_post);
 		//$from,$filas,$valores_post
@@ -708,6 +712,7 @@ class KARDEX_CONF{
 					cts_telefono,
 					cts_celular,
 					cts_id_usuario,
+					cts_id_roles,
 					cts_activar';
 			$valores_post='inputId,
 					inputNombre,
@@ -718,6 +723,7 @@ class KARDEX_CONF{
 					inputtelefono,
 					inputCelular,
 					inputUsuario,
+					InputRol,
 					inputActivar';
 		$this->fmt->class_modulo->actualizar_tabla('cats',$filas,$valores_post); //$from,$filas,$valores_post
 		$url="kardex-config.adm.php?tarea=busqueda&p=cats";

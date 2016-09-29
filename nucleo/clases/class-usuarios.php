@@ -141,5 +141,25 @@ class USUARIO{
 		return $aux;
 	}
 
+  function nombre_cat($id_rol){
+    $sql="select cts_nombre from cats where cts_id_roles=$id_rol";
+    $rs = $this->fmt->query-> consulta($sql);
+    $fila = $this->fmt->query->obt_fila($rs);
+    return $fila["cts_nombre"]." ".$fila["usu_apellidos"];
+  }
+
+  function id_cat_roles($id_rol){
+    $sql="select cts_id from cats where cts_id_roles='$id_rol'";
+    $rs = $this->fmt->query-> consulta($sql);
+    $fila = $this->fmt->query->obt_fila($rs);
+    return $fila["cts_id"];
+  }
+
+  function nombre_cat_id($id_cat){
+    $sql="select cts_nombre from cats where cts_id='$id_cat'";
+    $rs = $this->fmt->query-> consulta($sql);
+    $fila = $this->fmt->query->obt_fila($rs);
+    return $fila["cts_nombre"];
+  }
 
 }

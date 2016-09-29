@@ -789,6 +789,12 @@ width: 80%;
 	cursor: pointer;
 }
 
+
+.box-pedt-agregado .quitar-pedt{
+	color:#FF2D55;
+	cursor: pointer;
+}
+
 .box-tabla{}
 .box-tr{
   border-bottom:1px solid #f1f1f1;

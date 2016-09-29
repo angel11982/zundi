@@ -884,6 +884,18 @@ input[type="file"] {
 	display: block;
 }
 
+.box-pedt-agregado label{
+	display: inline-block;
+	margin-top: 3px;
+}
+
+.agregado, .btn-agregar-ped.on{
+	display: none;
+}
+
+.agregado.on, .btn-agregar-pedt{
+	display: block;
+}
 .tab-content{
 	padding: 20px;
 	display: inline-block;
@@ -902,4 +914,3 @@ input[type="file"] {
 .body-config{
 	padding: 40px;
 }
-
