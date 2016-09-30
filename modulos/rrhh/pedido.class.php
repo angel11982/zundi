@@ -24,6 +24,8 @@ class PEDIDO{
     $this->fmt->class_modulo->script_form("modulos/rrhh/inventario.adm.php",$this->id_mod,"asc","0","25",true);
 
     $id_rol = $this->fmt->sesion->get_variable("usu_rol");
+		$perm = $this->fmt->usuario->permisos_roles_mod($id_rol,$this->id_mod);
+
 
 	if (isset($_GET["p"])){
 			$clase_activa = $_GET["p"];
@@ -81,11 +83,11 @@ class PEDIDO{
 					   </thead>
 					   <tbody>
           <?php
-          	if($id_rol==1)
+          	if(($id_rol==1)||($perm["activar"]==1))
             	$sql="select ped_id, ped_id_cats, ped_id_usuario, ped_estado, ped_fecha_registro, ped_fecha_aprobacion, ped_fecha_entrega from pedido ORDER BY ped_id desc";
             else{
-
-
+							$id_usu_k=$this->fmt->sesion->get_variable('usu_id');
+							$sql="select ped_id, ped_id_cats, ped_id_usuario, ped_estado, ped_fecha_registro, ped_fecha_aprobacion, ped_fecha_entrega from pedido where ped_id_usuario=$id_usu_k ORDER BY ped_id desc";
             }
 
             $rs =$this->fmt->query->consulta($sql);
@@ -127,10 +129,18 @@ class PEDIDO{
 				              <td><?php echo $fecha_list; ?></td>
 											<td><?php echo $est; ?></td>
 				              <td>
-
+												<?php
+												if($fila_estado==0){
+													if(($id_rol==1)||($perm["editar"]==1)){
+												?>
 				                <a  id="btn-editar-modulo" class="btn btn-accion btn-editar" href="<? echo $url; ?>" title="Editar <? echo $fila_id; ?>" ><i class="icn-pencil"></i></a>
 				                <?php
-					                $this->fmt->form->botones_acciones("btn-eliminar","btn btn-eliminar btn-accion","","Eliminar -".$fila_id,"icn-trash","eliminar&id_mod=$this->id_mod","Pedido",$fila_id);
+													}
+													if(($id_rol==1)||($perm["eliminar"]==1)){
+						                $this->fmt->form->botones_acciones("btn-eliminar","btn btn-eliminar btn-accion","","Eliminar -".$fila_id,"icn-trash","eliminar&id_mod=$this->id_mod","Pedido",$fila_id);
+													}
+												}
+												if(($id_rol==1)||($perm["activar"]==1))
 													echo $estado;
 				                ?>
 

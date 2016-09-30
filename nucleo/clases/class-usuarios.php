@@ -8,7 +8,12 @@ class USUARIO{
   function __construct($fmt){
     $this->fmt = $fmt;
   }
-
+  function nombre_grupo_usuario($id_grupo){
+    $sql ="SELECT grupo_nombre FROM grupos WHERE grupo_id='$id_grupo'";
+    $rs = $this->fmt->query-> consulta($sql);
+    $fila = $this->fmt->query-> obt_fila($rs);
+    return $fila["grupo_nombre"];
+  }
   function nombre_rol($id_rol){
     $sql ="SELECT rol_nombre  FROM roles WHERE rol_id='$id_rol'";
     $rs = $this->fmt->query-> consulta($sql);
@@ -139,7 +144,7 @@ class USUARIO{
 			$aux =" no existen roles registrados";
 		}
 		return $aux;
-	}
+	}  
 
   function nombre_cat($id_rol){
     $sql="select cts_nombre from cats where cts_id_roles=$id_rol";
@@ -160,6 +165,18 @@ class USUARIO{
     $rs = $this->fmt->query-> consulta($sql);
     $fila = $this->fmt->query->obt_fila($rs);
     return $fila["cts_nombre"];
+  }
+
+  function permisos_roles_mod($id_rol,$id_mod){
+    $sql="select rol_rel_mod_p_ver, rol_rel_mod_p_activar, rol_rel_mod_p_agregar, rol_rel_mod_p_editar, rol_rel_mod_p_eliminar from roles_rel where rol_rel_rol_id='$id_rol' and rol_rel_mod_id='$id_mod'";
+    $rs = $this->fmt->query-> consulta($sql);
+    $fila = $this->fmt->query->obt_fila($rs);
+    $perm["ver"]=$fila["rol_rel_mod_p_ver"];
+    $perm["activar"]=$fila["rol_rel_mod_p_activar"];
+    $perm["agregar"]=$fila["rol_rel_mod_p_agregar"];
+    $perm["editar"]=$fila["rol_rel_mod_p_editar"];
+    $perm["eliminar"]=$fila["rol_rel_mod_p_eliminar"];
+    return $perm;
   }
 
 }

@@ -21,8 +21,9 @@ class FORM{
   function head_editar($nom,$archivo,$id_mod,$botones,$id_form,$class){
     $botones .= $this->fmt->class_pagina->crear_btn($archivo.".adm.php?tarea=busqueda&id_mod=$id_mod","btn btn-link  btn-volver","icn-chevron-left","volver"); // link, clase, icono, nombre
   	$this->fmt->class_pagina->crear_head_form($nom, $botones,"","",$id_mod);
+		$nom_mod=  strtolower($this->fmt->class_modulo->mombre_modulo($id_mod));
     ?>
-    <div class="body-modulo col-xs-6 col-xs-offset-3 <? echo $class; ?>">
+    <div class="body-modulo body-<? echo $nom_mod; ?> col-xs-6 col-xs-offset-3 <? echo $class; ?>">
       <form class="form form-modulo" action="<?php echo $archivo; ?>.adm.php?tarea=modificar&id_mod=<? echo $id_mod; ?>"  enctype="multipart/form-data" method="POST" id="<?php echo $id_form; ?>">
         <div class="form-group" id="mensaje-form"></div> <!--Mensaje form -->
     <?php
@@ -944,7 +945,7 @@ $.ajax({
  	    				$('.box-pedt-' + ide ).remove();
  					});
 				});
-				
+
  				$(".quitarpedt").click(function() {
  	    				var ide = $( this ).attr("value");
  	    				$('#bp-' + ide).toggleClass("on");
@@ -1024,6 +1025,17 @@ $.ajax({
     <div class="form-group <?php echo $class_div; ?>">
       <label><?php echo $label; ?></label>
       <input class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>" validar="<?php echo $validar; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" <?php echo $disabled; ?> >
+			<?php if (!empty($mensaje)){ ?>
+			<p class="help-block"><?php echo $mensaje; ?></p>
+			<? } ?>
+    </div>
+    <?php
+  }
+	function input_color($label,$id,$placeholder,$valor,$class,$class_div,$mensaje,$disabled,$validar){
+    ?>
+    <div class="form-group <?php echo $class_div; ?>">
+      <label><?php echo $label; ?></label>
+      <input type="color" class="form-control <?php echo $class; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>" validar="<?php echo $validar; ?>" placeholder="<?php echo $placeholder; ?>" value="<?php echo $valor; ?>" <?php echo $disabled; ?> >
 			<?php if (!empty($mensaje)){ ?>
 			<p class="help-block"><?php echo $mensaje; ?></p>
 			<? } ?>
@@ -1172,7 +1184,23 @@ $.ajax({
 		</div>
 		<?php
 		}
+	function input_check_form($label,$nombreinput,$valor,$campo){
 
+		$campo_in[0]="1";
+		$num = count($nombreinput);
+		for($i=0;$i<$num;$i++){
+			$ck="";
+			if(in_array($valor[$i], $campo))
+				$ck="checked";
+			?>
+			<div class="checkbox">
+				 <label>
+					 <input type="checkbox" name="<?php echo $nombreinput[$i]; ?>" id="<?php echo $nombreinput[$i]; ?>" value="<?php echo $valor[$i]; ?>" <?php echo $ck; ?>> <?php echo $label[$i]; ?>
+				 </label>
+			</div>
+			<?php
+		}
+	}
   function radio_activar_form($valor){
     ?>
     <div class="form-group">

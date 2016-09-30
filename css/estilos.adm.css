@@ -914,3 +914,10 @@ input[type="file"] {
 .body-config{
 	padding: 40px;
 }
+
+.color-cuadrado {
+    width: 25px;
+    height: 25px;
+    position: relative;
+    border: 1px solid;
+}
