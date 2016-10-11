@@ -151,7 +151,7 @@ class ARCHIVOS{
 
     // resize
     if($crop){
-      if($w < $width or $h < $height) return "Picture is too small!";
+      if(($w < $width) and ($h < $height)) return "Picture is too small crop!";
       $ratio = max($width/$w, $height/$h);
       $h = $height / $ratio;
       $x = ($w - $width / $ratio) / 2;

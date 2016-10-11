@@ -90,7 +90,7 @@ if ($success === true) {
         $sql1="insert into $table (".$_POST["col_id"].", ".$_POST["col_ruta"].", ".$_POST["col_dom"].") values ('".$_POST["id_mul"]."','".$ruta_bd.$data[1]."','".$id_dominio."')";
 		$fmt->query->consulta($sql1);
 	}
-     $output = ['uploaded' => $paths];
+     $output = ['uploaded' => $nombre_normal];
 } elseif ($success === false) {
     $output = ['error'=>'Error al subir varios archicos'];
     // delete any uploaded files
