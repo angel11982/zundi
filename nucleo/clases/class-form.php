@@ -643,7 +643,7 @@ class FORM{
 		  <div id="respuesta-modal">
 		  <?
 			if (!empty($valor)){ $xvalor="&id=".$valor; }else{ $xvalor=""; }
-			$url_mod =  _RUTA_WEB."modulos/config-ec/config-ec.adm.php?tarea=form_nuevo&modo=modal&from=".$from.$xvalor;
+			$url_mod =  _RUTA_WEB."modulos/productos/config-ec.adm.php?tarea=form_nuevo&modo=modal&from=".$from.$xvalor;
 			echo "<iframe class='frame-modal' src='".$url_mod."'  name='frame_content_modal' scrolling=auto ></iframe>";
 		  ?>
 		  </div>
@@ -651,7 +651,7 @@ class FORM{
 
 	  <div class="box-modal" id="box-modal-apest" style="display:none;">
 		  <?php
-			  require_once(_RUTA_HOST."modulos/config-ec/config-ec.class.php");
+			  require_once(_RUTA_HOST."modulos/productos/config-ec.class.php");
 			  $form_e =new CONFIG_EC($this->fmt);
 			  $form_e->busqueda_seleccion('modal',$valor_ids);
 		   ?>
@@ -721,6 +721,13 @@ class FORM{
 					          data: dato,
 							  success: function(datos){
 							  	$("#box-modal-apest").html(datos);
+									$('#table_id_modal_aux').DataTable({
+										"language": {
+							            "url": "http://52.36.176.142/mainter/js/spanish_datatable.json"
+							            },
+							            "pageLength": 25,
+							            "order": [[ 0, 'asc' ]]
+									});
 							  }
 					});
 				});
@@ -853,7 +860,13 @@ $.ajax({
 					          data: dato,
 							  success: function(datos){
 								  $("#box-modal-adocs").html(datos);
-
+									$('#table_id_modal').DataTable({
+										"language": {
+							            "url": "http://52.36.176.142/mainter/js/spanish_datatable.json"
+							            },
+							            "pageLength": 25,
+							            "order": [[ 0, 'asc' ]]
+									});
 							  }
 					});
 				});

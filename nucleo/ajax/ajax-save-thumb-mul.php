@@ -13,6 +13,11 @@
 	$ruta.= $dato[$i]."/";
  }
 
+ $d_ex=explode(".", $dir);
+ if($ext!=end($d_ex)){
+	 $ext=end($d_ex);
+ }
+
  list($type, $data) = explode(';', $data);
  list(, $data)      = explode(',', $data);
  //echo $data;

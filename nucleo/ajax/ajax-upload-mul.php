@@ -2,7 +2,12 @@
   require_once("../clases/class-constructor.php");
   $fmt = new CONSTRUCTOR();
 
-  $output_dir = _RUTA_SERVER.$_POST["inputRutaArchivos"];
+  if(_MULTIPLE_SITE=="on")
+  $ruta_server=_RUTA_SERVER;
+  else
+  $ruta_server=_RUTA_HT;
+
+  $output_dir = $ruta_server.$_POST["inputRutaArchivos"];
   if(isset($_FILES["inputArchivos"])){
 
     $error = $_FILES["inputArchivos"]["error"];
@@ -34,13 +39,14 @@
       }else if($width < 60 || $height < 60){
         echo "Error la anchura y la altura mínima permitida es > 60px";
       }else{
+
         move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
         $src = $_POST["inputRutaArchivos"]."/".$nombre_url;
         $nombre_t=$fmt->archivos->convertir_nombre_thumb($nombre_url);
         if(empty($_POST["inputThumb"]))
-        	$fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_t,100,100,1);
+        	$fmt->archivos->crear_thumb($ruta_server.$src,$ruta_server.$_POST["inputRutaArchivos"].'/'.$nombre_t,100,100,1);
         else
-        	$fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
+        	$fmt->archivos->crear_thumb($ruta_server.$src,$ruta_server.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,$thumb_s[0],$thumb_s[1],1);
         //$src, $dst, $width, $height, $crop=0
         $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;
         $ruta_v = explode ("/",$inputUrl);

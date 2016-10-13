@@ -1,14 +1,26 @@
 <?php
   require_once("../clases/class-constructor.php");
   $fmt = new CONSTRUCTOR();
+  if(_MULTIPLE_SITE=="on")
+  $ruta_server=_RUTA_SERVER;
+  else
+  $ruta_server=_RUTA_HT;
+
   $input=$_POST["input_img"];
   $cmd="cmd";
   $dominio=$_POST["dominio"];
   $thumb_s= explode("x",$_POST["thumb"]);
-  $data=explode("/", $dominio);
-  $dato=$data[3]."/sitios/".$data[3]."/";
-  $dato_1="sitios/".$data[3]."/";
-  $output_dir = _RUTA_SERVER.$dato.$_POST["ruta"];
+  if(_MULTIPLE_SITE=="on"){
+	  $data=explode("/", $dominio);
+	  $dato=$data[3]."/sitios/".$data[3]."/";
+	  $dato_1="sitios/".$data[3]."/";
+  }
+  else{
+  	$data=explode("/", _RUTA_DEFAULT);
+	$dato="/sitios/".$data[0]."/";
+	$dato_1="sitios/".$data[0]."/";
+  }
+  $output_dir = $ruta_server.$dato.$_POST["ruta"];
   $id_dominio = $fmt->categoria->traer_id_cat_dominio($dominio);
   $table=$_POST["table"];
 
@@ -47,6 +59,7 @@ for($i=0; $i < count($filenames); $i++){
 		$success = true;
     } else {
         $success = false;
+        $error = $target_aux;
         break;
     }
 }
@@ -59,10 +72,10 @@ if ($success === true) {
 		$nombre_t=str_replace("_original", "", $nombre_aux);
 		$nombre_normal = str_replace("_original", "", $paths[$i]);
 		if($widths[$i]>960){
-			$fmt->archivos->crear_thumb($paths[$i],$nombre_normal,"960","720",1);
+			$fmt->archivos->crear_thumb($paths[$i],$nombre_normal,"960","720",0);
 		}
 		else{
-			$fmt->archivos->crear_thumb($paths[$i],$nombre_normal,$widths[$i],$heigths[$i],1);
+			$fmt->archivos->crear_thumb($paths[$i],$nombre_normal,$widths[$i],$heigths[$i],0);
 		}
         $fmt->archivos->crear_thumb($paths[$i],$nombre_t,$thumb_s[0],$thumb_s[1],1);
 		$nombre_arc=$fmt->archivos->saber_nombre_archivo($paths[$i]);
@@ -92,7 +105,7 @@ if ($success === true) {
 	}
      $output = ['uploaded' => $nombre_normal];
 } elseif ($success === false) {
-    $output = ['error'=>'Error al subir varios archicos'];
+    $output = ['error'=>$error];
     // delete any uploaded files
     foreach ($paths as $file) {
         unlink($file);

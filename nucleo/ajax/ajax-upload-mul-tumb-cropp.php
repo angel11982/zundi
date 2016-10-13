@@ -1,8 +1,12 @@
 <?php
   require_once("../clases/class-constructor.php");
   $fmt = new CONSTRUCTOR();
+  if(_MULTIPLE_SITE=="on")
+  $ruta_server=_RUTA_SERVER;
+  else
+  $ruta_server=_RUTA_HT;
+  $output_dir = $ruta_server.$_POST["inputRutaArchivos"];
 
-  $output_dir = _RUTA_SERVER.$_POST["inputRutaArchivos"];
   if(isset($_POST["inputArchivosEdit"])){
   	$inputUrl=$_POST["inputArchivosEdit"];
   	$inputDominio = _RUTA_WEB;
@@ -13,7 +17,7 @@
     $inputNombre = $fmt->get->convertir_url_amigable($dato["filename"]);
 	$inputTipo = $dato["extension"];
 
-	$size = filesize(_RUTA_SERVER.$_POST["inputRutaArchivos"]."/".$dato["basename"]);
+	$size = filesize($ruta_server.$_POST["inputRutaArchivos"]."/".$dato["basename"]);
     $inputSize = $fmt->archivos->formato_size_archivo($size);
     $dimensiones = getimagesize($ruta_provisional);
 	$width = $dimensiones[0];
@@ -84,15 +88,15 @@
 
         move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_original);
         if($width>960)
-        	$fmt->archivos->crear_thumb(_RUTA_SERVER.$_POST["inputRutaArchivos"]."/".$nombre_original,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_url,"960","720",1);
+        	$fmt->archivos->crear_thumb($ruta_server.$_POST["inputRutaArchivos"]."/".$nombre_original,$ruta_server.$_POST["inputRutaArchivos"].'/'.$nombre_url,"960","720",1);
         else
         	//move_uploaded_file($_FILES["inputArchivos"]["tmp_name"],$output_dir."/".$nombre_url);
-        	$fmt->archivos->crear_thumb(_RUTA_SERVER.$_POST["inputRutaArchivos"]."/".$nombre_original,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/'.$nombre_url,$width,$height,1);
+        	$fmt->archivos->crear_thumb($ruta_server.$_POST["inputRutaArchivos"]."/".$nombre_original,$ruta_server.$_POST["inputRutaArchivos"].'/'.$nombre_url,$width,$height,1);
 
         $src = $_POST["inputRutaArchivos"]."/".$nombre_original;
         $nombre_t=$fmt->archivos->convertir_nombre_thumb($nombre_url);
 
-        $fmt->archivos->crear_thumb(_RUTA_SERVER.$src,_RUTA_SERVER.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,"100","100",1);
+        $fmt->archivos->crear_thumb($ruta_server.$src,$ruta_server.$_POST["inputRutaArchivos"].'/mini-'.$nombre_t,"100","100",1);
         //$src, $dst, $width, $height, $crop=0
         $inputUrl= $_POST["inputRutaArchivos"]."/".$nombre_url;
         $inputTipo = $fmt->archivos->saber_extension_archivo($inputUrl);

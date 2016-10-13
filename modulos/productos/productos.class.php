@@ -13,6 +13,10 @@ class PRODUCTOS{
 	}
 
 	function busqueda(){
+	if(_MULTIPLE_SITE=="on")
+	  $ruta_server=_RUTA_SERVER;
+	else
+	  $ruta_server=_RUTA_HT;
     $botones = $this->fmt->class_pagina->crear_btn("productos.adm.php?tarea=form_nuevo&id_mod=$this->id_mod","btn btn-primary","icn-plus","Nuevo Producto");  // link, tarea, clase, icono, nombre
     $this->fmt->class_pagina->crear_head( $this->id_mod, $botones); // bd, id modulo, botones
     $this->fmt->class_modulo->script_form("modulos/productos/productos.adm.php",$this->id_mod,"asc","0","25",true);
@@ -66,11 +70,11 @@ class PRODUCTOS{
             if($num>0){
             for($i=0;$i<$num;$i++){
               list($fila_id,$fila_nombre,$fila_imagen,$fila_dominio,$fila_activar)=$this->fmt->query->obt_fila($rs);
-							if (empty($fila_dominio)){ $aux=_RUTA_WEB_temp; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila_dominio); }
+							if (empty($fila_dominio)){ $aux=_RUTA_WEB; } else { $aux = $this->fmt->categoria->traer_dominio_cat_id($fila_dominio); }
 							$img=$this->fmt->archivos->convertir_url_mini( $fila_imagen );
 							$id_cat = $this->fmt->categoria->traer_id_cat_dominio($aux);
 							$sit_cat = $this->fmt->categoria->ruta_amigable($id_cat);
-							if(!file_exists(_RUTA_SERVER.$sit_cat."/".$img)){
+							if(!file_exists($ruta_server.$sit_cat."/".$img)){
 								$img=$this->fmt->archivos->convertir_url_thumb( $fila_imagen );
 							}
 
@@ -409,7 +413,7 @@ class PRODUCTOS{
 			$valor_doc= $_POST['inputDoc'];
 			$num=count( $valor_doc );
 			for ($i=0; $i<$num;$i++){
-				$valores2 = "'".$_POST['inputId']."','".$valor_doc[$i]."','".$i."'";
+				$valores2 = "'".$id."','".$valor_doc[$i]."','".$i."'";
 				$sql2="insert into mod_productos_rel (".$ingresar2.") values (".$valores2.")";
 				$this->fmt->query->consulta($sql2);
 			}

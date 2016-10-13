@@ -38,7 +38,11 @@ class ARCHIVOS{
 
 
   function listar_directorios_ruta($ruta,$nivel,$directorio_p){
-    $rutax = _RUTA_SERVER.$ruta;
+    if(_MULTIPLE_SITE=="on")
+		$rutax = _RUTA_SERVER.$ruta;
+	else
+		$rutax = _RUTA_HT.$ruta;
+
 
     $directorio = opendir($rutax);
     for ($i=0;$i<$nivel;$i++){
